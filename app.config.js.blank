@@ -1,0 +1,22 @@
+const IS_DEV = process.env.APP_VARIANT === "development";
+
+export default {
+  extra: {
+    eas: {
+      projectId: "****************",
+    },
+  },
+  name: IS_DEV ? "FlatPeak Demo Client (Dev)" : "FlatPeak Demo Client",
+  icon: IS_DEV ? "./assets/icon-dev.png" : "./assets/icon.png",
+  slug: "flatpeak-client",
+  splash: {
+    image: IS_DEV ? "./assets/splash-dev.png" : "./assets/splash.png",
+    resizeMode: "contain",
+    backgroundColor: "#232323",
+  },
+  ios: {
+    // eslint-disable-next-line prettier/prettier
+    bundleIdentifier: IS_DEV ? "<name>.<domain>.dev" : "<name>.<domain>.client",
+    supportsTablet: false,
+  },
+};
