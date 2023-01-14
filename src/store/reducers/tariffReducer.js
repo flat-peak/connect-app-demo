@@ -265,7 +265,9 @@ export const tariffSlice = createSlice({
       if (startMonth && endMonth) {
         const startMonthIndex = TARIFF_MONTHS.indexOf(startMonth);
         const endMonthIndex = TARIFF_MONTHS.indexOf(endMonth);
-        if (endMonthIndex > startMonthIndex) {
+        if (endMonthIndex === startMonthIndex) {
+          nextList = [startMonth, endMonth];
+        } else if (endMonthIndex > startMonthIndex) {
           nextList = [
             ...TARIFF_MONTHS.slice(startMonthIndex, endMonthIndex + 1),
           ];
@@ -296,6 +298,13 @@ export const tariffSlice = createSlice({
           const lastMonth = prev.months[prev.months.length - 1];
           if (lastMonth !== TARIFF_ALL_MONTHS) {
             const index = TARIFF_MONTHS.indexOf(lastMonth);
+            if (index === TARIFF_MONTHS.length - 2) {
+              const lastMonthOfYear = TARIFF_MONTHS[TARIFF_MONTHS.length - 1];
+              schedule.data.push(
+                blankTariffScheduleDatum([lastMonthOfYear, lastMonthOfYear])
+              );
+              return;
+            }
             if (index > -1) {
               const months = TARIFF_MONTHS.slice(index + 1);
               if (months.length > 1) {
