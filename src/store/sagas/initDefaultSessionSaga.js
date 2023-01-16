@@ -31,16 +31,16 @@ function* initDeveloperSession() {
   yield put(setDeveloperMode(true));
   yield put(setOffPeakCharge(true));
   yield put(setInputData(InputScenarios.BLANK));
-  yield completeWithRedirect("ScenarioPicker");
+  yield completeWithRedirect("DataInput");
 }
 
 function* initDefaultSession() {
+  yield put(setOffPeakCharge(true));
   const areaEnabled = yield fetchAreaEnabled();
   if (!areaEnabled) {
     return;
   }
   yield put(setDeveloperMode(false));
-  yield put(setOffPeakCharge(true));
   yield put(setInputData(InputScenarios.BLANK));
   yield put(setInputParam({ key: "macAddress", value: generateMacAddress() }));
   yield initSession("ProviderSelection");

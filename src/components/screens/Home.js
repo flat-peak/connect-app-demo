@@ -11,15 +11,7 @@ import ErrorDialog from "../dialogs/error-dialog";
 import LoaderDialog from "../dialogs/loader-dialog";
 import { Switch } from "react-native";
 import Main from "../layout/Main";
-import { Text } from "../common/Text";
-import styled from "styled-components/native";
-import { Autolink } from "react-native-autolink";
-
-const IntroMessage = styled.View`
-  margin: 24px 0 51px;
-  border: 1px solid #fff;
-  padding: 12px;
-`;
+import IntroBlock from "../common/IntroBlock";
 
 export default function Home({
   loading,
@@ -30,9 +22,6 @@ export default function Home({
   initDeveloperSession,
   setOffPeakCharge,
 }) {
-  const text = `This example react-native application is developed by FlatPeak to enable developers and product owners to evaluate consumer experience they can build with FlatPeak API and SDKs.
-  Email mailto:support@flatpeak.energy to request access to application source code.`;
-
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView>
@@ -47,19 +36,7 @@ export default function Home({
             onDismiss={dismissError}
           />
           <Main>
-            <IntroMessage>
-              <Text variant={"intro"}>
-                <Autolink
-                  text={text}
-                  linkStyle={{
-                    textDecorationLine: "underline",
-                    textDecorationStyle: "solid",
-                    textDecorationColor: "#fff",
-                  }}
-                />
-              </Text>
-            </IntroMessage>
-
+            <IntroBlock />
             <Field
               label={"Off-Peak Charge"}
               description={"To test end-consumer experience"}
