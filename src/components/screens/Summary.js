@@ -172,6 +172,7 @@ export default function Summary({
                           <PeriodCaption
                             monthFrom={resolveMonthLabelByKey(monthFrom)}
                             monthTo={resolveMonthLabelByKey(monthTo)}
+                            dates={entry.dates || []}
                             dayFrom={dayFrom}
                             dayTo={dayTo}
                           />
