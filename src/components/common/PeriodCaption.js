@@ -1,15 +1,20 @@
 import styled from "styled-components/native";
+import { formatDateRanges, formatRangeValues } from "../../global/common";
 
 const PeriodContainer = styled.View`
   flex-direction: row;
   align-items: center;
+  flex-wrap: wrap;
+  column-gap: 20px;
+  row-gap: 20px;
+  margin: -10px;
 `;
 
 const PeriodBox = styled.View`
   background-color: #07a1ff;
   border-radius: 5px;
   padding: 1px 6px;
-  margin-right: 20px;
+  margin: 10px;
 `;
 
 const PeriodLabel = styled.Text`
@@ -19,25 +24,27 @@ const PeriodLabel = styled.Text`
   line-height: 24px;
 `;
 
-export default function PeriodCaption({ monthFrom, monthTo, dayFrom, dayTo }) {
-  const printRangeLabel = (from, to) => {
-    const rangeFromLabel = typeof from !== "undefined" ? String(from) : "";
-    const rangeToLabel = typeof to !== "undefined" ? String(to) : "";
-    if (!rangeFromLabel || !rangeFromLabel) {
-      return rangeFromLabel || rangeToLabel;
-    }
-    if (rangeFromLabel === rangeToLabel) {
-      return rangeFromLabel;
-    }
-    return `${rangeFromLabel} - ${rangeToLabel}`;
-  };
+export default function PeriodCaption({
+  monthFrom,
+  monthTo,
+  dates,
+  dayFrom,
+  dayTo,
+}) {
   return (
     <PeriodContainer>
       <PeriodBox>
-        <PeriodLabel>{printRangeLabel(monthFrom, monthTo)}</PeriodLabel>
+        <PeriodLabel>{formatRangeValues(monthFrom, monthTo)}</PeriodLabel>
       </PeriodBox>
+
+      {Boolean(dates.length) && (
+        <PeriodBox>
+          <PeriodLabel>{formatDateRanges(dates)}</PeriodLabel>
+        </PeriodBox>
+      )}
+
       <PeriodBox>
-        <PeriodLabel>{printRangeLabel(dayFrom, dayTo)}</PeriodLabel>
+        <PeriodLabel>{formatRangeValues(dayFrom, dayTo)}</PeriodLabel>
       </PeriodBox>
     </PeriodContainer>
   );
