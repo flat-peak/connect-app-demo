@@ -213,7 +213,6 @@ export default function Summary({
               variant="executive"
               disabled={loading}
               onPress={() => {
-                // TODO: consider to replace this approach with an option based on product.is_connected
                 if (isConnectableProvider(provider)) {
                   saveConnectedTariff();
                 } else {

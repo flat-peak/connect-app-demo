@@ -20,13 +20,24 @@ const PeriodLabel = styled.Text`
 `;
 
 export default function PeriodCaption({ monthFrom, monthTo, dayFrom, dayTo }) {
+  const printRangeLabel = (from, to) => {
+    const rangeFromLabel = typeof from !== "undefined" ? String(from) : "";
+    const rangeToLabel = typeof to !== "undefined" ? String(to) : "";
+    if (!rangeFromLabel || !rangeFromLabel) {
+      return rangeFromLabel || rangeToLabel;
+    }
+    if (rangeFromLabel === rangeToLabel) {
+      return rangeFromLabel;
+    }
+    return `${rangeFromLabel} - ${rangeToLabel}`;
+  };
   return (
     <PeriodContainer>
       <PeriodBox>
-        <PeriodLabel>{`${monthFrom} - ${monthTo}`}</PeriodLabel>
+        <PeriodLabel>{printRangeLabel(monthFrom, monthTo)}</PeriodLabel>
       </PeriodBox>
       <PeriodBox>
-        <PeriodLabel>{`${dayFrom} - ${dayTo}`}</PeriodLabel>
+        <PeriodLabel>{printRangeLabel(dayFrom, dayTo)}</PeriodLabel>
       </PeriodBox>
     </PeriodContainer>
   );

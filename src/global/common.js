@@ -43,5 +43,5 @@ export const isEqualObjects = (source, target, keys) => {
  * @return {boolean}
  */
 export const isConnectableProvider = (provider) => {
-  return Boolean(provider.integration_settings?.onboard_url?.trim());
+  return Boolean(provider?.integration_settings?.onboard_url?.trim());
 };
