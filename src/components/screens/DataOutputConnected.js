@@ -11,6 +11,7 @@ import {
   selectDeveloperMode,
   setOffPeakCharge,
 } from "../../store/reducers/contextReducer";
+import { initDeveloperSession } from "../../store/reducers/inputDataReducer";
 
 const mapStateToProps = (state) => {
   return {
@@ -26,6 +27,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setOffPeakCharge: (value) => dispatch(setOffPeakCharge(value)),
+    initDeveloperSession: (value) => dispatch(initDeveloperSession(value)),
   };
 };
 

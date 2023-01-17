@@ -12,6 +12,7 @@ import Main from "../layout/Main";
 import Footer from "../layout/Footer";
 import Field from "../common/Field";
 import { Switch } from "react-native";
+import IntroBlock from "../common/IntroBlock";
 
 const InputRow = styled.View`
   margin: 11px 0;
@@ -38,6 +39,7 @@ export default function DataOutput({
   customerId,
   developerMode,
   setOffPeakCharge,
+  initDeveloperSession,
 }) {
   return (
     <ThemeProvider theme={theme}>
@@ -46,6 +48,7 @@ export default function DataOutput({
         <Divider />
         <Wrapper>
           <Main>
+            {!developerMode && <IntroBlock />}
             <Field
               label={"Off-Peak Charge"}
               description={"To test end-consumer experience"}
@@ -89,14 +92,8 @@ export default function DataOutput({
           </Main>
           <Footer>
             <Button
-              title={"Start Over"}
-              variant="executive"
-              onPress={() => {
-                navigation.reset({
-                  index: 0,
-                  routes: [{ name: "ScenarioPicker" }],
-                });
-              }}
+              title={"Restart Developer Tools"}
+              onPress={() => initDeveloperSession()}
             />
           </Footer>
         </Wrapper>

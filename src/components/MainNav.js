@@ -11,7 +11,6 @@ import DataInputConnected from "./screens/DataInputConnected";
 import DataOutputConnected from "./screens/DataOutputConnected";
 import { ThemeProvider } from "styled-components";
 import { theme as secondaryTheme } from "../theme/secondary";
-import ScenarioPickerConnected from "./screens/ScenarioPickerConnected";
 import TariffStructureConnected from "./screens/TariffStructureConnected";
 import ProviderIntegrationConnected from "./screens/ProviderIntegrationConnected";
 import HomeConnected from "./screens/HomeConnected";
@@ -68,11 +67,6 @@ export default function MainNav() {
         <Stack.Screen
           name={"Home"}
           component={HomeConnected}
-          options={primaryOptions}
-        />
-        <Stack.Screen
-          name={"ScenarioPicker"}
-          component={ScenarioPickerConnected}
           options={primaryOptions}
         />
         <Stack.Screen

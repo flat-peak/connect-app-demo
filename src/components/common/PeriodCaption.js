@@ -37,7 +37,7 @@ export default function PeriodCaption({
         <PeriodLabel>{formatRangeValues(monthFrom, monthTo)}</PeriodLabel>
       </PeriodBox>
 
-      {Boolean(dates.length) && (
+      {Boolean(dates?.length) && (
         <PeriodBox>
           <PeriodLabel>{formatDateRanges(dates)}</PeriodLabel>
         </PeriodBox>
