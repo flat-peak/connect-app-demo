@@ -1,4 +1,5 @@
 export const Actions = {
+  checkApiCredentials: "CHECK_API_CREDENTIALS",
   initDefaultSession: "INIT_DEFAULT_SESSION",
   initDeveloperSession: "INIT_DEVELOPER_SESSION",
   initSession: "PICK_INPUT_SCENARIO",
