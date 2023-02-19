@@ -13,9 +13,11 @@ import {
   setError,
   setLoading,
 } from "../../store/reducers/progressIndicatorReducer";
+import { selectPublishableKey } from "../../store/reducers/keySetupReducer";
 
 const mapStateToProps = (state) => {
   return {
+    publishableKey: selectPublishableKey(state),
     provider: selectProvider(state),
     customerId: selectCustomerId(state),
     productId: selectProductId(state),

@@ -3,7 +3,6 @@ import { ThemeProvider } from "styled-components";
 import { ScreenSafeView } from "../layout/View";
 import { View } from "react-native";
 import WebView from "react-native-webview";
-import { API_PUBLISHABLE_KEY } from "@env";
 import LoaderDialog from "../dialogs/loader-dialog";
 import ErrorDialog from "../dialogs/error-dialog";
 
@@ -30,13 +29,14 @@ export default function ProviderIntegration({
   loading,
   error,
   dismissError,
+  publishableKey,
   setError,
   setLoading,
 }) {
   const uri = provider.integration_settings.onboard_url;
   const runFirst = `
       document.body.style.setProperty("--fp-theme-background", "${theme.colors.background}");
-      window.FLATPEAK_PUBLISHABLE_KEY = "${API_PUBLISHABLE_KEY}";
+      window.FLATPEAK_PUBLISHABLE_KEY = "${publishableKey}";
       window.FLATPEAK_PRODUCT_ID = "${productId}";
       window.FLATPEAK_CUSTOMER_ID = "${customerId}";
       window.respondToApp = (r) => window.ReactNativeWebView.postMessage(
@@ -100,7 +100,7 @@ export default function ProviderIntegration({
             source={{
               uri,
               headers: {
-                "publishable-key": API_PUBLISHABLE_KEY,
+                "publishable-key": publishableKey,
                 "product-id": productId,
                 "customer-id": customerId,
               },

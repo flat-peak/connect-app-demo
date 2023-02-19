@@ -15,6 +15,7 @@ import TariffStructureConnected from "./screens/TariffStructureConnected";
 import ProviderIntegrationConnected from "./screens/ProviderIntegrationConnected";
 import HomeConnected from "./screens/HomeConnected";
 import { setNavigationRef } from "./Navigator";
+import KeySetupConnected from "./screens/KeySetupConnected";
 
 const Stack = createStackNavigator();
 
@@ -64,6 +65,11 @@ export default function MainNav() {
   return (
     <NavigationContainer theme={navTheme} ref={(ref) => setNavigationRef(ref)}>
       <Stack.Navigator>
+        <Stack.Screen
+          name={"KeySetup"}
+          component={KeySetupConnected}
+          options={primaryOptions}
+        />
         <Stack.Screen
           name={"Home"}
           component={HomeConnected}

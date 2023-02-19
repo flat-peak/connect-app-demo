@@ -8,15 +8,6 @@ Main tools used to develop this project:
 - Expo - https://expo.dev
 
 ## Running locally
-
-Create `.env` file in the root folder with the following content:
-
-```
-API_URL=https://api.flatpeak.energy
-API_PUBLISHABLE_KEY=pk_****_****************
-```
-Pick value for *API_PUBLISHABLE_KEY* from FlatPeak Dashboard.
-
 ### Install dependencies
 
 
@@ -26,7 +17,6 @@ npm install
 
 ### Update environment variables
 
-- Copy **.env.blank** to **.env** and set up the variables in the file. Get correct values from FlatPeak Dashboard.
 - Copy **eas.json.blank** to **eas.json**
 - Copy **app.config.js.blank** to **app.config.js**
 
@@ -58,11 +48,7 @@ FlatPeak Demo Client app uses [Expo & EAS](https://www.npmjs.com/package/eas-cli
   - Replace `projectId=****************` with projectId of your AppleDeveloper account.
 
   - Replace `bundleIdentifier: IS_DEV ? "<name>.<domain>.dev" : "<name>.<domain>",` with your bundle identifier; refer to [Expo Docs](https://docs.expo.dev/versions/v45.0.0/config/app/#bundleidentifier)
-
-  - Replace `"API_PUBLISHABLE_KEY": "pk_test_****************"` in `./eas.json` with publishable **test** key from FlatPeak Dashboard.
-
-  - Replace `"API_PUBLISHABLE_KEY": "pk_live_****************"` in `./eas.json` with publishable **live** key from FlatPeak Dashboard.
-
+  
 ### Build preview
 
 The preview is not published to Apple App Store (find it in TestFlight). Access it via direct device install ([Expo Doc](https://docs.expo.dev/build/internal-distribution/))
