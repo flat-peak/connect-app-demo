@@ -55,7 +55,6 @@ export default function KeySetup({
             onDismiss={dismissError}
           />
           <Main style={{ paddingTop: 20 }}>
-            <IntroBlock />
             <Field
               isFirst={true}
               label={"API URL"}
@@ -83,6 +82,7 @@ export default function KeySetup({
                 refIndex={1}
               />
             </Field>
+            <IntroBlock />
           </Main>
           <Footer>
             <Button

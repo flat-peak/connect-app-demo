@@ -11,7 +11,6 @@ import ErrorDialog from "../dialogs/error-dialog";
 import LoaderDialog from "../dialogs/loader-dialog";
 import { Switch } from "react-native";
 import Main from "../layout/Main";
-import IntroBlock from "../common/IntroBlock";
 
 export default function Home({
   loading,
@@ -36,7 +35,6 @@ export default function Home({
             onDismiss={dismissError}
           />
           <Main>
-            <IntroBlock />
             <Field
               label={"Connect my electricity provider"}
               description={"Will open end-customer Connect experience"}
