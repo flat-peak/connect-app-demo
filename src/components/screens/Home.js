@@ -25,7 +25,7 @@ export default function Home({
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView>
-        <Header title="CHOOSE DEMO TYPE" useLogo={true} />
+        <Header title="CHOOSE DEMO FLOW" useLogo={true} />
         <Divider />
         <Wrapper>
           <LoaderDialog visible={loading} />
@@ -38,8 +38,8 @@ export default function Home({
           <Main>
             <IntroBlock />
             <Field
-              label={"Off-Peak Charge"}
-              description={"To test end-consumer experience"}
+              label={"Connect my electricity provider"}
+              description={"Will open end-customer Connect experience"}
               isRow={true}
             >
               <Switch

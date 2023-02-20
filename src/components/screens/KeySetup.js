@@ -13,6 +13,7 @@ import Field from "../common/Field";
 import Main from "../layout/Main";
 import LoaderDialog from "../dialogs/loader-dialog";
 import ErrorDialog from "../dialogs/error-dialog";
+import IntroBlock from "../common/IntroBlock";
 
 const InputValue = styled(TextInput).attrs(({ refs, refIndex }) => {
   return {
@@ -43,7 +44,7 @@ export default function KeySetup({
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView>
-        <Header title="Provide API credentials" useLogo={true} />
+        <Header title="PROVIDE YOUR FLATPEAK API KEY" useLogo={true} />
         <Divider />
         <Wrapper>
           <LoaderDialog visible={loading} />
@@ -54,6 +55,7 @@ export default function KeySetup({
             onDismiss={dismissError}
           />
           <Main style={{ paddingTop: 20 }}>
+            <IntroBlock />
             <Field
               isFirst={true}
               label={"API URL"}
@@ -71,7 +73,7 @@ export default function KeySetup({
 
             <Field
               label={"Publishable API key"}
-              description={"Provide test mode publishable key to start"}
+              description={"Get your key from FlatPeak Dashboard"}
             >
               <InputValue
                 value={publishableKey}
