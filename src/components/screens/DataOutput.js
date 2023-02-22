@@ -50,8 +50,8 @@ export default function DataOutput({
           <Main>
             {!developerMode && <IntroBlock />}
             <Field
-              label={"Off-Peak Charge"}
-              description={"To test end-consumer experience"}
+              label={"Connected to electricity provider"}
+              description={"Your {device} is receiving your electricity tariff"}
               isRow={true}
             >
               <Switch
@@ -68,6 +68,7 @@ export default function DataOutput({
 
             {developerMode && (
               <>
+
                 <InputRow>
                   <Text variant="ui-control">Customer Id</Text>
                   <InputValue value={customerId} />
