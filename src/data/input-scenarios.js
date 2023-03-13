@@ -11,7 +11,7 @@ export const InputScenarios = {
       city: "London",
       state: "Greather London",
       post_code: "SE110AA",
-      country_code: "GB",
+      country_code: "AQ",
     },
   },
 };
