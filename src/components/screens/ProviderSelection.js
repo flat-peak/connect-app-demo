@@ -35,9 +35,7 @@ export default function ProviderSelection({
       <ScreenView>
         <Header
           title={"Select your provider"}
-          subTitle={
-            "This will be the provider that is supplying your property today."
-          }
+          subTitle={"I.e. your current electricity supplier."}
         />
         <Wrapper>
           <Main>
