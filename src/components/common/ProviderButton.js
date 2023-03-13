@@ -1,11 +1,12 @@
 import styled from "styled-components/native";
 
 const ProviderButtonContainer = styled.View`
-  background-color: ${({ theme }) => theme.colors.buttons.options};
   border-radius: ${({ theme }) => theme.roundness}px;
   margin-bottom: 20px;
   height: 68px;
   justify-content: center;
+  align-items: center;
+  background-color: transparent;
 `;
 
 const ProviderContainImage = styled.Image.attrs(({ preview }) => ({
@@ -15,6 +16,7 @@ const ProviderContainImage = styled.Image.attrs(({ preview }) => ({
   },
 }))`
   width: 100%;
+  max-width: 140px;
   height: 40px;
 `;
 

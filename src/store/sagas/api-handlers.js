@@ -6,16 +6,24 @@ import { service } from "../../service/flatpeak.service";
  * @return {Promise<{usable: boolean}>}
  */
 export async function handleCheckMacAddress({ macAddress, customerId }) {
-  return await service.checkMacAddress(macAddress, customerId);
+  return await service.checkMacAddress({
+    mac: macAddress,
+    ...(customerId && { customer_id: customerId }),
+  });
 }
 
 /**
- * @param {string} keyword
+ * @param {string} keywords
  * @param {string} countryCode
  * @return {Promise<Array<Provider>>}
  */
 export async function fetchProviders({ keyword, countryCode }) {
-  return await service.getProviders(keyword, countryCode);
+  return await service.getProviders({
+    ...(keyword && { keywords: keyword }),
+    ...(countryCode && { country_code: countryCode }),
+    sort_order: "code_name",
+    limit: 100,
+  });
 }
 
 /**
