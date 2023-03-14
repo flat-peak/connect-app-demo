@@ -1,6 +1,5 @@
 import { SectionTitle } from "../form-controls/Section";
 import styled from "styled-components/native";
-import ProviderLogo from "./ProviderLogo";
 
 export const ProductSummaryContainer = styled.View`
   flex-direction: row;
@@ -15,8 +14,7 @@ export function ProductSummary({ provider, title }) {
   return (
     <ProductSummaryContainer>
       <SectionTitle>
-        <ProductSummaryTitle>{title}</ProductSummaryTitle>{" "}
-        <ProviderLogo item={provider} />
+        <ProductSummaryTitle>Tariff: {title}</ProductSummaryTitle>
       </SectionTitle>
     </ProductSummaryContainer>
   );

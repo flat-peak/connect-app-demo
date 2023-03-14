@@ -2,7 +2,6 @@ import { connect } from "react-redux";
 import TariffSetup from "./TariffSetup";
 import {
   selectPreferences,
-  selectProvider,
   selectDisplayName,
   setDisplayName,
   setExportEnabled,
@@ -12,7 +11,6 @@ import {
 const mapStateToProps = (state) => {
   return {
     displayName: selectDisplayName(state),
-    provider: selectProvider(state),
     preferences: selectPreferences(state),
     exportEnabled: selectExportEnabled(state),
   };

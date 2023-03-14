@@ -9,7 +9,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { addLeadingZero } from "../../global/peak-utils";
 import EditPriceDialog from "../dialogs/edit-price-dialog";
 import { theme } from "../../theme/secondary";
-import { ScreenSafeView, ScreenView } from "../layout/View";
+import { ScreenSafeView } from "../layout/View";
 import { ThemeProvider } from "styled-components";
 import Footer from "../layout/Footer";
 import Wrapper from "../layout/Wrapper";
@@ -121,17 +121,18 @@ export default function Prices({
   };
 
   const getCaption = () => {
-    if (flat) {
-      return `Your ${side} price`;
-    }
-    return `${side[0].toUpperCase() + side.substring(1)} prices`;
+    return side === TARIFF_SIDE.IMPORT ? "Prices you pay" : "Prices you paid";
   };
 
   const getDescription = () => {
     if (flat) {
-      return "Cost per kWh";
+      return `Adjust cost per kWh for your ${
+        side === TARIFF_SIDE.IMPORT ? "import" : "export"
+      } tariff`;
     }
-    return "Set price per kWh for the time period.\nAdd more time periods as required.";
+    return `Adjust cost per kWh for your ${
+      side === TARIFF_SIDE.IMPORT ? "import" : "export"
+    } tariff. Add more periods as required.`;
   };
 
   const getNextScreenParams = () => {

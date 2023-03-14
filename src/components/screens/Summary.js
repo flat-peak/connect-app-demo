@@ -99,8 +99,8 @@ export default function Summary({
     <ThemeProvider theme={theme}>
       <ScreenScrollView>
         <Header
-          title="Tariff summary"
-          subTitle={"Review and save your plan:"}
+          title="Your tariff summary"
+          subTitle={"Confirm your tariff or tap to edit:"}
         />
         <Wrapper>
           <LoaderDialog visible={loading} />
