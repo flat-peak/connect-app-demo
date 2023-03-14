@@ -1,4 +1,6 @@
 import styled from "styled-components/native";
+import { useEffect, useState } from "react";
+import { Text } from "./Text";
 
 const ProviderButtonContainer = styled.View`
   border-radius: ${({ theme }) => theme.roundness}px;
@@ -26,11 +28,25 @@ const ProviderContainImage = styled.Image.attrs(({ preview }) => ({
  * @constructor
  */
 export default function ProviderButton({ item }) {
+  const languageAssets = item.display_settings.language_assets[0];
+  const [preview, setPreview] = useState(null);
+
+  useEffect(() => {
+    if (languageAssets.logo_url) {
+      setPreview(languageAssets.logo_url);
+    }
+  }, [languageAssets]);
+
   return (
     <ProviderButtonContainer>
-      <ProviderContainImage
-        preview={item.display_settings.language_assets[0].logo_url}
-      />
+      {preview ? (
+        <ProviderContainImage
+          onError={() => setPreview(null)}
+          preview={preview}
+        />
+      ) : (
+        <Text variant="guiding-button">{languageAssets.display_name}</Text>
+      )}
     </ProviderButtonContainer>
   );
 }
