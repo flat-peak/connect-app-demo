@@ -25,7 +25,7 @@ export default function Home({
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView>
-        <Header title="CHOOSE DEMO TYPE" useLogo={true} />
+        <Header title="Select test option" useLogo={true} />
         <Divider />
         <Wrapper>
           <LoaderDialog visible={loading} />

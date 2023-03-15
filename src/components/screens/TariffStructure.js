@@ -76,24 +76,24 @@ export default function TariffStructure({
                   })
                 }
               />
+              <ButtonCheckbox
+                value={!structure.seasons && !structure.time}
+                title={"None of the Above"}
+                subTitle={"I am on flat rate"}
+                onChange={(value) =>
+                  setStructure({
+                    target: side,
+                    structure: {
+                      ...structure,
+                      seasons: !value,
+                      time: !value,
+                    },
+                  })
+                }
+              />
             </RateFactors>
           </Main>
           <Footer>
-            <ButtonCheckbox
-              value={!structure.seasons && !structure.time}
-              title={"None of the Above"}
-              subTitle={"I am on flat rate"}
-              onChange={(value) =>
-                setStructure({
-                  target: side,
-                  structure: {
-                    ...structure,
-                    seasons: !value,
-                    time: !value,
-                  },
-                })
-              }
-            />
             <Button
               title={"Next"}
               variant="executive"

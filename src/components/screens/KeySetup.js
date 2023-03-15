@@ -56,7 +56,7 @@ export default function KeySetup({
           <Main style={{ paddingTop: 20 }}>
             <Field
               isFirst={true}
-              label={"API URL"}
+              label={"FlatPeak API URL"}
               description={"Leave default to https://api.flatpeak.energy"}
             >
               <InputValue
@@ -71,7 +71,7 @@ export default function KeySetup({
 
             <Field
               label={"Publishable API key"}
-              description={"Provide test mode publishable key to start"}
+              description={"Publishable key from FlatPeak Dashboard"}
             >
               <InputValue
                 value={publishableKey}

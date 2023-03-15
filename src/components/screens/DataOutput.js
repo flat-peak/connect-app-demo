@@ -44,7 +44,7 @@ export default function DataOutput({
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView>
-        <Header title="RESULTS SUMMARY" useLogo={true} />
+        <Header title="Results summary" useLogo={true} />
         <Divider />
         <Wrapper>
           <Main>

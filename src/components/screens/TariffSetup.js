@@ -20,7 +20,7 @@ export default function TariffSetup({
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView edges={["right", "left", "bottom"]}>
-        <Header title="What is the name of your tariff?" />
+        <Header title="What your tariff name?" />
         <Wrapper>
           <Main>
             <TextInput value={displayName} onChangeText={setDisplayName} />
