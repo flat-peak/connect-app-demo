@@ -55,7 +55,7 @@ export default function DataInput({
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView>
-        <Header title="ENTER INPUT PARAMETERS" useLogo={true} />
+        <Header title="Enter input params" useLogo={true} />
         <Divider />
         <Wrapper>
           <LoaderDialog visible={loading} />

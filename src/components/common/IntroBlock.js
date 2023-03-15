@@ -8,12 +8,9 @@ const IntroMessage = styled.View`
   padding: 12px;
 `;
 
-export default function IntroBlock({ }) {
-  const text = `This example react-native app should not be used in production. It was developed by FlatPeak to enable our business customers to evaluate consumer experience they can build.
-
-App is open-sourced, clone it from GitHub: https://github.com/flat-peak/app-react-native..
-
-To get API keys, and for support sign up or login to Dashboard: https://dashboard.flatpeak.energy.`;
+export default function IntroBlock({}) {
+  const text = `This example react-native app was created by FlatPeak to enable developers and product owners to evaluate consumer experience they can build with FlatPeak.
+ This app is open-sourced and is available from GitHub - https://github.com/flat-peak.`;
   return (
     <IntroMessage>
       <Text variant={"intro"}>

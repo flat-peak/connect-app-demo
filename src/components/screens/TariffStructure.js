@@ -2,17 +2,13 @@ import Header from "../layout/Header";
 import Button from "../form-controls/Button";
 import { theme } from "../../theme/secondary";
 import { ThemeProvider } from "styled-components";
-import { ScreenSafeView, ScreenView } from "../layout/View";
+import { ScreenSafeView } from "../layout/View";
 import Footer from "../layout/Footer";
 import Wrapper from "../layout/Wrapper";
 import Main from "../layout/Main";
 import styled from "styled-components/native";
 import ButtonCheckbox from "../form-controls/ButtonCheckbox";
-import {
-  TARIFF_ALL_DAYS,
-  TARIFF_SIDE,
-  TARIFF_WEEKDAYS,
-} from "../../data/tariff-constants";
+import { TARIFF_SIDE } from "../../data/tariff-constants";
 
 const RateFactors = styled.View`
   margin-bottom: 40px;
@@ -43,11 +39,10 @@ export default function TariffStructure({
   const { side } = route.params;
   const schedule = findWeekdaySchedule(plan[side]);
 
-  let title = `${
-    side === TARIFF_SIDE.IMPORT ? "Import" : "Export"
-  } tariff structure`;
-  let subTitle =
-    "Which of the following affects your rate?\nSelect all that apply.";
+  let title = "Your tariff structure";
+  let subTitle = `Which of the following affects your ${
+    side === TARIFF_SIDE.IMPORT ? "import" : "export"
+  } rate?\nSelect all that apply.`;
 
   const structure = {
     seasons: isSeasonConfigurable(schedule),
@@ -81,24 +76,24 @@ export default function TariffStructure({
                   })
                 }
               />
+              <ButtonCheckbox
+                value={!structure.seasons && !structure.time}
+                title={"None of the Above"}
+                subTitle={"I am on flat rate"}
+                onChange={(value) =>
+                  setStructure({
+                    target: side,
+                    structure: {
+                      ...structure,
+                      seasons: !value,
+                      time: !value,
+                    },
+                  })
+                }
+              />
             </RateFactors>
           </Main>
           <Footer>
-            <ButtonCheckbox
-              value={!structure.seasons && !structure.time}
-              title={"None of the Above"}
-              subTitle={"I am on flat rate"}
-              onChange={(value) =>
-                setStructure({
-                  target: side,
-                  structure: {
-                    ...structure,
-                    seasons: !value,
-                    time: !value,
-                  },
-                })
-              }
-            />
             <Button
               title={"Next"}
               variant="executive"

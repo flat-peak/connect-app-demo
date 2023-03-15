@@ -46,7 +46,7 @@ export default function AddressEdit({
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView>
-        <Header title="ENTER POSTAL ADDRESS" useLogo={true} />
+        <Header title="Enter postal address" useLogo={true} />
         <Divider />
         <Wrapper>
           <FieldSet>

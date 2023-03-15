@@ -1,7 +1,7 @@
 import { Text } from "../common/Text";
 import styled from "styled-components/native";
 import { Image } from "react-native";
-import LogoImage from "../../../assets/fp-demo.png";
+import LogoImage from "../../../assets/fp-logo-demo.png";
 
 const HeaderContainer = styled.View`
   padding: 12px ${({ theme }) => theme.screenHorizontalOffset}px;

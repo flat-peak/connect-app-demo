@@ -17,7 +17,10 @@ import {
   EditableTableRow,
   EditableTableValue,
 } from "../common/EditableTable";
-import { resolveMonthLabelByKey } from "../../data/tariff-constants";
+import {
+  resolveMonthLabelByKey,
+  TARIFF_SIDE,
+} from "../../data/tariff-constants";
 
 /**
  *
@@ -84,8 +87,10 @@ export default function Seasons({
     <ThemeProvider theme={theme}>
       <ScreenSafeView edges={["right", "left", "bottom"]}>
         <Header
-          title={side[0].toUpperCase() + side.substring(1) + " tariff seasons"}
-          subTitle={"Create seasons that match your tariff"}
+          title={"Your tariff seasons"}
+          subTitle={`Create seasons that match your ${
+            side === TARIFF_SIDE.IMPORT ? "import" : "export"
+          } tariff`}
         />
         <Wrapper>
           <MonthPickerDialog
@@ -96,7 +101,7 @@ export default function Seasons({
           />
           <FlatList
             ListFooterComponent={
-              <Button title={"Add season period"} onPress={() => addPeriod()} />
+              <Button title={"Add season"} onPress={() => addPeriod()} />
             }
             data={schedule.data}
             renderItem={({ item, index }) => {

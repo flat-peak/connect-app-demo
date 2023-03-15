@@ -28,9 +28,9 @@ const altOptions = {
   headerStyle: {
     borderWidth: 0,
   },
-  header: ({ navigation }) => (
+  header: ({ navigation, options }) => (
     <ThemeProvider theme={secondaryTheme}>
-      <NavBar navigation={navigation} />
+      <NavBar navigation={navigation} options={options} />
     </ThemeProvider>
   ),
 };
@@ -98,27 +98,27 @@ export default function MainNav() {
         <Stack.Screen
           name={"TariffSetup"}
           component={TariffSetupConnected}
-          options={altOptions}
+          options={{ ...altOptions, displayProviderLogo: true }}
         />
         <Stack.Screen
           name={"TariffStructure"}
           component={TariffStructureConnected}
-          options={altOptions}
+          options={{ ...altOptions, displayProviderLogo: true }}
         />
         <Stack.Screen
           name={"Seasons"}
           component={SeasonsConnected}
-          options={altOptions}
+          options={{ ...altOptions, displayProviderLogo: true }}
         />
         <Stack.Screen
           name={"Prices"}
           component={PricesConnected}
-          options={altOptions}
+          options={{ ...altOptions, displayProviderLogo: true }}
         />
         <Stack.Screen
           name={"Summary"}
           component={SummaryConnected}
-          options={altOptions}
+          options={{ ...altOptions, displayProviderLogo: true }}
         />
         <Stack.Screen
           name={"DataOutput"}

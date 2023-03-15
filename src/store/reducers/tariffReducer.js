@@ -431,7 +431,7 @@ export const saveConnectedTariff = (payload) => {
 
 export const selectDisplayName = (state) => state.tariff.plan.display_name;
 export const selectPlan = (state) => state.tariff.plan;
-export const selectProvider = (state) => state.tariff.provider;
+export const selectProvider = (state) => state.tariff?.provider;
 export const selectSaved = (state) => state.tariff.saved;
 export const selectPreferences = (state) => state.tariff.preferences;
 export const selectExportEnabled = (state) => Boolean(state.tariff.plan.export);
