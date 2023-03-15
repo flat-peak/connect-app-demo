@@ -1,0 +1,38 @@
+{
+  "cli": {
+    "appVersionSource": "remote",
+  },
+  "build": {
+    "development": {
+      "node": "16.19.0",
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+      "API_URL": "https://api.flatpeak.energy",
+      "API_PUBLISHABLE_KEY": "************",
+      "APP_VARIANT": "development"
+      }
+    },
+    "preview": {
+      "node": "16.19.0",
+      "autoIncrement": true,
+      "distribution": "internal",
+      "env": {
+      "API_URL": "https://api.flatpeak.energy",
+      "API_PUBLISHABLE_KEY": "************",
+      "APP_VARIANT": "development"
+      }
+    },
+    "production": {
+      "node": "16.19.0",
+      "autoIncrement": true,
+      "env": {
+      "API_URL": "https://api.flatpeak.energy",
+      "API_PUBLISHABLE_KEY": "************"
+      }
+    }
+  },
+  "submit": {
+    "production": { }
+  }
+}
