@@ -1,7 +1,11 @@
-import { call, put, takeLatest } from "redux-saga/effects";
+import { call, put, takeLatest, delay } from "redux-saga/effects";
 import { Actions } from "./actions";
 import { initSession } from "./initSessionSaga";
-import { setInputData, setInputParam } from "../reducers/inputDataReducer";
+import {
+  setCountry,
+  setInputData,
+  setInputParam,
+} from "../reducers/inputDataReducer";
 import {
   setAreaEnabled,
   setDeveloperMode,
@@ -12,7 +16,7 @@ import { completeWithRedirect, stopIfError } from "./progressIndicatorSaga";
 import { handleGetAccount } from "./api-handlers";
 import { InputScenarios } from "../../data/input-scenarios";
 
-function* fetchAreaEnabled() {
+export function* fetchAreaEnabled() {
   /** @type {account} */
   let account = yield call(handleGetAccount);
   if (yield stopIfError(account)) {
@@ -20,30 +24,27 @@ function* fetchAreaEnabled() {
   }
   const areaEnabled = account?.area_enabled || [];
   yield put(setAreaEnabled(areaEnabled));
+  yield put(setCountry(areaEnabled[0]?.country_code));
   return areaEnabled;
 }
 
 function* initDeveloperSession() {
-  const areaEnabled = yield fetchAreaEnabled();
-  if (!areaEnabled) {
-    return;
-  }
   yield put(setDeveloperMode(true));
   yield put(setOffPeakCharge(true));
   yield put(setInputData(InputScenarios.BLANK));
   yield completeWithRedirect("DataInput");
+  yield delay(400);
+  yield put(setOffPeakCharge(false));
 }
 
 function* initDefaultSession() {
   yield put(setOffPeakCharge(true));
-  const areaEnabled = yield fetchAreaEnabled();
-  if (!areaEnabled) {
-    return;
-  }
   yield put(setDeveloperMode(false));
   yield put(setInputData(InputScenarios.BLANK));
   yield put(setInputParam({ key: "macAddress", value: generateMacAddress() }));
   yield initSession("ProviderSelection");
+  yield delay(400);
+  yield put(setOffPeakCharge(false));
 }
 export default function* initDefaultSessionSaga() {
   yield takeLatest(Actions.initDefaultSession, initDefaultSession);

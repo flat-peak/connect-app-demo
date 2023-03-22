@@ -6,13 +6,13 @@ import {
   selectProviders,
 } from "../../store/reducers/providerSelectionReducer";
 import { setProvider } from "../../store/reducers/tariffReducer";
-import { selectCountryCode } from "../../store/reducers/inputDataReducer";
+import { selectCountry } from "../../store/reducers/inputDataReducer";
 
 const mapStateToProps = (state) => {
   return {
     loading: selectLoading(state),
     providers: selectProviders(state),
-    country_code: selectCountryCode(state),
+    country_code: selectCountry(state),
   };
 };
 

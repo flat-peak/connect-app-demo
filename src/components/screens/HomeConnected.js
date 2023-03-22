@@ -1,5 +1,6 @@
 import { connect } from "react-redux";
 import {
+  selectAreaEnabled,
   selectOffPeakCharge,
   setOffPeakCharge,
 } from "../../store/reducers/contextReducer";
@@ -7,6 +8,8 @@ import Home from "./Home";
 import {
   initDefaultSession,
   initDeveloperSession,
+  selectCountry,
+  setCountry,
 } from "../../store/reducers/inputDataReducer";
 import {
   dismissError,
@@ -19,6 +22,8 @@ const mapStateToProps = (state) => {
     offPeakCharge: selectOffPeakCharge(state),
     loading: selectLoading(state),
     error: selectError(state),
+    country: selectCountry(state),
+    area: selectAreaEnabled(state),
   };
 };
 
@@ -28,6 +33,7 @@ const mapDispatchToProps = (dispatch) => {
     initDeveloperSession: (value) => dispatch(initDeveloperSession(value)),
     dismissError: () => dispatch(dismissError()),
     setOffPeakCharge: (value) => dispatch(setOffPeakCharge(value)),
+    setCountry: (value) => dispatch(setCountry(value)),
   };
 };
 

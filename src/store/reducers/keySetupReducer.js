@@ -31,5 +31,10 @@ export const checkApiCredentials = (payload) => {
 
 export const selectApiUrl = (state) => state.keySetup.apiUrl;
 export const selectPublishableKey = (state) => state.keySetup.publishableKey;
+export const selectDashboardUrl = (state) =>
+  state.keySetup.apiUrl.replace(
+    "api.flatpeak.energy",
+    "dashboard.flatpeak.energy"
+  );
 
 export default keySetupSlice.reducer;

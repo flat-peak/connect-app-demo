@@ -11,6 +11,9 @@ import ErrorDialog from "../dialogs/error-dialog";
 import LoaderDialog from "../dialogs/loader-dialog";
 import { Switch } from "react-native";
 import Main from "../layout/Main";
+import Dropdown from "../form-controls/Dropdown";
+import { COUNTRY_CODES } from "../../data/tariff-constants";
+import IntroBlock from "../common/IntroBlock";
 
 export default function Home({
   loading,
@@ -20,6 +23,9 @@ export default function Home({
   initDefaultSession,
   initDeveloperSession,
   setOffPeakCharge,
+  country,
+  area,
+  setCountry,
 }) {
   return (
     <ThemeProvider theme={theme}>
@@ -35,6 +41,17 @@ export default function Home({
             onDismiss={dismissError}
           />
           <Main>
+            <Field label={"Test Country"}>
+              <Dropdown
+                value={country}
+                options={area.map((entry) => entry.country_code)}
+                labelExtractor={(key) => COUNTRY_CODES[key]}
+                onChangeText={(text) => {
+                  setCountry(text);
+                }}
+              />
+            </Field>
+            <IntroBlock />
             <Field
               label={"Connect my electricity provider"}
               description={"Will open end-customer Connect experience"}

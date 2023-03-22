@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Actions } from "../sagas/actions";
-import { InputScenarios } from "../../data/input-scenarios";
 
 export const inputDataSlice = createSlice({
   name: "inputData",
@@ -10,6 +9,7 @@ export const inputDataSlice = createSlice({
     productId: "",
     deviceId: "",
     timezone: "",
+    country: "",
     postalAddress: {
       address_line1: "",
       address_line2: "",
@@ -38,6 +38,10 @@ export const inputDataSlice = createSlice({
     setAddress: (state, action) => {
       state.postalAddress = action.payload;
     },
+    setCountry: (state, action) => {
+      console.log("setCountry", action.payload);
+      state.country = action.payload;
+    },
   },
 });
 
@@ -48,8 +52,13 @@ export const initInputParams = (payload) => {
   };
 };
 
-export const { setInputData, setInputParam, setAddressField, setAddress } =
-  inputDataSlice.actions;
+export const {
+  setInputData,
+  setInputParam,
+  setAddressField,
+  setAddress,
+  setCountry,
+} = inputDataSlice.actions;
 
 export const initDefaultSession = (payload) => {
   return {
@@ -72,6 +81,7 @@ export const selectCustomerId = (state) => state.inputData.customerId;
 export const selectDeviceId = (state) => state.inputData.deviceId;
 export const selectTimezone = (state) => state.inputData.timezone;
 export const selectAddress = (state) => state.inputData.postalAddress;
+export const selectCountry = (state) => state.inputData.country;
 export const selectCountryCode = (state) =>
   String(state.inputData.postalAddress.country_code);
 

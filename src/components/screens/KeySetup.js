@@ -73,7 +73,6 @@ export default function KeySetup({
             <Field
               label={"Publishable API key"}
               description={"Publishable key from FlatPeak Dashboard"}
-              description={"Get your key from FlatPeak Dashboard"}
             >
               <InputValue
                 value={publishableKey}
