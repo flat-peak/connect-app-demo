@@ -1,17 +1,12 @@
-import { call, takeLatest } from "redux-saga/effects";
+import { takeLatest } from "redux-saga/effects";
 import { Actions } from "./actions";
-import {
-  completeWithRedirect,
-  initProgress,
-  stopIfError,
-} from "./progressIndicatorSaga";
-import { handleGetAccount } from "./api-handlers";
+import { completeWithRedirect, initProgress } from "./progressIndicatorSaga";
+import { fetchAreaEnabled } from "./initDefaultSessionSaga";
 
 function* checkApiCredentials() {
   yield initProgress();
-  /** @type {Account} */
-  let customer = yield call(handleGetAccount);
-  if (yield stopIfError(customer)) {
+  const areaEnabled = yield fetchAreaEnabled();
+  if (!areaEnabled) {
     return;
   }
   yield completeWithRedirect("Home");

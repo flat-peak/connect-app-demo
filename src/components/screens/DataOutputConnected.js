@@ -12,7 +12,7 @@ import {
   setOffPeakCharge,
 } from "../../store/reducers/contextReducer";
 import { initDeveloperSession } from "../../store/reducers/inputDataReducer";
-
+import { selectDashboardUrl } from "../../store/reducers/keySetupReducer";
 const mapStateToProps = (state) => {
   return {
     productId: selectProductId(state),
@@ -21,6 +21,7 @@ const mapStateToProps = (state) => {
     deviceId: selectDeviceId(state),
     confirmed: selectConfirmed(state),
     developerMode: selectDeveloperMode(state),
+    dashboardUrl: selectDashboardUrl(state),
   };
 };
 

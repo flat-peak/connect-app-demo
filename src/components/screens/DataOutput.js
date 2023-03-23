@@ -11,7 +11,7 @@ import styled from "styled-components/native";
 import Main from "../layout/Main";
 import Footer from "../layout/Footer";
 import Field from "../common/Field";
-import { Switch } from "react-native";
+import { Linking, Switch } from "react-native";
 import IntroBlock from "../common/IntroBlock";
 
 const InputRow = styled.View`
@@ -37,6 +37,7 @@ export default function DataOutput({
   tariffId,
   deviceId,
   customerId,
+  dashboardUrl,
   developerMode,
   setOffPeakCharge,
   initDeveloperSession,
@@ -68,7 +69,6 @@ export default function DataOutput({
 
             {developerMode && (
               <>
-
                 <InputRow>
                   <Text variant="ui-control">Customer Id</Text>
                   <InputValue value={customerId} />
@@ -92,6 +92,17 @@ export default function DataOutput({
             )}
           </Main>
           <Footer>
+            <Button
+              variant="executive"
+              title={"View Rates"}
+              onPress={() => {
+                Linking.canOpenURL(dashboardUrl).then((supported) => {
+                  if (supported) {
+                    Linking.openURL(dashboardUrl);
+                  }
+                });
+              }}
+            />
             <Button
               title={"Restart Developer Tools"}
               onPress={() => initDeveloperSession()}
