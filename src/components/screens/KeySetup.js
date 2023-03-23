@@ -44,7 +44,7 @@ export default function KeySetup({
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView>
-        <Header title="PROVIDE YOUR FLATPEAK API KEY" useLogo={true} />
+        <Header title="Provide FlatPeak API Key" useLogo={true} />
         <Divider />
         <Wrapper>
           <LoaderDialog visible={loading} />
@@ -57,7 +57,7 @@ export default function KeySetup({
           <Main style={{ paddingTop: 20 }}>
             <Field
               isFirst={true}
-              label={"FlatPeak API URL"}
+              label={"API Url"}
               description={"Leave default to https://api.flatpeak.energy"}
             >
               <InputValue

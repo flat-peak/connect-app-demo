@@ -9,8 +9,8 @@ const IntroMessage = styled.View`
 `;
 
 export default function IntroBlock({}) {
-  const text = `This example react-native app was created by FlatPeak to enable developers and product owners to evaluate consumer experience they can build with FlatPeak.
- This app is open-sourced and is available from GitHub - https://github.com/flat-peak.`;
+  const text = `This app was created by FlatPeak to enable you to quickly try the experience you can build for your customers with FlatPeak Connect.
+ Written in react-native, it's free and includes libraries that will enable you to rapidly implement FlatPeak Connect. Clone from GitHub https://github.com/flat-peak/app-react-native.`;
   return (
     <IntroMessage>
       <Text variant={"intro"}>
