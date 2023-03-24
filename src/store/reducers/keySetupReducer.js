@@ -5,8 +5,8 @@ import { Actions } from "../sagas/actions";
 export const keySetupSlice = createSlice({
   name: "keySetup",
   initialState: {
-    apiUrl: "https://api.flatpeak.energy",
-    publishableKey: "",
+    apiUrl: service._host,
+    publishableKey: service._publishableKey,
   },
   reducers: {
     setApiUrl: (state, action) => {
