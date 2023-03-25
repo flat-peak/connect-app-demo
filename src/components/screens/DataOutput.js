@@ -96,7 +96,7 @@ export default function DataOutput({
               variant="executive"
               title={"View Rates"}
               onPress={() => {
-                const linkToRates = `${dashboardUrl}/${deviceId}/rates`;
+                const linkToRates = `${dashboardUrl}/devices/${deviceId}/rates`;
                 Linking.canOpenURL(linkToRates).then((supported) => {
                   if (supported) {
                     Linking.openURL(linkToRates);
