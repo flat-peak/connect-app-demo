@@ -96,9 +96,10 @@ export default function DataOutput({
               variant="executive"
               title={"View Rates"}
               onPress={() => {
-                Linking.canOpenURL(dashboardUrl).then((supported) => {
+                const linkToRates = `${dashboardUrl}/devices/${deviceId}/rates`;
+                Linking.canOpenURL(linkToRates).then((supported) => {
                   if (supported) {
-                    Linking.openURL(dashboardUrl);
+                    Linking.openURL(linkToRates);
                   }
                 });
               }}
