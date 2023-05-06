@@ -15,6 +15,7 @@ import { generateMacAddress } from "../../global/common";
 import { completeWithRedirect, stopIfError } from "./progressIndicatorSaga";
 import { handleGetAccount } from "./api-handlers";
 import { InputScenarios } from "../../data/input-scenarios";
+import { COUNTRY_CODES } from "../../data/tariff-constants";
 
 export function* fetchAreaEnabled() {
   /** @type {account} */
@@ -22,9 +23,19 @@ export function* fetchAreaEnabled() {
   if (yield stopIfError(account)) {
     return null;
   }
-  const areaEnabled = account?.area_enabled || [];
+  const areaEnabled =
+    Array.isArray(account?.area_enabled) && account.area_enabled.length
+      ? account.area_enabled
+      : Object.keys(COUNTRY_CODES).map((country_code) => ({ country_code }));
+
   yield put(setAreaEnabled(areaEnabled));
-  yield put(setCountry(areaEnabled[0]?.country_code));
+  yield put(
+    setCountry(
+      areaEnabled.some((area) => area.country_code === "GB")
+        ? "GB"
+        : areaEnabled[0].country_code
+    )
+  );
   return areaEnabled;
 }
 

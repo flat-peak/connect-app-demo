@@ -39,7 +39,6 @@ export const inputDataSlice = createSlice({
       state.postalAddress = action.payload;
     },
     setCountry: (state, action) => {
-      console.log("setCountry", action.payload);
       state.country = action.payload;
     },
   },
