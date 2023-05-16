@@ -1,11 +1,7 @@
 import { call, put, takeLatest, delay } from "redux-saga/effects";
 import { Actions } from "./actions";
 import { initSession } from "./initSessionSaga";
-import {
-  setCountry,
-  setInputData,
-  setInputParam,
-} from "../reducers/inputDataReducer";
+import { setCountry, setInputParam } from "../reducers/inputDataReducer";
 import {
   setAreaEnabled,
   setDeveloperMode,
@@ -14,7 +10,7 @@ import {
 import { generateMacAddress } from "../../global/common";
 import { completeWithRedirect, stopIfError } from "./progressIndicatorSaga";
 import { handleGetAccount } from "./api-handlers";
-import { InputScenarios } from "../../data/input-scenarios";
+import { DemoPostalAddress } from "../../data/input-scenarios";
 import { COUNTRY_CODES } from "../../data/tariff-constants";
 
 export function* fetchAreaEnabled() {
@@ -42,7 +38,7 @@ export function* fetchAreaEnabled() {
 function* initDeveloperSession() {
   yield put(setDeveloperMode(true));
   yield put(setOffPeakCharge(true));
-  yield put(setInputData(InputScenarios.BLANK));
+  yield put(setInputParam({ key: "postalAddress", value: DemoPostalAddress }));
   yield completeWithRedirect("DataInput");
   yield delay(400);
   yield put(setOffPeakCharge(false));
@@ -51,7 +47,7 @@ function* initDeveloperSession() {
 function* initDefaultSession() {
   yield put(setOffPeakCharge(true));
   yield put(setDeveloperMode(false));
-  yield put(setInputData(InputScenarios.BLANK));
+  yield put(setInputParam({ key: "postalAddress", value: DemoPostalAddress }));
   yield put(setInputParam({ key: "macAddress", value: generateMacAddress() }));
   yield initSession("ProviderSelection");
   yield delay(400);

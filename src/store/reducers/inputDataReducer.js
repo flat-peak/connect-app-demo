@@ -41,6 +41,9 @@ export const inputDataSlice = createSlice({
     setCountry: (state, action) => {
       state.country = action.payload;
     },
+    setTimezone: (state, action) => {
+      state.timezone = action.payload;
+    },
   },
 });
 
@@ -57,6 +60,7 @@ export const {
   setAddressField,
   setAddress,
   setCountry,
+  setTimezone,
 } = inputDataSlice.actions;
 
 export const initDefaultSession = (payload) => {
