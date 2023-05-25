@@ -1,39 +1,11 @@
-import { call, put, takeLatest, delay } from "redux-saga/effects";
+import { put, takeLatest, delay } from "redux-saga/effects";
 import { Actions } from "./actions";
 import { initSession } from "./initSessionSaga";
-import { setCountry, setInputParam } from "../reducers/inputDataReducer";
-import {
-  setAreaEnabled,
-  setDeveloperMode,
-  setOffPeakCharge,
-} from "../reducers/contextReducer";
+import { setInputParam } from "../reducers/inputDataReducer";
+import { setDeveloperMode, setOffPeakCharge } from "../reducers/contextReducer";
 import { generateMacAddress } from "../../global/common";
-import { completeWithRedirect, stopIfError } from "./progressIndicatorSaga";
-import { handleGetAccount } from "./api-handlers";
+import { completeWithRedirect } from "./progressIndicatorSaga";
 import { DemoPostalAddress } from "../../data/input-scenarios";
-import { COUNTRY_CODES } from "../../data/tariff-constants";
-
-export function* fetchAreaEnabled() {
-  /** @type {account} */
-  let account = yield call(handleGetAccount);
-  if (yield stopIfError(account)) {
-    return null;
-  }
-  const areaEnabled =
-    Array.isArray(account?.area_enabled) && account.area_enabled.length
-      ? account.area_enabled
-      : Object.keys(COUNTRY_CODES).map((country_code) => ({ country_code }));
-
-  yield put(setAreaEnabled(areaEnabled));
-  yield put(
-    setCountry(
-      areaEnabled.some((area) => area.country_code === "GB")
-        ? "GB"
-        : areaEnabled[0].country_code
-    )
-  );
-  return areaEnabled;
-}
 
 function* initDeveloperSession() {
   yield put(setDeveloperMode(true));

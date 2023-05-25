@@ -15,7 +15,6 @@ import LoaderDialog from "../dialogs/loader-dialog";
 import ErrorDialog from "../dialogs/error-dialog";
 import IntroBlock from "../common/IntroBlock";
 import {
-  checkApiCredentials,
   selectApiUrl,
   selectPublishableKey,
   setApiUrl,
@@ -27,6 +26,7 @@ import {
   selectLoading,
 } from "../../store/reducers/progressIndicatorReducer";
 import { useDispatch, useSelector } from "react-redux";
+import { runContextInitFlow } from "../../store/reducers/flows";
 
 const InputValue = styled(TextInput).attrs(({ refs, refIndex }) => {
   return {
@@ -42,7 +42,7 @@ const InputValue = styled(TextInput).attrs(({ refs, refIndex }) => {
   };
 })``;
 
-export default function KeySetup() {
+export default function KeySetup({ navigation }) {
   const apiUrl = useSelector(selectApiUrl);
   const publishableKey = useSelector(selectPublishableKey);
   const loading = useSelector(selectLoading);
@@ -99,9 +99,15 @@ export default function KeySetup() {
               title={"Next"}
               variant="executive"
               disabled={!publishableKey.trim() || !apiUrl.trim() || loading}
-              onPress={() =>
-                dispatch(checkApiCredentials({ publishableKey, apiUrl }))
-              }
+              onPress={() => {
+                dispatch(runContextInitFlow({ publishableKey, apiUrl })).then(
+                  (resultAction) => {
+                    if (runContextInitFlow.fulfilled.match(resultAction)) {
+                      navigation.push("Home");
+                    }
+                  }
+                );
+              }}
             />
           </Footer>
         </Wrapper>

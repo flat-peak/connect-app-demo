@@ -34,3 +34,10 @@ export const selectError = (state) => state.progress.error;
 export const selectLoading = (state) => state.progress.loading;
 
 export default progressSlice.reducer;
+
+export const displayError = (error) =>
+  setError({
+    visible: true,
+    title: error.type === "api_error" ? "API error" : error.type,
+    message: error.message,
+  });

@@ -4,7 +4,6 @@ import saveTariffSaga from "./saveTariffSaga";
 import initSessionSaga from "./initSessionSaga";
 import initDefaultSessionSaga from "./initDefaultSessionSaga";
 import connectTariffSaga from "./connectTariffSaga";
-import checkApiCredentialsSaga from "./checkApiCredentialsSaga";
 
 export default function* rootSaga() {
   const sagas = [
@@ -13,7 +12,6 @@ export default function* rootSaga() {
     providerSelectionSaga,
     saveTariffSaga,
     connectTariffSaga,
-    checkApiCredentialsSaga,
   ];
   const retrySagas = yield sagas.map((saga) => {
     return spawn(function* () {

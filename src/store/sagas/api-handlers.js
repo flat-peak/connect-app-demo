@@ -107,10 +107,3 @@ export async function handleGetProduct({ productId }) {
 export async function handleCreateDevice({ payload }) {
   return await service.createDevice(payload);
 }
-
-/**
- * @return {Promise<{}>}
- */
-export async function handleGetLocation() {
-  return fetch("https://ipapi.co/json/").then((r) => r.json());
-}

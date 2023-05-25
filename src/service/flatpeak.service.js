@@ -8,5 +8,13 @@ const service = new FlatpeakService(
     console.log("[SERVICE]: " + message);
   }
 );
+const isFailedResult = (object) => object?.type === "error";
 
-export { service };
+/**
+ * @return {Promise<{}>}
+ */
+const getLocation = () => {
+  return fetch("https://ipapi.co/json/").then((r) => r.json());
+};
+
+export { service, isFailedResult, getLocation };

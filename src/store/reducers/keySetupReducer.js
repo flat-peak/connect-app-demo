@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { service } from "../../service/flatpeak.service";
-import { Actions } from "../sagas/actions";
 
 export const keySetupSlice = createSlice({
   name: "keySetup",
@@ -21,13 +20,6 @@ export const keySetupSlice = createSlice({
 });
 
 export const { setApiUrl, setPublishableKey } = keySetupSlice.actions;
-
-export const checkApiCredentials = (payload) => {
-  return {
-    type: Actions.checkApiCredentials,
-    payload: payload,
-  };
-};
 
 export const selectApiUrl = (state) => state.keySetup.apiUrl;
 export const selectPublishableKey = (state) => state.keySetup.publishableKey;

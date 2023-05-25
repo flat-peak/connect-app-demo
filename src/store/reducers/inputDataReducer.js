@@ -1,5 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Actions } from "../sagas/actions";
+import { getLocation } from "../../service/flatpeak.service";
+
+export const defineUserLocation = createAsyncThunk(
+  "inputData/defineUserLocation",
+  () => getLocation()
+);
 
 export const inputDataSlice = createSlice({
   name: "inputData",
@@ -44,6 +50,13 @@ export const inputDataSlice = createSlice({
     setTimezone: (state, action) => {
       state.timezone = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(defineUserLocation.fulfilled, (state, action) => {
+      const { country, timezone } = action.payload;
+      state.country = country;
+      state.timezone = timezone;
+    });
   },
 });
 
