@@ -31,35 +31,31 @@ import { useEffect, useState } from "react";
 import LoaderDialog from "../dialogs/loader-dialog";
 import TabSwitcher from "../form-controls/TabSwitcher";
 import { isConnectableProvider } from "../../global/common";
-
-/**
- * @param navigation
- * @param {Tariff} plan
- * @param {string} title
- * @param saveManualTariff
- * @param saveConnectedTariff
- * @param {Provider} provider
- * @param {boolean} saved
- * @param findWeekdaySchedule
- * @param error
- * @param dismissError
- * @param {boolean} loading
- * @return {JSX.Element}
- * @constructor
- */
-export default function Summary({
-  navigation,
-  plan,
-  title,
-  saveManualTariff,
-  saveConnectedTariff,
-  provider,
-  saved,
+import {
   findWeekdaySchedule,
-  error,
+  saveConnectedTariff,
+  saveManualTariff,
+  selectDisplayName,
+  selectPlan,
+  selectProvider,
+  selectSaved,
+} from "../../store/reducers/tariffReducer";
+import {
   dismissError,
-  loading,
-}) {
+  selectError,
+  selectLoading,
+} from "../../store/reducers/progressIndicatorReducer";
+import { useDispatch, useSelector } from "react-redux";
+
+export default function Summary({ navigation }) {
+  const plan = useSelector(selectPlan);
+  const title = useSelector(selectDisplayName);
+  const saved = useSelector(selectSaved);
+  const provider = useSelector(selectProvider);
+  const error = useSelector(selectError);
+  const loading = useSelector(selectLoading);
+  const dispatch = useDispatch();
+
   const sides = [
     { title: "Import", id: TARIFF_SIDE.IMPORT },
     { title: "Export", id: TARIFF_SIDE.EXPORT },
@@ -73,10 +69,7 @@ export default function Summary({
     }
   });
 
-  /** @type {TariffSchedule} */
   const importSchedule = findWeekdaySchedule(plan[TARIFF_SIDE.IMPORT]);
-
-  /** @type {TariffSchedule} */
   const exportSchedule = findWeekdaySchedule(plan[TARIFF_SIDE.EXPORT]);
 
   const hasExportOption = exportSchedule && exportSchedule.data?.length;
@@ -105,7 +98,7 @@ export default function Summary({
             isVisible={error.visible}
             title={error.title}
             message={error.message}
-            onDismiss={dismissError}
+            onDismiss={() => dispatch(dismissError())}
           />
           <Section>
             <SectionHeader isFirst={true}>
@@ -132,7 +125,7 @@ export default function Summary({
 
           <Divider style={{ marginBottom: hasExportOption ? 22 : 44 }} />
 
-          {displayedSeasons.map(({ entry, side }, index) => {
+          {displayedSeasons.map(({ entry, side: seasonSide }, index) => {
             let monthFrom = entry.months[0];
             let monthTo = entry.months[entry.months.length - 1];
             if (entry.months[0] === TARIFF_ALL_MONTHS) {
@@ -141,7 +134,7 @@ export default function Summary({
             }
 
             return (
-              <View key={side + "_" + index.toString()}>
+              <View key={seasonSide + "_" + index.toString()}>
                 {entry.days_and_hours.map((daysData, dayIndex) => {
                   let dayFrom = daysData.days[0];
                   let dayTo = daysData.days[daysData.days.length - 1];
@@ -178,7 +171,7 @@ export default function Summary({
                               label={"Edit"}
                               onPress={() =>
                                 navigation.navigate("Prices", {
-                                  side,
+                                  seasonSide,
                                   seasonIndex: index,
                                   daysIndex: dayIndex,
                                 })
@@ -212,9 +205,9 @@ export default function Summary({
               disabled={loading}
               onPress={() => {
                 if (isConnectableProvider(provider)) {
-                  saveConnectedTariff();
+                  dispatch(saveConnectedTariff());
                 } else {
-                  saveManualTariff();
+                  dispatch(saveManualTariff());
                 }
               }}
             />

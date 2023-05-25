@@ -13,6 +13,19 @@ import Footer from "../layout/Footer";
 import Field from "../common/Field";
 import { Linking, Switch } from "react-native";
 import IntroBlock from "../common/IntroBlock";
+import {
+  selectCustomerId,
+  selectDeviceId,
+  selectProductId,
+  selectTariffId,
+} from "../../store/reducers/outputDataReducer";
+import {
+  selectDeveloperMode,
+  setOffPeakCharge,
+} from "../../store/reducers/contextReducer";
+import { selectDashboardUrl } from "../../store/reducers/keySetupReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { initDeveloperSession } from "../../store/reducers/inputDataReducer";
 
 const InputRow = styled.View`
   margin: 11px 0;
@@ -31,17 +44,14 @@ const InputValue = styled(TextInput).attrs(() => {
   width: 70%;
 `;
 
-export default function DataOutput({
-  navigation,
-  productId,
-  tariffId,
-  deviceId,
-  customerId,
-  dashboardUrl,
-  developerMode,
-  setOffPeakCharge,
-  initDeveloperSession,
-}) {
+export default function DataOutput({ navigation }) {
+  const productId = useSelector(selectProductId);
+  const tariffId = useSelector(selectTariffId);
+  const customerId = useSelector(selectCustomerId);
+  const deviceId = useSelector(selectDeviceId);
+  const developerMode = useSelector(selectDeveloperMode);
+  const dashboardUrl = useSelector(selectDashboardUrl);
+  const dispatch = useDispatch();
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView>
@@ -61,7 +71,7 @@ export default function DataOutput({
                   if (v) {
                     return;
                   }
-                  setOffPeakCharge(false);
+                  dispatch(setOffPeakCharge(false));
                   navigation.popToTop();
                 }}
               />
@@ -106,7 +116,7 @@ export default function DataOutput({
             />
             <Button
               title={"Restart Developer Tools"}
-              onPress={() => initDeveloperSession()}
+              onPress={() => dispatch(initDeveloperSession())}
             />
           </Footer>
         </Wrapper>

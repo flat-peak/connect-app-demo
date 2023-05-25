@@ -21,38 +21,26 @@ import {
   resolveMonthLabelByKey,
   TARIFF_SIDE,
 } from "../../data/tariff-constants";
-
-/**
- *
- * @param navigation
- * @param route
- * @param {Tariff} plan
- * @param setSeasonRange
- * @param addSeasonRange
- * @param removeSeasonRange
- * @param findWeekdaySchedule
- * @return {JSX.Element}
- * @constructor
- */
-export default function Seasons({
-  navigation,
-  route,
-  plan,
-  setSeasonRange,
+import {
   addSeasonRange,
-  removeSeasonRange,
   findWeekdaySchedule,
-}) {
-  const { side } = route.params;
+  removeSeasonRange,
+  selectPlan,
+  setSeasonRange,
+} from "../../store/reducers/tariffReducer";
+import { useDispatch, useSelector } from "react-redux";
 
-  /** @type {TariffSchedule} */
+export default function Seasons({ navigation, route }) {
+  const { side } = route.params;
+  const plan = useSelector(selectPlan);
+  const dispatch = useDispatch();
   const schedule = findWeekdaySchedule(plan[side]);
 
   const removePeriod = (index) => {
-    removeSeasonRange({ side, index });
+    dispatch(removeSeasonRange({ side, index }));
   };
   const addPeriod = () => {
-    addSeasonRange({ side });
+    dispatch(addSeasonRange({ side }));
   };
 
   const [isPricePickerOpen, setMonthPickerOpen] = useState(false);
@@ -79,7 +67,7 @@ export default function Seasons({
       index: schedule.data.indexOf(lastSelectedMonth.current.item),
       type: lastSelectedMonth.current.type,
     };
-    setSeasonRange(payload);
+    dispatch(setSeasonRange(payload));
     hideMonthPicker();
   };
 

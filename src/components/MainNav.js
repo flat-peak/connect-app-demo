@@ -1,21 +1,21 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import NavBar from "./layout/NavBar";
-import ProviderSelectionConnected from "./screens/ProviderSelectionConnected";
-import TariffSetupConnected from "./screens/TariffSetupConnected";
-import SeasonsConnected from "./screens/SeasonsConnected";
-import PricesConnected from "./screens/PricesConnected";
-import SummaryConnected from "./screens/SummaryConnected";
-import AddressEditConnected from "./screens/AddressEditConnected";
-import DataInputConnected from "./screens/DataInputConnected";
-import DataOutputConnected from "./screens/DataOutputConnected";
+import ProviderSelection from "./screens/ProviderSelection";
+import TariffSetup from "./screens/TariffSetup";
+import Seasons from "./screens/Seasons";
+import Prices from "./screens/Prices";
+import Summary from "./screens/Summary";
+import AddressEdit from "./screens/AddressEdit";
+import DataInput from "./screens/DataInput";
+import DataOutput from "./screens/DataOutput";
 import { ThemeProvider } from "styled-components";
 import { theme as secondaryTheme } from "../theme/secondary";
-import TariffStructureConnected from "./screens/TariffStructureConnected";
-import ProviderIntegrationConnected from "./screens/ProviderIntegrationConnected";
-import HomeConnected from "./screens/HomeConnected";
+import TariffStructure from "./screens/TariffStructure";
+import ProviderIntegration from "./screens/ProviderIntegration";
+import Home from "./screens/Home";
 import { setNavigationRef } from "./Navigator";
-import KeySetupConnected from "./screens/KeySetupConnected";
+import KeySetup from "./screens/KeySetup";
 
 const Stack = createStackNavigator();
 
@@ -67,62 +67,58 @@ export default function MainNav() {
       <Stack.Navigator>
         <Stack.Screen
           name={"KeySetup"}
-          component={KeySetupConnected}
+          component={KeySetup}
           options={primaryOptions}
         />
-        <Stack.Screen
-          name={"Home"}
-          component={HomeConnected}
-          options={primaryOptions}
-        />
+        <Stack.Screen name={"Home"} component={Home} options={primaryOptions} />
         <Stack.Screen
           name={"DataInput"}
-          component={DataInputConnected}
+          component={DataInput}
           options={primaryOptions}
         />
         <Stack.Screen
           name={"AddressEdit"}
-          component={AddressEditConnected}
+          component={AddressEdit}
           options={primaryOptions}
         />
         <Stack.Screen
           name={"ProviderSelection"}
-          component={ProviderSelectionConnected}
+          component={ProviderSelection}
           options={{ ...altOptions, ...verticalAnimation }}
         />
         <Stack.Screen
           name={"ProviderIntegration"}
-          component={ProviderIntegrationConnected}
+          component={ProviderIntegration}
           options={{ ...altOptions, ...verticalAnimation }}
         />
         <Stack.Screen
           name={"TariffSetup"}
-          component={TariffSetupConnected}
+          component={TariffSetup}
           options={{ ...altOptions, displayProviderLogo: true }}
         />
         <Stack.Screen
           name={"TariffStructure"}
-          component={TariffStructureConnected}
+          component={TariffStructure}
           options={{ ...altOptions, displayProviderLogo: true }}
         />
         <Stack.Screen
           name={"Seasons"}
-          component={SeasonsConnected}
+          component={Seasons}
           options={{ ...altOptions, displayProviderLogo: true }}
         />
         <Stack.Screen
           name={"Prices"}
-          component={PricesConnected}
+          component={Prices}
           options={{ ...altOptions, displayProviderLogo: true }}
         />
         <Stack.Screen
           name={"Summary"}
-          component={SummaryConnected}
+          component={Summary}
           options={{ ...altOptions, displayProviderLogo: true }}
         />
         <Stack.Screen
           name={"DataOutput"}
-          component={DataOutputConnected}
+          component={DataOutput}
           options={primaryOptions}
         />
       </Stack.Navigator>

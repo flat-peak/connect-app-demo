@@ -14,19 +14,31 @@ import Main from "../layout/Main";
 import Dropdown from "../form-controls/Dropdown";
 import { COUNTRY_CODES } from "../../data/tariff-constants";
 import IntroBlock from "../common/IntroBlock";
-
-export default function Home({
-  loading,
-  error,
+import {
+  selectAreaEnabled,
+  selectOffPeakCharge,
+  setOffPeakCharge,
+} from "../../store/reducers/contextReducer";
+import { selectLoading } from "../../store/reducers/providerSelectionReducer";
+import {
   dismissError,
-  offPeakCharge,
+  selectError,
+} from "../../store/reducers/progressIndicatorReducer";
+import {
   initDefaultSession,
   initDeveloperSession,
-  setOffPeakCharge,
-  country,
-  area,
+  selectCountry,
   setCountry,
-}) {
+} from "../../store/reducers/inputDataReducer";
+import { useDispatch, useSelector } from "react-redux";
+
+export default function Home() {
+  const offPeakCharge = useSelector(selectOffPeakCharge);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
+  const country = useSelector(selectCountry);
+  const area = useSelector(selectAreaEnabled);
+  const dispatch = useDispatch();
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView>
@@ -38,7 +50,7 @@ export default function Home({
             isVisible={error.visible}
             title={error.title}
             message={error.message}
-            onDismiss={dismissError}
+            onDismiss={() => dispatch(dismissError())}
           />
           <Main>
             <Field label={"Test Country"}>
@@ -47,7 +59,7 @@ export default function Home({
                 options={area.map((entry) => entry.country_code)}
                 labelExtractor={(key) => COUNTRY_CODES[key]}
                 onChangeText={(text) => {
-                  setCountry(text);
+                  dispatch(setCountry(text));
                 }}
               />
             </Field>
@@ -58,12 +70,12 @@ export default function Home({
               isRow={true}
             >
               <Switch
-                value={offPeakCharge}
+                value={Boolean(offPeakCharge)}
                 onValueChange={(v) => {
                   if (!v) {
-                    setOffPeakCharge(v);
+                    dispatch(setOffPeakCharge(v));
                   } else {
-                    initDefaultSession();
+                    dispatch(initDefaultSession());
                   }
                 }}
               />
@@ -73,7 +85,7 @@ export default function Home({
             <Button
               title={"Open Developer Tools"}
               disabled={loading}
-              onPress={() => initDeveloperSession()}
+              onPress={() => dispatch(initDeveloperSession())}
             />
           </Footer>
         </Wrapper>
