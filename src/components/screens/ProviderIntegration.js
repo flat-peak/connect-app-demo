@@ -6,11 +6,8 @@ import WebView from "react-native-webview";
 import LoaderDialog from "../dialogs/loader-dialog";
 import ErrorDialog from "../dialogs/error-dialog";
 import { selectPublishableKey } from "../../store/reducers/keySetupReducer";
-import { selectProvider } from "../../store/reducers/tariffReducer";
-import {
-  selectCustomerId,
-  selectProductId,
-} from "../../store/reducers/inputDataReducer";
+import { connectTariff, selectProvider } from "../../store/reducers/tariffReducer";
+import { selectCustomerId, selectProductId } from "../../store/reducers/inputDataReducer";
 import {
   dismissError,
   selectError,
@@ -19,7 +16,6 @@ import {
   setLoading,
 } from "../../store/reducers/progressIndicatorReducer";
 import { useDispatch, useSelector } from "react-redux";
-import { connectTariff } from "../../store/reducers/providerSelectionReducer";
 
 export default function ProviderIntegration({ navigation }) {
   const publishableKey = useSelector(selectPublishableKey);
@@ -30,22 +26,16 @@ export default function ProviderIntegration({ navigation }) {
   const loading = useSelector(selectLoading);
   const dispatch = useDispatch();
   const uri = provider.integration_settings.onboard_url;
-  const runFirst = `
-      document.body.style.setProperty("--fp-theme-background", "${theme.colors.background}");
-      window.FLATPEAK_PUBLISHABLE_KEY = "${publishableKey}";
-      window.FLATPEAK_PRODUCT_ID = "${productId}";
-      window.FLATPEAK_CUSTOMER_ID = "${customerId}";
-      window.respondToApp = (r) => window.ReactNativeWebView.postMessage(
-        typeof r === 'string' ? r : JSON.stringify(r)
-      );
-      true;
-    `;
 
   const onResponse = (message) => {
     try {
       const response = JSON.parse(message);
       if (response.hasOwnProperty("tariff_id")) {
-        dispatch(connectTariff(response));
+        dispatch(connectTariff(response)).then((actionResult) => {
+          if (connectTariff.fulfilled.match(actionResult)) {
+            navigation.push("Summary");
+          }
+        });
       } else {
         if (response.object === "error") {
           dispatch(
@@ -118,7 +108,13 @@ export default function ProviderIntegration({ navigation }) {
                 onResponse(event.nativeEvent.data);
               }
             }}
-            injectedJavaScript={runFirst}
+            injectedJavaScript={`
+              document.body.style.setProperty("--fp-theme-background", "${theme.colors.background}");
+              window.respondToApp = (r) => window.ReactNativeWebView.postMessage(
+                typeof r === 'string' ? r : JSON.stringify(r)
+              );
+              true;
+            `}
           />
         </View>
       </ScreenSafeView>

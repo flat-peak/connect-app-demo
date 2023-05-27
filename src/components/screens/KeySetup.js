@@ -20,13 +20,9 @@ import {
   setApiUrl,
   setPublishableKey,
 } from "../../store/reducers/keySetupReducer";
-import {
-  dismissError,
-  selectError,
-  selectLoading,
-} from "../../store/reducers/progressIndicatorReducer";
+import { dismissError, selectError, selectLoading } from "../../store/reducers/progressIndicatorReducer";
 import { useDispatch, useSelector } from "react-redux";
-import { runContextInitFlow } from "../../store/reducers/flows";
+import { initContext } from "../../store/reducers/contextReducer";
 
 const InputValue = styled(TextInput).attrs(({ refs, refIndex }) => {
   return {
@@ -100,13 +96,11 @@ export default function KeySetup({ navigation }) {
               variant="executive"
               disabled={!publishableKey.trim() || !apiUrl.trim() || loading}
               onPress={() => {
-                dispatch(runContextInitFlow({ publishableKey, apiUrl })).then(
-                  (resultAction) => {
-                    if (runContextInitFlow.fulfilled.match(resultAction)) {
-                      navigation.push("Home");
-                    }
+                dispatch(initContext()).then((resultAction) => {
+                  if (initContext.fulfilled.match(resultAction)) {
+                    navigation.push("Home");
                   }
-                );
+                });
               }}
             />
           </Footer>

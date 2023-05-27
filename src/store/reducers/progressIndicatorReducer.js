@@ -41,3 +41,18 @@ export const displayError = (error) =>
     title: error.type === "api_error" ? "API error" : error.type,
     message: error.message,
   });
+
+export const withProgressMiddleware = (handler) => {
+  return async (args, thunkAPI) => {
+    try {
+      await thunkAPI.dispatch(setLoading(true));
+      const result = await handler(args, thunkAPI);
+      await thunkAPI.dispatch(setLoading(false));
+      return result;
+    } catch (error) {
+      await thunkAPI.dispatch(setLoading(false));
+      await thunkAPI.dispatch(displayError(error));
+      throw error;
+    }
+  };
+};

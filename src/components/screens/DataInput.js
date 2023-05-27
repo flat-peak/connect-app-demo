@@ -5,7 +5,7 @@ import { ScreenSafeView } from "../layout/View";
 import { ThemeProvider } from "styled-components";
 import Button from "../form-controls/Button";
 import Wrapper from "../layout/Wrapper";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import Footer from "../layout/Footer";
 import styled from "styled-components/native";
 import { TextInput } from "../form-controls/TextInput";
@@ -15,7 +15,7 @@ import ErrorDialog from "../dialogs/error-dialog";
 import Dropdown from "../form-controls/Dropdown";
 import { TIMEZONES } from "../../data/tariff-constants";
 import LoaderDialog from "../dialogs/loader-dialog";
-import { generateMacAddress } from "../../global/common";
+
 import {
   initInputParams,
   selectCustomerId,
@@ -25,11 +25,7 @@ import {
   selectTimezone,
   setInputParam,
 } from "../../store/reducers/inputDataReducer";
-import {
-  dismissError,
-  selectError,
-  selectLoading,
-} from "../../store/reducers/progressIndicatorReducer";
+import { dismissError, selectError, selectLoading } from "../../store/reducers/progressIndicatorReducer";
 import { useDispatch, useSelector } from "react-redux";
 
 const InputValue = styled(TextInput).attrs(({ refs, refIndex }) => {
@@ -47,13 +43,6 @@ const InputValue = styled(TextInput).attrs(({ refs, refIndex }) => {
 })``;
 
 export default function DataInput({ navigation }) {
-  useEffect(() => {
-    if (!macAddress) {
-      dispatch(
-        setInputParam({ key: "macAddress", value: generateMacAddress() })
-      );
-    }
-  });
   const macAddress = useSelector(selectMacAddress);
   const customerId = useSelector(selectCustomerId);
   const productId = useSelector(selectProductId);
@@ -159,7 +148,15 @@ export default function DataInput({ navigation }) {
               title={"Next"}
               variant="executive"
               disabled={loading}
-              onPress={() => dispatch(initInputParams())}
+              onPress={() => {
+                dispatch(initInputParams()).then((actionResult) => {
+                  if (initInputParams.fulfilled.match(actionResult)) {
+                    navigation.push(
+                      actionResult.payload.completed ? "Summary" : "AddressEdit"
+                    );
+                  }
+                });
+              }}
             />
             <Button
               title={"Start Over"}

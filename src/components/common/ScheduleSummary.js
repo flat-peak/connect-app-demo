@@ -36,7 +36,9 @@ export default function ScheduleSummary({ peaks }) {
           <PriceMarker color={getPeakColor(item.type)} />
           <View>
             <PrimaryText>{getPeakLabel(item.type)}</PrimaryText>
-            <PrimaryText>£{(item.price || 0).toFixed(2)} / kWh</PrimaryText>
+            <PrimaryText>
+              £{item.price ? Number(item.price).toFixed(2) : "0.00"} / kWh
+            </PrimaryText>
           </View>
         </GraphTableCol>
         <View>

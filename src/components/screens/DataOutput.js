@@ -19,13 +19,9 @@ import {
   selectProductId,
   selectTariffId,
 } from "../../store/reducers/outputDataReducer";
-import {
-  selectDeveloperMode,
-  setOffPeakCharge,
-} from "../../store/reducers/contextReducer";
+import { selectDeveloperMode, setOffPeakCharge, startDeveloperFlow } from "../../store/reducers/contextReducer";
 import { selectDashboardUrl } from "../../store/reducers/keySetupReducer";
 import { useDispatch, useSelector } from "react-redux";
-import { initDeveloperSession } from "../../store/reducers/inputDataReducer";
 
 const InputRow = styled.View`
   margin: 11px 0;
@@ -116,7 +112,13 @@ export default function DataOutput({ navigation }) {
             />
             <Button
               title={"Restart Developer Tools"}
-              onPress={() => dispatch(initDeveloperSession())}
+              onPress={() => {
+                dispatch(startDeveloperFlow()).then((resultAction) => {
+                  if (startDeveloperFlow.fulfilled.match(resultAction)) {
+                    navigation.push("DataInput");
+                  }
+                });
+              }}
             />
           </Footer>
         </Wrapper>

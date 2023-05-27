@@ -18,27 +18,22 @@ import {
   selectAreaEnabled,
   selectOffPeakCharge,
   setOffPeakCharge,
+  startDeveloperFlow,
+  startSimpleFlow,
 } from "../../store/reducers/contextReducer";
 import { selectLoading } from "../../store/reducers/providerSelectionReducer";
-import {
-  dismissError,
-  selectError,
-} from "../../store/reducers/progressIndicatorReducer";
-import {
-  initDefaultSession,
-  initDeveloperSession,
-  selectCountry,
-  setCountry,
-} from "../../store/reducers/inputDataReducer";
+import { dismissError, selectError } from "../../store/reducers/progressIndicatorReducer";
+import { selectCountry, setCountry } from "../../store/reducers/inputDataReducer";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function Home() {
+export default function Home({ navigation }) {
   const offPeakCharge = useSelector(selectOffPeakCharge);
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
   const country = useSelector(selectCountry);
   const area = useSelector(selectAreaEnabled);
   const dispatch = useDispatch();
+
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView>
@@ -71,11 +66,16 @@ export default function Home() {
             >
               <Switch
                 value={Boolean(offPeakCharge)}
-                onValueChange={(v) => {
-                  if (!v) {
-                    dispatch(setOffPeakCharge(v));
-                  } else {
-                    dispatch(initDefaultSession());
+                onValueChange={(enabled) => {
+                  dispatch(setOffPeakCharge(enabled));
+                  if (enabled) {
+                    dispatch(setOffPeakCharge(true));
+                    dispatch(startSimpleFlow()).then((resultAction) => {
+                      if (startSimpleFlow.fulfilled.match(resultAction)) {
+                        navigation.push("ProviderSelection");
+                      }
+                      setTimeout(() => dispatch(setOffPeakCharge(false)), 400);
+                    });
                   }
                 }}
               />
@@ -85,7 +85,13 @@ export default function Home() {
             <Button
               title={"Open Developer Tools"}
               disabled={loading}
-              onPress={() => dispatch(initDeveloperSession())}
+              onPress={() => {
+                dispatch(startDeveloperFlow()).then((resultAction) => {
+                  if (startDeveloperFlow.fulfilled.match(resultAction)) {
+                    navigation.push("DataInput");
+                  }
+                });
+              }}
             />
           </Footer>
         </Wrapper>

@@ -1,10 +1,68 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Actions } from "../sagas/actions";
-import { getLocation } from "../../service/flatpeak.service";
+import { defineUserLocation, fetchAreaEnabled, startDeveloperFlow, startSimpleFlow } from "./contextReducer";
+import { DemoPostalAddress } from "../../data/input-scenarios";
+import { withProgressMiddleware } from "./progressIndicatorReducer";
+import { service, throwOnApiError } from "../../service/flatpeak.service";
+import { connectTariff, setTariff } from "./tariffReducer";
 
-export const defineUserLocation = createAsyncThunk(
-  "inputData/defineUserLocation",
-  () => getLocation()
+export const initInputParams = createAsyncThunk(
+  "inputData/initInputParams",
+  withProgressMiddleware(async (args, thunkAPI) => {
+    let {
+      inputData: { macAddress, customerId, productId },
+    } = thunkAPI.getState();
+
+    // create session for existing product_id
+    if (productId) {
+      /** @type {Product} */
+      const product = throwOnApiError(await service.getProduct(productId));
+      if (product.postal_address) {
+        thunkAPI.dispatch(setAddress(product.postal_address));
+      }
+
+      if (!customerId) {
+        customerId = product.customer_id;
+        thunkAPI.dispatch(
+          setInputParam({ key: "customerId", value: customerId })
+        );
+      }
+
+      throwOnApiError(await service.getCustomer(customerId));
+
+      // can this mac be used?
+      throwOnApiError(
+        await service.checkMacAddress({
+          mac: macAddress,
+          customer_id: customerId,
+        })
+      );
+
+      /** @type {Tariff} */
+      const tariff = throwOnApiError(
+        await service.getTariff(product.tariff_settings.tariff_id)
+      );
+      thunkAPI.dispatch(setTariff(tariff));
+
+      return { completed: true };
+    }
+
+    // create session for new product && existing customer_id
+    if (customerId) {
+      throwOnApiError(await service.getCustomer(customerId));
+      // can this mac be used?
+      throwOnApiError(
+        await service.checkMacAddress({
+          mac: macAddress,
+          ...(customerId && { customer_id: customerId }),
+        })
+      );
+      return { completed: false };
+    }
+
+    // From scratch
+    throwOnApiError(await service.checkMacAddress({ mac: macAddress }));
+    return { completed: false };
+  })
 );
 
 export const inputDataSlice = createSlice({
@@ -52,23 +110,38 @@ export const inputDataSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(defineUserLocation.fulfilled, (state, action) => {
-      const { country, timezone } = action.payload;
-      state.country = country;
-      state.timezone = timezone;
-    });
+    builder
+      .addCase(defineUserLocation.fulfilled, (state, action) => {
+        const { country, timezone } = action.payload;
+        state.country = country;
+        state.timezone = timezone;
+      })
+      .addCase(fetchAreaEnabled.fulfilled, (state, action) => {
+        const areaEnabled = action.payload;
+        state.country = areaEnabled.some((area) => area.country_code === "GB")
+          ? "GB"
+          : areaEnabled[0].country_code;
+      })
+      .addCase(startSimpleFlow.pending, (state, action) => {
+        state.postalAddress = { ...DemoPostalAddress };
+      })
+      .addCase(startSimpleFlow.fulfilled, (state, action) => {
+        state.macAddress = action.payload.macAddress;
+      })
+      .addCase(startDeveloperFlow.pending, (state, action) => {
+        state.postalAddress = { ...DemoPostalAddress };
+      })
+      .addCase(startDeveloperFlow.fulfilled, (state, action) => {
+        state.macAddress = action.payload.macAddress;
+      })
+      .addCase(connectTariff.fulfilled, (state, action) => {
+        state.productId = action.payload.product.id;
+        state.customerId = action.payload.customer.id;
+      });
   },
 });
 
-export const initInputParams = (payload) => {
-  return {
-    type: Actions.initSession,
-    payload: payload,
-  };
-};
-
 export const {
-  setInputData,
   setInputParam,
   setAddressField,
   setAddress,
@@ -76,21 +149,6 @@ export const {
   setTimezone,
 } = inputDataSlice.actions;
 
-export const initDefaultSession = (payload) => {
-  return {
-    type: Actions.initDefaultSession,
-    payload: payload,
-  };
-};
-
-export const initDeveloperSession = (payload) => {
-  return {
-    type: Actions.initDeveloperSession,
-    payload: payload,
-  };
-};
-
-export const selectInputData = (state) => state.inputData;
 export const selectMacAddress = (state) => state.inputData.macAddress;
 export const selectProductId = (state) => state.inputData.productId;
 export const selectCustomerId = (state) => state.inputData.customerId;
@@ -98,7 +156,5 @@ export const selectDeviceId = (state) => state.inputData.deviceId;
 export const selectTimezone = (state) => state.inputData.timezone;
 export const selectAddress = (state) => state.inputData.postalAddress;
 export const selectCountry = (state) => state.inputData.country;
-export const selectCountryCode = (state) =>
-  String(state.inputData.postalAddress.country_code);
 
 export default inputDataSlice.reducer;

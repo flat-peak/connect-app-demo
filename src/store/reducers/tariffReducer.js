@@ -1,13 +1,20 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { Actions } from "../sagas/actions";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  TARIFF_TYPE,
   TARIFF_ALL_DAYS,
   TARIFF_ALL_MONTHS,
+  TARIFF_MONTHS,
+  TARIFF_TYPE,
   TARIFF_WEEKDAYS,
   TARIFF_WEEKEND,
-  TARIFF_MONTHS,
 } from "../../data/tariff-constants";
+import { startDeveloperFlow, startSimpleFlow } from "./contextReducer";
+import { withProgressMiddleware } from "./progressIndicatorReducer";
+import {
+  saveConnectedTariffCall,
+  saveManualTariffCall,
+  service,
+  throwOnApiError,
+} from "../../service/flatpeak.service";
 
 /**
  * @param {string} validFrom
@@ -112,6 +119,80 @@ export const blankTariff = () => {
   };
 };
 
+const handleResetTariff = (state, action) => {
+  state.plan = blankTariff();
+  state.provider = undefined;
+  state.saved = false;
+  state.preferences = {
+    time: true,
+    seasons: true,
+  };
+};
+
+export const saveManualTariff = createAsyncThunk(
+  "tariff/saveManual",
+  withProgressMiddleware(async (args, thunkAPI) => {
+    let {
+      /** @type {App.TariffState} */ tariff: {
+        provider: { id: providerId },
+        plan: tariffPlan,
+      },
+      inputData: { macAddress, timezone, postalAddress, productId, customerId },
+    } = thunkAPI.getState();
+
+    return await saveManualTariffCall({
+      macAddress,
+      timezone,
+      postalAddress,
+      productId,
+      customerId,
+      providerId,
+      tariffPlan,
+    });
+  })
+);
+
+export const connectTariff = createAsyncThunk(
+  "tariff/connect",
+  withProgressMiddleware(
+    async ({ customer_id, product_id, tariff_id }, thunkAPI) => {
+      const [customer, product, tariff] = await Promise.all([
+        service.getCustomer(customer_id).then((obj) => throwOnApiError(obj)),
+        service.getProduct(product_id).then((obj) => throwOnApiError(obj)),
+        service.getTariff(tariff_id).then((obj) => throwOnApiError(obj)),
+      ]);
+      return {
+        customer,
+        product,
+        tariff,
+      };
+    }
+  )
+);
+
+export const saveConnectedTariff = createAsyncThunk(
+  "tariff/saveConnected",
+  withProgressMiddleware(async (args, thunkAPI) => {
+    let {
+      /** @type {App.TariffState} */ tariff: {
+        provider: { id: providerId },
+        plan: tariffPlan,
+      },
+      inputData: { macAddress, timezone, postalAddress, productId, customerId },
+    } = thunkAPI.getState();
+
+    return await saveConnectedTariffCall({
+      macAddress,
+      timezone,
+      postalAddress,
+      productId,
+      customerId,
+      providerId,
+      tariffPlan,
+    });
+  })
+);
+
 export const tariffSlice = createSlice({
   name: "tariff",
   initialState: {
@@ -124,15 +205,7 @@ export const tariffSlice = createSlice({
     },
   },
   reducers: {
-    resetTariff: (state, action) => {
-      state.plan = blankTariff();
-      state.provider = undefined;
-      state.saved = false;
-      state.preferences = {
-        time: true,
-        seasons: true,
-      };
-    },
+    resetTariff: handleResetTariff,
     setDisplayName: (state, action) => {
       state.plan.display_name = action.payload;
     },
@@ -396,10 +469,23 @@ export const tariffSlice = createSlice({
       }
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(startSimpleFlow.fulfilled, handleResetTariff)
+      .addCase(startDeveloperFlow.fulfilled, handleResetTariff)
+      .addCase(connectTariff.fulfilled, (state, action) => {
+        state.plan = action.payload.tariff;
+      })
+      .addCase(saveManualTariff.fulfilled, (state, action) => {
+        state.saved = true;
+      })
+      .addCase(saveConnectedTariff.fulfilled, (state, action) => {
+        state.saved = true;
+      });
+  },
 });
 
 export const {
-  resetTariff,
   setDisplayName,
   setProvider,
   addPriceRange,
@@ -409,31 +495,15 @@ export const {
   setSeasonRange,
   addSeasonRange,
   removeSeasonRange,
-  setTariffSaved,
   setStructure,
   setTariff,
   setExportEnabled,
 } = tariffSlice.actions;
 
-export const saveManualTariff = (payload) => {
-  return {
-    type: Actions.saveManualTariff,
-    payload: payload,
-  };
-};
-
-export const saveConnectedTariff = (payload) => {
-  return {
-    type: Actions.saveConnectedTariff,
-    payload: payload,
-  };
-};
-
 export const selectDisplayName = (state) => state.tariff.plan.display_name;
 export const selectPlan = (state) => state.tariff.plan;
 export const selectProvider = (state) => state.tariff?.provider;
 export const selectSaved = (state) => state.tariff.saved;
-export const selectPreferences = (state) => state.tariff.preferences;
 export const selectExportEnabled = (state) => Boolean(state.tariff.plan.export);
 
 export default tariffSlice.reducer;

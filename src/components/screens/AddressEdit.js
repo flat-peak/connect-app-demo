@@ -13,10 +13,7 @@ import Divider from "../layout/Divider";
 import { FieldSet } from "../common/FieldSet";
 import { COUNTRY_CODES } from "../../data/tariff-constants";
 import Dropdown from "../form-controls/Dropdown";
-import {
-  selectAddress,
-  setAddressField,
-} from "../../store/reducers/inputDataReducer";
+import { selectAddress, setAddressField } from "../../store/reducers/inputDataReducer";
 import { selectAreaEnabled } from "../../store/reducers/contextReducer";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -123,10 +120,7 @@ export default function AddressEdit({ navigation }) {
             <Button
               title={"Next"}
               variant="executive"
-              onPress={() => {
-                navigation.push("ProviderSelection");
-                //navigation.push("TariffSetup");
-              }}
+              onPress={() => navigation.push("ProviderSelection")}
             />
           </Footer>
         </Wrapper>
