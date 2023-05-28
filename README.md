@@ -1,6 +1,6 @@
 # Introduction
 
-This React Native app is a template that you can use to build FlatPeak user experience into your mobile app or another system. While this template is **iOS only**, it can be easily and quicly ported for Android as most of the elements can be reused. Contact [support](mailto:support@flatpeak.energy) for further assistance.
+This React Native app is a template that you can use to build FlatPeak Connect user experience into your mobile app or another system. While we currently only maintain iOS version, it can be easily ported to Android or webView. You will only need to change the publishing wrapper. Contact [support](mailto:support@flatpeak.energy) for further assistance.
 
 Main tools used to develop this project:
 
@@ -34,36 +34,36 @@ npm run ios
 
 ## Build and Release
 
+We use [Expo & EAS](https://www.npmjs.com/package/eas-cli) to build and release this template app. You can integrate an alternative build/publishing tool or follow the steps below.
+
 ### Install EAS
 
-FlatPeak Demo Client app uses [Expo & EAS](https://www.npmjs.com/package/eas-cli)
-
-- Install EAS `npm install -g eas-cli`
+- Install `npm install -g eas-cli`
 
 - In **package.json**
   - Increment `"version": "x.x.x",`
 
 - In **app.config.js**:
 
-  - Replace `projectId=****************` with projectId of your AppleDeveloper account.
+  - Replace `projectId=****************` with projectId of your AppleDeveloper account (only if you want to publish into Apple's App store).
 
   - Replace `bundleIdentifier: IS_DEV ? "<name>.<domain>.dev" : "<name>.<domain>",` with your bundle identifier; refer to [Expo Docs](https://docs.expo.dev/versions/v45.0.0/config/app/#bundleidentifier)
-  
-### Build preview
 
-The preview is not published to Apple App Store (find it in TestFlight). Access it via direct device install ([Expo Doc](https://docs.expo.dev/build/internal-distribution/))
+### Build preview
 
 ```
 eas build --profile preview --platform ios
 ```
 
-### Build & Submit production release
-
-Production is published into Apple App Store (find it in TestFlight).
+### Build production release
+Refer to [Expo Build Docs](https://docs.expo.dev/deploy/build-project/)
 
 ```
 eas build --profile production --platform ios
 ```
+
+### Submit production release
+Refer to [Expo Submit Docs](https://docs.expo.dev/deploy/submit-to-app-stores/)
 
 ```
 eas submit --profile production --platform ios
