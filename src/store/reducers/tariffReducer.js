@@ -9,12 +9,7 @@ import {
 } from "../../data/tariff-constants";
 import { startDeveloperFlow, startSimpleFlow } from "./contextReducer";
 import { withProgressMiddleware } from "./progressIndicatorReducer";
-import {
-  saveConnectedTariffCall,
-  saveManualTariffCall,
-  service,
-  throwOnApiError,
-} from "../../service/flatpeak.service";
+import { service } from "../../service/flatpeak.service";
 
 /**
  * @param {string} validFrom
@@ -140,7 +135,7 @@ export const saveManualTariff = createAsyncThunk(
       inputData: { macAddress, timezone, postalAddress, productId, customerId },
     } = thunkAPI.getState();
 
-    return await saveManualTariffCall({
+    return await service.saveManualTariff({
       macAddress,
       timezone,
       postalAddress,
@@ -181,7 +176,7 @@ export const saveConnectedTariff = createAsyncThunk(
       inputData: { macAddress, timezone, postalAddress, productId, customerId },
     } = thunkAPI.getState();
 
-    return await saveConnectedTariffCall({
+    return await service.saveConnectedTariff({
       macAddress,
       timezone,
       postalAddress,
