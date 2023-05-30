@@ -56,7 +56,11 @@ export default function DataInput({ navigation }) {
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView>
-        <Header title="Enter input params" useLogo={true} />
+        <Header
+          navigation={navigation}
+          title="Session parameters"
+          useLogo={true}
+        />
         <Divider />
         <Wrapper>
           <LoaderDialog visible={loading} />
@@ -156,14 +160,6 @@ export default function DataInput({ navigation }) {
                     );
                   }
                 });
-              }}
-            />
-            <Button
-              title={"Start Over"}
-              variant="destructive"
-              disabled={loading}
-              onPress={() => {
-                navigation.popToTop();
               }}
             />
           </Footer>

@@ -4,7 +4,7 @@ import { Text } from "./Text";
 
 const ProviderButtonContainer = styled.View`
   border-radius: ${({ theme }) => theme.roundness}px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   height: 68px;
   justify-content: center;
   align-items: center;

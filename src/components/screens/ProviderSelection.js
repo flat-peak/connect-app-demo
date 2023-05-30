@@ -1,4 +1,3 @@
-import Header from "../layout/Header";
 import { FlatList, TouchableOpacity, View } from "react-native";
 import { useEffect, useState } from "react";
 import ProviderButton from "../common/ProviderButton";
@@ -10,14 +9,11 @@ import Main from "../layout/Main";
 import styled from "styled-components/native";
 import { TextInput } from "../form-controls/TextInput";
 import { isConnectableProvider } from "../../global/common";
-import {
-  fetchProviderList,
-  selectLoading,
-  selectProviders,
-} from "../../store/reducers/providerSelectionReducer";
+import { fetchProviderList, selectLoading, selectProviders } from "../../store/reducers/providerSelectionReducer";
 import { selectCountry } from "../../store/reducers/inputDataReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { setProvider } from "../../store/reducers/tariffReducer";
+import ScreenTitle from "../layout/ScreenTitle";
 
 const ProvidersContainer = styled.View`
   flex: 1;
@@ -38,10 +34,7 @@ export default function ProviderSelection({ navigation }) {
   return (
     <ThemeProvider theme={theme}>
       <ScreenView>
-        <Header
-          title={"Select your provider"}
-          subTitle={"I.e. your current electricity supplier."}
-        />
+        <ScreenTitle title={"Select your electricity provider"} />
         <Wrapper>
           <Main>
             <View>

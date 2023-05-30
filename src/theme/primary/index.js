@@ -36,7 +36,7 @@ export const theme = {
       inputField: "#000000",
     },
     buttons: {
-      executive: "#8ECD52",
+      executive: "#FFFFFF",
       guiding: "transparent",
       destructive: "transparent",
       option: "transparent",
@@ -51,6 +51,7 @@ export const theme = {
     footerMinHeight: 100,
   },
   roundness: 10,
+  buttonRoundness: 10,
   screenHorizontalOffset: 24,
   headingAlign: "center",
 };

@@ -13,7 +13,6 @@ import { Switch } from "react-native";
 import Main from "../layout/Main";
 import Dropdown from "../form-controls/Dropdown";
 import { COUNTRY_CODES } from "../../data/tariff-constants";
-import IntroBlock from "../common/IntroBlock";
 import {
   selectAreaEnabled,
   selectOffPeakCharge,
@@ -25,6 +24,15 @@ import { selectLoading } from "../../store/reducers/providerSelectionReducer";
 import { dismissError, selectError } from "../../store/reducers/progressIndicatorReducer";
 import { selectCountry, setCountry } from "../../store/reducers/inputDataReducer";
 import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components/native";
+import { Text } from "../common/Text";
+
+const CentredPlaceholder = styled.View`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 export default function Home({ navigation }) {
   const offPeakCharge = useSelector(selectOffPeakCharge);
@@ -37,7 +45,11 @@ export default function Home({ navigation }) {
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView>
-        <Header title="Select test option" useLogo={true} />
+        <Header
+          navigation={navigation}
+          title="Select test scenario"
+          useLogo={true}
+        />
         <Divider />
         <Wrapper>
           <LoaderDialog visible={loading} />
@@ -58,7 +70,6 @@ export default function Home({ navigation }) {
                 }}
               />
             </Field>
-            <IntroBlock />
             <Field
               label={"Connect my electricity provider"}
               description={"Will open end-customer Connect experience"}
@@ -80,10 +91,14 @@ export default function Home({ navigation }) {
                 }}
               />
             </Field>
+            <CentredPlaceholder>
+              <Text variant={"heading"}>- OR -</Text>
+            </CentredPlaceholder>
           </Main>
           <Footer>
             <Button
-              title={"Open Developer Tools"}
+              title={"Launch advanced tools"}
+              variant={"link"}
               disabled={loading}
               onPress={() => {
                 dispatch(startDeveloperFlow()).then((resultAction) => {

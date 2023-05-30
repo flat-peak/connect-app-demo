@@ -16,6 +16,7 @@ import ErrorDialog from "../dialogs/error-dialog";
 import IntroBlock from "../common/IntroBlock";
 import {
   selectApiUrl,
+  selectDashboardUrl,
   selectPublishableKey,
   setApiUrl,
   setPublishableKey,
@@ -23,6 +24,7 @@ import {
 import { dismissError, selectError, selectLoading } from "../../store/reducers/progressIndicatorReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { initContext } from "../../store/reducers/contextReducer";
+import { Linking } from "react-native";
 
 const InputValue = styled(TextInput).attrs(({ refs, refIndex }) => {
   return {
@@ -43,6 +45,7 @@ export default function KeySetup({ navigation }) {
   const publishableKey = useSelector(selectPublishableKey);
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
+  const dashboardUrl = useSelector(selectDashboardUrl);
   const dispatch = useDispatch();
 
   const refs = [useRef(), useRef()];
@@ -50,7 +53,12 @@ export default function KeySetup({ navigation }) {
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView>
-        <Header title="Provide FlatPeak API Key" useLogo={true} />
+        <Header
+          navigation={navigation}
+          title="Enter FlatPeak API key"
+          useLogo={true}
+          useNav={false}
+        />
         <Divider />
         <Wrapper>
           <LoaderDialog visible={loading} />
@@ -89,6 +97,18 @@ export default function KeySetup({ navigation }) {
               />
             </Field>
             <IntroBlock />
+            <Button
+              title={"Get keys from dashboard"}
+              variant="link"
+              onPress={() => {
+                const linkToKeys = `${dashboardUrl}/keys`;
+                Linking.canOpenURL(linkToKeys).then((supported) => {
+                  if (supported) {
+                    Linking.openURL(linkToKeys);
+                  }
+                });
+              }}
+            />
           </Main>
           <Footer>
             <Button

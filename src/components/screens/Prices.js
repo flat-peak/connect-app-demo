@@ -1,4 +1,3 @@
-import Header from "../layout/Header";
 import { FlatList, TouchableOpacity, View } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import Button from "../form-controls/Button";
@@ -42,6 +41,7 @@ import {
   setSamePrices,
 } from "../../store/reducers/tariffReducer";
 import { useDispatch, useSelector } from "react-redux";
+import ScreenTitle from "../layout/ScreenTitle";
 
 export default function Prices({ navigation, route }) {
   const plan = useSelector(selectPlan);
@@ -112,14 +112,16 @@ export default function Prices({ navigation, route }) {
   };
 
   const getCaption = () => {
-    return side === TARIFF_SIDE.IMPORT ? "Prices you pay" : "Prices you paid";
+    return side === TARIFF_SIDE.IMPORT
+      ? flat
+        ? "Cost of electricity"
+        : "Time of day prices"
+      : "Prices you paid";
   };
 
   const getDescription = () => {
     if (flat) {
-      return `Adjust cost per kWh for your ${
-        side === TARIFF_SIDE.IMPORT ? "import" : "export"
-      } tariff`;
+      return "All-year";
     }
     return `Adjust cost per kWh for your ${
       side === TARIFF_SIDE.IMPORT ? "import" : "export"
@@ -253,7 +255,7 @@ export default function Prices({ navigation, route }) {
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView edges={["right", "left", "bottom"]}>
-        <Header title={getCaption()} subTitle={getDescription()} />
+        <ScreenTitle title={getCaption()} subTitle={getDescription()} />
         <Wrapper>
           {displayCaptions && (
             <PeriodCaption
@@ -305,8 +307,9 @@ export default function Prices({ navigation, route }) {
                   keyExtractor={(item, index) => index.toString(10)}
                   ListFooterComponent={
                     <Button
+                      size={"small"}
                       style={{ margin: 0 }}
-                      title={"Add time period"}
+                      title={"+ Add time period"}
                       onPress={() => addPeriod()}
                     />
                   }

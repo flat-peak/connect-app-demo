@@ -94,7 +94,7 @@ export default function MainNav() {
         <Stack.Screen
           name={"TariffSetup"}
           component={TariffSetup}
-          options={{ ...altOptions, displayProviderLogo: true }}
+          options={{ ...altOptions, displayProviderLogo: false }}
         />
         <Stack.Screen
           name={"TariffStructure"}

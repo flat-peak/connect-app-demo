@@ -1,21 +1,14 @@
-import Header from "../layout/Header";
-import Button from "../form-controls/Button";
 import { theme } from "../../theme/secondary";
 import { ThemeProvider } from "styled-components";
 import { ScreenSafeView } from "../layout/View";
-import Footer from "../layout/Footer";
 import Wrapper from "../layout/Wrapper";
 import Main from "../layout/Main";
-import { TextInput } from "../form-controls/TextInput";
 import { TARIFF_SIDE } from "../../data/tariff-constants";
-import Checkbox from "../form-controls/Checkbox";
-import {
-  selectDisplayName,
-  selectExportEnabled,
-  setDisplayName,
-  setExportEnabled,
-} from "../../store/reducers/tariffReducer";
+import { selectDisplayName, selectExportEnabled, setDisplayName } from "../../store/reducers/tariffReducer";
 import { useDispatch, useSelector } from "react-redux";
+import ScreenTitle from "../layout/ScreenTitle";
+import TariffWarningBlock from "../common/TariffWarningBlock";
+import TariffNameForm from "../common/TariffNameForm";
 
 export default function TariffSetup({ navigation }) {
   const displayName = useSelector(selectDisplayName);
@@ -24,31 +17,23 @@ export default function TariffSetup({ navigation }) {
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView edges={["right", "left", "bottom"]}>
-        <Header title="What your tariff name?" />
+        <ScreenTitle title="Your tariff plan" />
         <Wrapper>
           <Main>
-            <TextInput
+            <TariffWarningBlock />
+            <TariffNameForm
               value={displayName}
               onChangeText={(v) => dispatch(setDisplayName(v))}
-            />
-          </Main>
-
-          <Footer>
-            <Checkbox
-              value={exportEnabled}
-              title={"I also export my electricity"}
-              onChange={(v) => dispatch(setExportEnabled(v))}
-            />
-            <Button
-              title={"Next"}
-              variant="executive"
-              onPress={() => {
+              onProceed={() => {
                 navigation.push("TariffStructure", {
                   side: TARIFF_SIDE.IMPORT,
                 });
               }}
+              onCancel={() => {
+                navigation.goBack();
+              }}
             />
-          </Footer>
+          </Main>
         </Wrapper>
       </ScreenSafeView>
     </ThemeProvider>
