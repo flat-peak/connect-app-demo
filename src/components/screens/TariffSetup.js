@@ -9,28 +9,35 @@ import Main from "../layout/Main";
 import { TextInput } from "../form-controls/TextInput";
 import { TARIFF_SIDE } from "../../data/tariff-constants";
 import Checkbox from "../form-controls/Checkbox";
-
-export default function TariffSetup({
-  navigation,
-  displayName,
-  exportEnabled,
+import {
+  selectDisplayName,
+  selectExportEnabled,
   setDisplayName,
   setExportEnabled,
-}) {
+} from "../../store/reducers/tariffReducer";
+import { useDispatch, useSelector } from "react-redux";
+
+export default function TariffSetup({ navigation }) {
+  const displayName = useSelector(selectDisplayName);
+  const exportEnabled = useSelector(selectExportEnabled);
+  const dispatch = useDispatch();
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView edges={["right", "left", "bottom"]}>
         <Header title="What your tariff name?" />
         <Wrapper>
           <Main>
-            <TextInput value={displayName} onChangeText={setDisplayName} />
+            <TextInput
+              value={displayName}
+              onChangeText={(v) => dispatch(setDisplayName(v))}
+            />
           </Main>
 
           <Footer>
             <Checkbox
               value={exportEnabled}
               title={"I also export my electricity"}
-              onChange={(v) => setExportEnabled(v)}
+              onChange={(v) => dispatch(setExportEnabled(v))}
             />
             <Button
               title={"Next"}

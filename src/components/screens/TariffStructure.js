@@ -9,6 +9,14 @@ import Main from "../layout/Main";
 import styled from "styled-components/native";
 import ButtonCheckbox from "../form-controls/ButtonCheckbox";
 import { TARIFF_SIDE } from "../../data/tariff-constants";
+import {
+  findWeekdaySchedule,
+  isSeasonConfigurable,
+  isTimeConfigurable,
+  selectPlan,
+  setStructure,
+} from "../../store/reducers/tariffReducer";
+import { useDispatch, useSelector } from "react-redux";
 
 const RateFactors = styled.View`
   margin-bottom: 40px;
@@ -16,27 +24,11 @@ const RateFactors = styled.View`
   flex: 1;
 `;
 
-/**
- * @param navigation
- * @param route
- * @param {Tariff} plan
- * @param {(object) => void} setStructure
- * @param {( schedule: TariffSchedule) => boolean} isTimeConfigurable
- * @param {( schedule: TariffSchedule) => boolean} isSeasonConfigurable
- * @param {( schedule: Array<TariffSchedule>) => TariffSchedule} findWeekdaySchedule
- * @return {JSX.Element}
- * @constructor
- */
-export default function TariffStructure({
-  navigation,
-  route,
-  plan,
-  setStructure,
-  isTimeConfigurable,
-  isSeasonConfigurable,
-  findWeekdaySchedule,
-}) {
+export default function TariffStructure({ navigation, route }) {
   const { side } = route.params;
+  const plan = useSelector(selectPlan);
+  const dispatch = useDispatch();
+
   const schedule = findWeekdaySchedule(plan[side]);
 
   let title = "Your tariff structure";
@@ -60,20 +52,24 @@ export default function TariffStructure({
                 value={structure.seasons}
                 title={"Season/Month"}
                 onChange={(value) =>
-                  setStructure({
-                    target: side,
-                    structure: { ...structure, seasons: value },
-                  })
+                  dispatch(
+                    setStructure({
+                      target: side,
+                      structure: { ...structure, seasons: value },
+                    })
+                  )
                 }
               />
               <ButtonCheckbox
                 title={"Time of Use"}
                 value={structure.time}
                 onChange={(value) =>
-                  setStructure({
-                    target: side,
-                    structure: { ...structure, time: value },
-                  })
+                  dispatch(
+                    setStructure({
+                      target: side,
+                      structure: { ...structure, time: value },
+                    })
+                  )
                 }
               />
               <ButtonCheckbox
@@ -81,14 +77,16 @@ export default function TariffStructure({
                 title={"None of the Above"}
                 subTitle={"I am on flat rate"}
                 onChange={(value) =>
-                  setStructure({
-                    target: side,
-                    structure: {
-                      ...structure,
-                      seasons: !value,
-                      time: !value,
-                    },
-                  })
+                  dispatch(
+                    setStructure({
+                      target: side,
+                      structure: {
+                        ...structure,
+                        seasons: !value,
+                        time: !value,
+                      },
+                    })
+                  )
                 }
               />
             </RateFactors>

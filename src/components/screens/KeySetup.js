@@ -14,6 +14,15 @@ import Main from "../layout/Main";
 import LoaderDialog from "../dialogs/loader-dialog";
 import ErrorDialog from "../dialogs/error-dialog";
 import IntroBlock from "../common/IntroBlock";
+import {
+  selectApiUrl,
+  selectPublishableKey,
+  setApiUrl,
+  setPublishableKey,
+} from "../../store/reducers/keySetupReducer";
+import { dismissError, selectError, selectLoading } from "../../store/reducers/progressIndicatorReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { initContext } from "../../store/reducers/contextReducer";
 
 const InputValue = styled(TextInput).attrs(({ refs, refIndex }) => {
   return {
@@ -29,16 +38,13 @@ const InputValue = styled(TextInput).attrs(({ refs, refIndex }) => {
   };
 })``;
 
-export default function KeySetup({
-  loading,
-  error,
-  dismissError,
-  checkApiCredentials,
-  apiUrl,
-  publishableKey,
-  setPublishableKey,
-  setApiUrl,
-}) {
+export default function KeySetup({ navigation }) {
+  const apiUrl = useSelector(selectApiUrl);
+  const publishableKey = useSelector(selectPublishableKey);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
+  const dispatch = useDispatch();
+
   const refs = [useRef(), useRef()];
 
   return (
@@ -52,7 +58,7 @@ export default function KeySetup({
             isVisible={error.visible}
             title={error.title}
             message={error.message}
-            onDismiss={dismissError}
+            onDismiss={() => dispatch(dismissError())}
           />
           <Main style={{ paddingTop: 20 }}>
             <Field
@@ -63,7 +69,7 @@ export default function KeySetup({
               <InputValue
                 isFirst={true}
                 value={apiUrl}
-                onChangeText={(text) => setApiUrl(text)}
+                onChangeText={(text) => dispatch(setApiUrl(text))}
                 returnKeyType="next"
                 refs={refs}
                 refIndex={0}
@@ -76,7 +82,7 @@ export default function KeySetup({
             >
               <InputValue
                 value={publishableKey}
-                onChangeText={(text) => setPublishableKey(text)}
+                onChangeText={(text) => dispatch(setPublishableKey(text))}
                 returnKeyType="submit"
                 refs={refs}
                 refIndex={1}
@@ -89,7 +95,13 @@ export default function KeySetup({
               title={"Next"}
               variant="executive"
               disabled={!publishableKey.trim() || !apiUrl.trim() || loading}
-              onPress={() => checkApiCredentials({ publishableKey, apiUrl })}
+              onPress={() => {
+                dispatch(initContext()).then((resultAction) => {
+                  if (initContext.fulfilled.match(resultAction)) {
+                    navigation.push("Home");
+                  }
+                });
+              }}
             />
           </Footer>
         </Wrapper>

@@ -32,31 +32,20 @@ import {
   TARIFF_WEEKEND,
 } from "../../data/tariff-constants";
 import { isEqualObjects } from "../../global/common";
-
-/**
- * @param navigation
- * @param route
- * @param {Tariff} plan
- * @param addPriceRange
- * @param removePriceRange
- * @param setPrice
- * @param setSamePrices
- * @param isTimeConfigurable
- * @param findWeekdaySchedule
- * @return {JSX.Element}
- * @constructor
- */
-export default function Prices({
-  navigation,
-  route,
-  plan,
+import {
   addPriceRange,
+  findWeekdaySchedule,
+  isTimeConfigurable,
   removePriceRange,
+  selectPlan,
   setPrice,
   setSamePrices,
-  isTimeConfigurable,
-  findWeekdaySchedule,
-}) {
+} from "../../store/reducers/tariffReducer";
+import { useDispatch, useSelector } from "react-redux";
+
+export default function Prices({ navigation, route }) {
+  const plan = useSelector(selectPlan);
+  const dispatch = useDispatch();
   const [sameSchedule, setSameSchedule] = useState(false);
   const { side, seasonIndex, daysIndex } = route.params;
 
@@ -103,21 +92,23 @@ export default function Prices({
   const toggleSameSchedule = (checked) => {
     setSameSchedule(checked);
     if (checked) {
-      setSamePrices({
-        side,
-        seasonIndex,
-        daysIndex,
-        weekdaysIndex: daysPresets.indexOf(weekdaysPriceRange),
-      });
+      dispatch(
+        setSamePrices({
+          side,
+          seasonIndex,
+          daysIndex,
+          weekdaysIndex: daysPresets.indexOf(weekdaysPriceRange),
+        })
+      );
     }
   };
 
   const removePeriod = (priceIndex) => {
-    removePriceRange({ side, seasonIndex, daysIndex, priceIndex });
+    dispatch(removePriceRange({ side, seasonIndex, daysIndex, priceIndex }));
   };
 
   const addPeriod = () => {
-    addPriceRange({ side, seasonIndex, daysIndex });
+    dispatch(addPriceRange({ side, seasonIndex, daysIndex }));
   };
 
   const getCaption = () => {
@@ -215,17 +206,20 @@ export default function Prices({
     const priceIndex = lastSelectedTime.current.index;
     const targetPriceEl = currentPriceRange.hours[priceIndex];
     if (targetPriceEl) {
-      setPrice({
-        price: {
-          ...targetPriceEl,
-          ["valid_" + lastSelectedTime.current.mode]:
-            [addLeadingZero(hours), addLeadingZero(minutes)].join(":") + ":00",
-        },
-        side,
-        seasonIndex,
-        daysIndex,
-        priceIndex,
-      });
+      dispatch(
+        setPrice({
+          price: {
+            ...targetPriceEl,
+            ["valid_" + lastSelectedTime.current.mode]:
+              [addLeadingZero(hours), addLeadingZero(minutes)].join(":") +
+              ":00",
+          },
+          side,
+          seasonIndex,
+          daysIndex,
+          priceIndex,
+        })
+      );
     }
 
     hideDatePicker();
@@ -237,16 +231,18 @@ export default function Prices({
 
     if (targetPriceEl) {
       let normalizedPrice = (parseFloat(value) || 0).toFixed(2);
-      setPrice({
-        price: {
-          ...targetPriceEl,
-          cost: Number(normalizedPrice),
-        },
-        side,
-        seasonIndex,
-        daysIndex,
-        priceIndex,
-      });
+      dispatch(
+        setPrice({
+          price: {
+            ...targetPriceEl,
+            cost: Number(normalizedPrice),
+          },
+          side,
+          seasonIndex,
+          daysIndex,
+          priceIndex,
+        })
+      );
     }
 
     hidePricePicker();

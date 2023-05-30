@@ -5,7 +5,7 @@ import { ScreenSafeView } from "../layout/View";
 import { ThemeProvider } from "styled-components";
 import Button from "../form-controls/Button";
 import Wrapper from "../layout/Wrapper";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import Footer from "../layout/Footer";
 import styled from "styled-components/native";
 import { TextInput } from "../form-controls/TextInput";
@@ -15,7 +15,18 @@ import ErrorDialog from "../dialogs/error-dialog";
 import Dropdown from "../form-controls/Dropdown";
 import { TIMEZONES } from "../../data/tariff-constants";
 import LoaderDialog from "../dialogs/loader-dialog";
-import { generateMacAddress } from "../../global/common";
+
+import {
+  initInputParams,
+  selectCustomerId,
+  selectDeviceId,
+  selectMacAddress,
+  selectProductId,
+  selectTimezone,
+  setInputParam,
+} from "../../store/reducers/inputDataReducer";
+import { dismissError, selectError, selectLoading } from "../../store/reducers/progressIndicatorReducer";
+import { useDispatch, useSelector } from "react-redux";
 
 const InputValue = styled(TextInput).attrs(({ refs, refIndex }) => {
   return {
@@ -31,25 +42,15 @@ const InputValue = styled(TextInput).attrs(({ refs, refIndex }) => {
   };
 })``;
 
-export default function DataInput({
-  loading,
-  navigation,
-  initInputParams,
-  error,
-  dismissError,
-  setInputParam,
-  macAddress,
-  customerId,
-  productId,
-  deviceId,
-  timezone,
-}) {
-  useEffect(() => {
-    if (!macAddress) {
-      setInputParam({ key: "macAddress", value: generateMacAddress() });
-    }
-  });
-
+export default function DataInput({ navigation }) {
+  const macAddress = useSelector(selectMacAddress);
+  const customerId = useSelector(selectCustomerId);
+  const productId = useSelector(selectProductId);
+  const deviceId = useSelector(selectDeviceId);
+  const timezone = useSelector(selectTimezone);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
+  const dispatch = useDispatch();
   const refs = [useRef(), useRef(), useRef(), useRef()];
 
   return (
@@ -63,7 +64,7 @@ export default function DataInput({
             isVisible={error.visible}
             title={error.title}
             message={error.message}
-            onDismiss={dismissError}
+            onDismiss={() => dispatch(dismissError())}
           />
           <FieldSet>
             <Field
@@ -78,7 +79,7 @@ export default function DataInput({
                 isFirst={true}
                 value={macAddress}
                 onChangeText={(text) =>
-                  setInputParam({ key: "macAddress", value: text })
+                  dispatch(setInputParam({ key: "macAddress", value: text }))
                 }
                 refs={refs}
                 refIndex={0}
@@ -94,7 +95,7 @@ export default function DataInput({
               <InputValue
                 value={deviceId}
                 onChangeText={(text) =>
-                  setInputParam({ key: "deviceId", value: text })
+                  dispatch(setInputParam({ key: "deviceId", value: text }))
                 }
                 returnKeyType="next"
                 refs={refs}
@@ -108,7 +109,7 @@ export default function DataInput({
               <InputValue
                 value={productId}
                 onChangeText={(text) =>
-                  setInputParam({ key: "productId", value: text })
+                  dispatch(setInputParam({ key: "productId", value: text }))
                 }
                 returnKeyType="next"
                 refs={refs}
@@ -123,7 +124,7 @@ export default function DataInput({
               <InputValue
                 value={customerId}
                 onChangeText={(text) =>
-                  setInputParam({ key: "customerId", value: text })
+                  dispatch(setInputParam({ key: "customerId", value: text }))
                 }
                 returnKeyType="next"
                 refs={refs}
@@ -137,7 +138,7 @@ export default function DataInput({
                 options={TIMEZONES}
                 labelExtractor={(v) => v}
                 onChangeText={(text) =>
-                  setInputParam({ key: "timezone", value: text })
+                  dispatch(setInputParam({ key: "timezone", value: text }))
                 }
               />
             </Field>
@@ -147,7 +148,15 @@ export default function DataInput({
               title={"Next"}
               variant="executive"
               disabled={loading}
-              onPress={() => initInputParams()}
+              onPress={() => {
+                dispatch(initInputParams()).then((actionResult) => {
+                  if (initInputParams.fulfilled.match(actionResult)) {
+                    navigation.push(
+                      actionResult.payload.completed ? "Summary" : "AddressEdit"
+                    );
+                  }
+                });
+              }}
             />
             <Button
               title={"Start Over"}

@@ -13,6 +13,9 @@ import Divider from "../layout/Divider";
 import { FieldSet } from "../common/FieldSet";
 import { COUNTRY_CODES } from "../../data/tariff-constants";
 import Dropdown from "../form-controls/Dropdown";
+import { selectAddress, setAddressField } from "../../store/reducers/inputDataReducer";
+import { selectAreaEnabled } from "../../store/reducers/contextReducer";
+import { useDispatch, useSelector } from "react-redux";
 
 const InputValue = styled(TextInput).attrs(({ refs, refIndex }) => {
   return {
@@ -28,19 +31,11 @@ const InputValue = styled(TextInput).attrs(({ refs, refIndex }) => {
   };
 })``;
 
-export default function AddressEdit({
-  navigation,
-  address: {
-    address_line1,
-    address_line2,
-    city,
-    state,
-    post_code,
-    country_code,
-  },
-  area,
-  setAddressField,
-}) {
+export default function AddressEdit({ navigation }) {
+  const { address_line1, address_line2, city, state, post_code, country_code } =
+    useSelector(selectAddress);
+  const area = useSelector(selectAreaEnabled);
+  const dispatch = useDispatch();
   const refs = [useRef(), useRef(), useRef(), useRef(), useRef()];
 
   return (
@@ -55,7 +50,9 @@ export default function AddressEdit({
                 value={address_line1}
                 isFirst={true}
                 onChangeText={(text) =>
-                  setAddressField({ key: "address_line1", value: text })
+                  dispatch(
+                    setAddressField({ key: "address_line1", value: text })
+                  )
                 }
                 refs={refs}
                 refIndex={0}
@@ -65,7 +62,9 @@ export default function AddressEdit({
               <InputValue
                 value={address_line2}
                 onChangeText={(text) =>
-                  setAddressField({ key: "address_line2", value: text })
+                  dispatch(
+                    setAddressField({ key: "address_line2", value: text })
+                  )
                 }
                 refs={refs}
                 refIndex={1}
@@ -75,7 +74,7 @@ export default function AddressEdit({
               <InputValue
                 value={city}
                 onChangeText={(text) =>
-                  setAddressField({ key: "city", value: text })
+                  dispatch(setAddressField({ key: "city", value: text }))
                 }
                 refs={refs}
                 refIndex={2}
@@ -86,7 +85,7 @@ export default function AddressEdit({
                 label="State"
                 value={state}
                 onChangeText={(text) =>
-                  setAddressField({ key: "state", value: text })
+                  dispatch(setAddressField({ key: "state", value: text }))
                 }
                 refs={refs}
                 refIndex={3}
@@ -97,7 +96,7 @@ export default function AddressEdit({
                 label="Postcode"
                 value={post_code}
                 onChangeText={(text) =>
-                  setAddressField({ key: "post_code", value: text })
+                  dispatch(setAddressField({ key: "post_code", value: text }))
                 }
                 refs={refs}
                 refIndex={4}
@@ -109,7 +108,9 @@ export default function AddressEdit({
                 options={area.map((entry) => entry.country_code)}
                 labelExtractor={(key) => COUNTRY_CODES[key]}
                 onChangeText={(text) => {
-                  setAddressField({ key: "country_code", value: text });
+                  dispatch(
+                    setAddressField({ key: "country_code", value: text })
+                  );
                 }}
               />
             </Field>
@@ -119,10 +120,7 @@ export default function AddressEdit({
             <Button
               title={"Next"}
               variant="executive"
-              onPress={() => {
-                navigation.push("ProviderSelection");
-                //navigation.push("TariffSetup");
-              }}
+              onPress={() => navigation.push("ProviderSelection")}
             />
           </Footer>
         </Wrapper>

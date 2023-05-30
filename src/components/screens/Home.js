@@ -14,19 +14,26 @@ import Main from "../layout/Main";
 import Dropdown from "../form-controls/Dropdown";
 import { COUNTRY_CODES } from "../../data/tariff-constants";
 import IntroBlock from "../common/IntroBlock";
-
-export default function Home({
-  loading,
-  error,
-  dismissError,
-  offPeakCharge,
-  initDefaultSession,
-  initDeveloperSession,
+import {
+  selectAreaEnabled,
+  selectOffPeakCharge,
   setOffPeakCharge,
-  country,
-  area,
-  setCountry,
-}) {
+  startDeveloperFlow,
+  startSimpleFlow,
+} from "../../store/reducers/contextReducer";
+import { selectLoading } from "../../store/reducers/providerSelectionReducer";
+import { dismissError, selectError } from "../../store/reducers/progressIndicatorReducer";
+import { selectCountry, setCountry } from "../../store/reducers/inputDataReducer";
+import { useDispatch, useSelector } from "react-redux";
+
+export default function Home({ navigation }) {
+  const offPeakCharge = useSelector(selectOffPeakCharge);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
+  const country = useSelector(selectCountry);
+  const area = useSelector(selectAreaEnabled);
+  const dispatch = useDispatch();
+
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView>
@@ -38,7 +45,7 @@ export default function Home({
             isVisible={error.visible}
             title={error.title}
             message={error.message}
-            onDismiss={dismissError}
+            onDismiss={() => dispatch(dismissError())}
           />
           <Main>
             <Field label={"Test Country"}>
@@ -47,7 +54,7 @@ export default function Home({
                 options={area.map((entry) => entry.country_code)}
                 labelExtractor={(key) => COUNTRY_CODES[key]}
                 onChangeText={(text) => {
-                  setCountry(text);
+                  dispatch(setCountry(text));
                 }}
               />
             </Field>
@@ -58,12 +65,17 @@ export default function Home({
               isRow={true}
             >
               <Switch
-                value={offPeakCharge}
-                onValueChange={(v) => {
-                  if (!v) {
-                    setOffPeakCharge(v);
-                  } else {
-                    initDefaultSession();
+                value={Boolean(offPeakCharge)}
+                onValueChange={(enabled) => {
+                  dispatch(setOffPeakCharge(enabled));
+                  if (enabled) {
+                    dispatch(setOffPeakCharge(true));
+                    dispatch(startSimpleFlow()).then((resultAction) => {
+                      if (startSimpleFlow.fulfilled.match(resultAction)) {
+                        navigation.push("ProviderSelection");
+                      }
+                      setTimeout(() => dispatch(setOffPeakCharge(false)), 400);
+                    });
                   }
                 }}
               />
@@ -73,7 +85,13 @@ export default function Home({
             <Button
               title={"Open Developer Tools"}
               disabled={loading}
-              onPress={() => initDeveloperSession()}
+              onPress={() => {
+                dispatch(startDeveloperFlow()).then((resultAction) => {
+                  if (startDeveloperFlow.fulfilled.match(resultAction)) {
+                    navigation.push("DataInput");
+                  }
+                });
+              }}
             />
           </Footer>
         </Wrapper>

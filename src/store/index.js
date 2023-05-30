@@ -1,19 +1,11 @@
-import createSagaMiddleware from "redux-saga";
 import reducer from "./reducers";
 import { Platform } from "react-native";
-import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
-import rootSaga from "./sagas";
-
-let sagaMiddleware = createSagaMiddleware();
-const middleware = [...getDefaultMiddleware({ thunk: false }), sagaMiddleware];
+import { configureStore } from "@reduxjs/toolkit";
 
 const store = configureStore({
   reducer: reducer,
-  middleware: middleware,
-  // To disable devtools in production
-  //devTools: process.env.NODE_ENV !== 'production',
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
   devTools: Platform.OS === "web",
 });
 
-sagaMiddleware.run(rootSaga);
 export { store };
