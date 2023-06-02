@@ -9,7 +9,7 @@ import {
 } from "../../data/tariff-constants";
 import { startDeveloperFlow, startSimpleFlow } from "./contextReducer";
 import { withProgressMiddleware } from "./progressIndicatorReducer";
-import { service } from "../../service/flatpeak.service";
+import { service, throwOnApiError } from "../../service/flatpeak.service";
 
 /**
  * @param {string} validFrom
