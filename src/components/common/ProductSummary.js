@@ -14,7 +14,7 @@ export function ProductSummary({ provider, title }) {
   return (
     <ProductSummaryContainer>
       <SectionTitle>
-        <ProductSummaryTitle>Tariff: {title}</ProductSummaryTitle>
+        <ProductSummaryTitle>Tariff name: {title}</ProductSummaryTitle>
       </SectionTitle>
     </ProductSummaryContainer>
   );

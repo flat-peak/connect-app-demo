@@ -1,4 +1,3 @@
-import Header from "../layout/Header";
 import { FlatList, TouchableOpacity } from "react-native";
 import Button from "../form-controls/Button";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,10 +16,7 @@ import {
   EditableTableRow,
   EditableTableValue,
 } from "../common/EditableTable";
-import {
-  resolveMonthLabelByKey,
-  TARIFF_SIDE,
-} from "../../data/tariff-constants";
+import { resolveMonthLabelByKey, TARIFF_SIDE } from "../../data/tariff-constants";
 import {
   addSeasonRange,
   findWeekdaySchedule,
@@ -29,6 +25,7 @@ import {
   setSeasonRange,
 } from "../../store/reducers/tariffReducer";
 import { useDispatch, useSelector } from "react-redux";
+import ScreenTitle from "../layout/ScreenTitle";
 
 export default function Seasons({ navigation, route }) {
   const { side } = route.params;
@@ -74,11 +71,11 @@ export default function Seasons({ navigation, route }) {
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView edges={["right", "left", "bottom"]}>
-        <Header
-          title={"Your tariff seasons"}
+        <ScreenTitle
+          title={"Seasonal price changes"}
           subTitle={`Create seasons that match your ${
             side === TARIFF_SIDE.IMPORT ? "import" : "export"
-          } tariff`}
+          } tariff. Add more seasons if required.`}
         />
         <Wrapper>
           <MonthPickerDialog
@@ -89,7 +86,11 @@ export default function Seasons({ navigation, route }) {
           />
           <FlatList
             ListFooterComponent={
-              <Button title={"Add season"} onPress={() => addPeriod()} />
+              <Button
+                size={"small"}
+                title={"+ Add season"}
+                onPress={() => addPeriod()}
+              />
             }
             data={schedule.data}
             renderItem={({ item, index }) => {

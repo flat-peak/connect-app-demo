@@ -1,4 +1,3 @@
-import Header from "../layout/Header";
 import Button from "../form-controls/Button";
 import { theme } from "../../theme/secondary";
 import { ThemeProvider } from "styled-components";
@@ -17,11 +16,20 @@ import {
   setStructure,
 } from "../../store/reducers/tariffReducer";
 import { useDispatch, useSelector } from "react-redux";
+import ScreenTitle from "../layout/ScreenTitle";
+import { Text } from "../common/Text";
 
 const RateFactors = styled.View`
   margin-bottom: 40px;
   justify-content: flex-end;
   flex: 1;
+`;
+
+const CentredPlaceholder = styled.View`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export default function TariffStructure({ navigation, route }) {
@@ -31,7 +39,7 @@ export default function TariffStructure({ navigation, route }) {
 
   const schedule = findWeekdaySchedule(plan[side]);
 
-  let title = "Your tariff structure";
+  let title = "What affects your rate?";
   let subTitle = `Which of the following affects your ${
     side === TARIFF_SIDE.IMPORT ? "import" : "export"
   } rate?\nSelect all that apply.`;
@@ -44,7 +52,7 @@ export default function TariffStructure({ navigation, route }) {
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView edges={["right", "left", "bottom"]}>
-        <Header title={title} subTitle={subTitle} />
+        <ScreenTitle title={title} subTitle={subTitle} />
         <Wrapper>
           <Main>
             <RateFactors>
@@ -72,6 +80,11 @@ export default function TariffStructure({ navigation, route }) {
                   )
                 }
               />
+
+              <CentredPlaceholder>
+                <Text variant={"heading"}>- OR -</Text>
+              </CentredPlaceholder>
+
               <ButtonCheckbox
                 value={!structure.seasons && !structure.time}
                 title={"None of the Above"}

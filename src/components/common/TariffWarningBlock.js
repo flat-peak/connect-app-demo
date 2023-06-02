@@ -4,13 +4,11 @@ import { Autolink } from "react-native-autolink";
 
 const IntroMessage = styled.View`
   margin: 24px 0 51px;
-  border: 1px solid #fff;
-  padding: 12px;
 `;
 
-export default function IntroBlock({}) {
-  const text = `This example react-native application is developed by FlatPeak to enable developers and product owners to evaluate consumer experience they can build with FlatPeak API and SDKs.
- Email support@flatpeak.energy to request access to application source code.`;
+export default function TariffWarningBlock({}) {
+  const text =
+    "NOTE: By submitting your details, you will be sharing them with Faraday&Future Inc. Your data will be stored and processed in strict compliance with GDPR. Review full privacy policy.";
   return (
     <IntroMessage>
       <Text variant={"intro"}>

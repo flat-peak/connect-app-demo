@@ -2,12 +2,13 @@ import { PriceMarker } from "./PriceMarker";
 import { getPeakColor, getPeakLabel } from "../../global/peak-utils";
 import { View } from "react-native";
 import styled from "styled-components/native";
+import { Text } from "./Text";
 
 const GraphTableRow = styled.View`
   flex-direction: row;
   align-items: flex-start;
   justify-content: space-between;
-  margin-top: ${({ isFirst }) => (isFirst ? 0 : 8)}px;
+  margin-top: ${({ isFirst }) => (isFirst ? 0 : 0)}px;
 `;
 
 const GraphTableCol = styled.View`
@@ -28,7 +29,7 @@ export default function ScheduleSummary({ peaks }) {
   }
 
   const formatTime = (v) => v.substring(0, 5);
-  return peaks.map((item, index) => {
+  const entries = peaks.map((item, index) => {
     const nextPeak = peaks[index + 1];
     return (
       <GraphTableRow key={index.toString()}>
@@ -52,4 +53,11 @@ export default function ScheduleSummary({ peaks }) {
       </GraphTableRow>
     );
   });
+
+  return (
+    <>
+      <Text variant={"label"}>Prices</Text>
+      {entries}
+    </>
+  );
 }

@@ -2,11 +2,12 @@ import { fontFamily } from "../fonts";
 
 export const theme = {
   roundness: 10,
+  buttonRoundness: 0,
   fonts: {
     body: fontFamily.regular,
     heading: fontFamily.bold,
     subHeading: fontFamily.regular,
-    executiveButton: fontFamily.bold,
+    executiveButton: fontFamily.regular,
     guidingButton: fontFamily.regular,
     destructiveButton: fontFamily.regular,
     uiControl: fontFamily.medium,
@@ -19,6 +20,7 @@ export const theme = {
     subButton: 17,
     body: 15,
     inputField: 14,
+    intro: 16,
   },
   colors: {
     background: "#EDEDED",
@@ -35,7 +37,7 @@ export const theme = {
       inputField: "#000000",
     },
     buttons: {
-      executive: "#8ECD52",
+      executive: "#000000",
       guiding: "#cccccc",
       destructive: "transparent",
       option: "#F6F6F6",

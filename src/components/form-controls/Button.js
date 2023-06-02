@@ -19,16 +19,24 @@ const destructiveButton = (theme) => `
     height: 38px;
 `;
 
+const link = (theme) => `
+    background: transparent;
+    margin-top: 14px;
+    color: #ffffff;
+    text-decoration: underline;
+`;
+
 const variants = {
   guiding: guidingButton,
   executive: executiveButton,
   destructive: destructiveButton,
+  link: link,
 };
 
 export const ButtonContainer = styled.View`
   margin-top: 24px;
-  border-radius: ${({ theme }) => theme.roundness}px;
-  height: 64px;
+  border-radius: ${({ theme }) => theme.buttonRoundness}px;
+  height: ${({ size }) => (size === "small" ? 44 : 64)}px;
   align-items: center;
   justify-content: center;
   opacity: ${({ disabled }) => (disabled ? 0.3 : 1)};
@@ -45,10 +53,11 @@ export default function Button({
   variant = "guiding",
   onPress,
   disabled,
+  size,
 }) {
   return (
     <TouchableOpacity disabled={disabled} onPress={onPress}>
-      <ButtonContainer variant={variant} disabled={disabled}>
+      <ButtonContainer variant={variant} disabled={disabled} size={size}>
         <Text variant={variant + "-button"}>{title}</Text>
         {subTitle && <Text variant={variant + "-button-sub"}>{subTitle}</Text>}
       </ButtonContainer>

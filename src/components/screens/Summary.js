@@ -1,5 +1,4 @@
-import Header from "../layout/Header";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import Button from "../form-controls/Button";
 import PeriodCaption from "../common/PeriodCaption";
 import ScheduleGraph from "../common/ScheduleGraph";
@@ -10,11 +9,7 @@ import { ThemeProvider } from "styled-components";
 import { ScreenSafeView, ScreenScrollView } from "../layout/View";
 import Divider from "../layout/Divider";
 import ScheduleSummary from "../common/ScheduleSummary";
-import {
-  Section,
-  SectionButton,
-  SectionHeader,
-} from "../form-controls/Section";
+import { Section, SectionButton, SectionHeader } from "../form-controls/Section";
 import { ProductSummary } from "../common/ProductSummary";
 import {
   resolveMonthLabelByKey,
@@ -40,12 +35,10 @@ import {
   selectProvider,
   selectSaved,
 } from "../../store/reducers/tariffReducer";
-import {
-  dismissError,
-  selectError,
-  selectLoading,
-} from "../../store/reducers/progressIndicatorReducer";
+import { dismissError, selectError, selectLoading } from "../../store/reducers/progressIndicatorReducer";
 import { useDispatch, useSelector } from "react-redux";
+import ScreenTitle from "../layout/ScreenTitle";
+import { Text } from "../common/Text";
 
 export default function Summary({ navigation }) {
   const plan = useSelector(selectPlan);
@@ -91,7 +84,7 @@ export default function Summary({ navigation }) {
   return (
     <ThemeProvider theme={theme}>
       <ScreenScrollView>
-        <Header title={"Your tariff summary"} />
+        <ScreenTitle title={"Confirm your tariff"} />
         <Wrapper>
           <LoaderDialog visible={loading} />
           <ErrorDialog
@@ -123,8 +116,7 @@ export default function Summary({ navigation }) {
             </>
           )}
 
-          <Divider style={{ marginBottom: hasExportOption ? 22 : 44 }} />
-
+          <Text variant={"label"}>Schedule</Text>
           {displayedSeasons.map(({ entry, side: seasonSide }, index) => {
             let monthFrom = entry.months[0];
             let monthTo = entry.months[entry.months.length - 1];

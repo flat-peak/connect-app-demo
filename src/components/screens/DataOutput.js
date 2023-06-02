@@ -51,7 +51,11 @@ export default function DataOutput({ navigation }) {
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView>
-        <Header title="Results summary" useLogo={true} />
+        <Header
+          navigation={navigation}
+          title="Results summary"
+          useLogo={true}
+        />
         <Divider />
         <Wrapper>
           <Main>

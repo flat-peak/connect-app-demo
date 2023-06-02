@@ -12,6 +12,12 @@ const body = (theme) => `
     font-size: ${theme.fontSizes.body}px;
 `;
 
+const label = (theme) => `
+    margin-bottom: 10px;
+    font-size: 17px;
+    color: #000000;
+`;
+
 const heading = (theme) => `
     color: ${theme.colors.text.heading};
     font-family: ${theme.fonts.heading};
@@ -73,9 +79,17 @@ const inputValue = (theme) => `
     font-family: ${theme.fonts.body};
     font-size: ${theme.fontSizes.inputField}px;
 `;
+const linkButton = (theme) => `
+    color: ${theme.colors.text.uiControl};
+    font-family: ${theme.fonts.body};
+    font-size: ${theme.fontSizes.heading}px;
+    text-decoration: underline;
+    text-decoration-color: ${theme.colors.text.uiControl};
+`;
 
 const variants = {
   body: body,
+  label: label,
   heading: heading,
   intro: intro,
   "sub-heading": subHeading,
@@ -83,6 +97,7 @@ const variants = {
   "guiding-button-sub": guidingButtonSub,
   "executive-button": executiveButton,
   "destructive-button": destructiveButton,
+  "link-button": linkButton,
   "ui-control": uiControl,
   "input-value": inputValue,
 };

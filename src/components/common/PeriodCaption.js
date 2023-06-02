@@ -11,7 +11,7 @@ const PeriodContainer = styled.View`
 `;
 
 const PeriodBox = styled.View`
-  background-color: #07a1ff;
+  background-color: #ffffff;
   border-radius: 5px;
   padding: 1px 6px;
   margin: 10px;
@@ -19,9 +19,9 @@ const PeriodBox = styled.View`
 
 const PeriodLabel = styled.Text`
   font-family: ${({ theme }) => theme.fonts.body};
-  color: #ffffff;
-  font-size: 20px;
-  line-height: 24px;
+  color: #000000;
+  font-size: 16px;
+  line-height: 20px;
 `;
 
 export default function PeriodCaption({
