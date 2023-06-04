@@ -9,10 +9,8 @@ import styled from "styled-components/native";
 import ButtonCheckbox from "../form-controls/ButtonCheckbox";
 import { TARIFF_SIDE } from "../../data/tariff-constants";
 import {
-  findWeekdaySchedule,
-  isSeasonConfigurable,
-  isTimeConfigurable,
   selectPlan,
+  selectStructure,
   setStructure,
 } from "../../store/reducers/tariffReducer";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,21 +32,16 @@ const CentredPlaceholder = styled.View`
 
 export default function TariffStructure({ navigation, route }) {
   const { side } = route.params;
+  const structure = useSelector(selectStructure);
   const plan = useSelector(selectPlan);
   const dispatch = useDispatch();
-
-  const schedule = findWeekdaySchedule(plan[side]);
 
   let title = "What affects your rate?";
   let subTitle = `Which of the following affects your ${
     side === TARIFF_SIDE.IMPORT ? "import" : "export"
   } rate?\nSelect all that apply.`;
 
-  const structure = {
-    seasons: isSeasonConfigurable(schedule),
-    time: isTimeConfigurable(schedule),
-  };
-
+  // console.log("PLAN", JSON.stringify(plan.import[0], null, 2));
   return (
     <ThemeProvider theme={theme}>
       <ScreenSafeView edges={["right", "left", "bottom"]}>
@@ -57,25 +50,49 @@ export default function TariffStructure({ navigation, route }) {
           <Main>
             <RateFactors>
               <ButtonCheckbox
-                value={structure.seasons}
-                title={"Season/Month"}
+                title={"Time of Use"}
+                value={structure.hours}
                 onChange={(value) =>
                   dispatch(
                     setStructure({
                       target: side,
-                      structure: { ...structure, seasons: value },
+                      structure: {
+                        hours: value,
+                        days: structure.days,
+                        months: structure.months,
+                      },
                     })
                   )
                 }
               />
               <ButtonCheckbox
-                title={"Time of Use"}
-                value={structure.time}
+                title={"Weekday/Weekend"}
+                value={structure.days}
                 onChange={(value) =>
                   dispatch(
                     setStructure({
                       target: side,
-                      structure: { ...structure, time: value },
+                      structure: {
+                        hours: structure.hours,
+                        days: value,
+                        months: structure.months,
+                      },
+                    })
+                  )
+                }
+              />
+              <ButtonCheckbox
+                value={structure.months}
+                title={"Season/Month"}
+                onChange={(value) =>
+                  dispatch(
+                    setStructure({
+                      target: side,
+                      structure: {
+                        hours: structure.hours,
+                        days: structure.days,
+                        months: value,
+                      },
                     })
                   )
                 }
@@ -86,7 +103,7 @@ export default function TariffStructure({ navigation, route }) {
               </CentredPlaceholder>
 
               <ButtonCheckbox
-                value={!structure.seasons && !structure.time}
+                value={!structure.days && !structure.hours && !structure.months}
                 title={"None of the Above"}
                 subTitle={"I am on flat rate"}
                 onChange={(value) =>
@@ -94,9 +111,9 @@ export default function TariffStructure({ navigation, route }) {
                     setStructure({
                       target: side,
                       structure: {
-                        ...structure,
-                        seasons: !value,
-                        time: !value,
+                        hours: false,
+                        days: false,
+                        months: false,
                       },
                     })
                   )
@@ -109,7 +126,7 @@ export default function TariffStructure({ navigation, route }) {
               title={"Next"}
               variant="executive"
               onPress={() => {
-                if (structure.seasons) {
+                if (structure.months) {
                   navigation.push("Seasons", {
                     side,
                   });

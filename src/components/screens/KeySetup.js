@@ -21,7 +21,11 @@ import {
   setApiUrl,
   setPublishableKey,
 } from "../../store/reducers/keySetupReducer";
-import { dismissError, selectError, selectLoading } from "../../store/reducers/progressIndicatorReducer";
+import {
+  dismissError,
+  selectError,
+  selectLoading,
+} from "../../store/reducers/progressIndicatorReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { initContext } from "../../store/reducers/contextReducer";
 import { Linking } from "react-native";
@@ -91,7 +95,7 @@ export default function KeySetup({ navigation }) {
               <InputValue
                 value={publishableKey}
                 onChangeText={(text) => dispatch(setPublishableKey(text))}
-                returnKeyType="submit"
+                returnKeyType="next"
                 refs={refs}
                 refIndex={1}
               />

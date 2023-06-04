@@ -44,14 +44,17 @@ export namespace App {
     | "Weekdays"
     | "Weekend";
 
+  export interface TariffDataStructure {
+    time: boolean;
+    days: boolean;
+    months: boolean;
+  }
+
   export interface TariffState {
     plan: Tariff;
     provider: Provider;
     title: string;
-    preferences: {
-      time: true;
-      seasons: true;
-    };
+    structure: TariffDataStructure;
     saved: boolean;
   }
 
