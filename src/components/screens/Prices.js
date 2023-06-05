@@ -23,6 +23,7 @@ import {
 } from "../common/EditableTable";
 import {
   resolveMonthLabelByKey,
+  TARIFF_ALL_DAYS,
   TARIFF_ALL_MONTHS,
   TARIFF_DAYS,
   TARIFF_MONTH_LABELS,
@@ -34,9 +35,13 @@ import { isEqualObjects } from "../../global/common";
 import {
   addPriceRange,
   findWeekdaySchedule,
-  isTimeConfigurable,
+  getEndDayOfRange,
+  getEndMonthOfRange,
+  getStartDayOfRange,
+  getStartMonthOfRange,
   removePriceRange,
   selectPlan,
+  selectStructure,
   setPrice,
   setSamePrices,
 } from "../../store/reducers/tariffReducer";
@@ -45,6 +50,7 @@ import ScreenTitle from "../layout/ScreenTitle";
 
 export default function Prices({ navigation, route }) {
   const plan = useSelector(selectPlan);
+  const structure = useSelector(selectStructure);
   const dispatch = useDispatch();
   const [sameSchedule, setSameSchedule] = useState(false);
   const { side, seasonIndex, daysIndex } = route.params;
@@ -73,7 +79,7 @@ export default function Prices({ navigation, route }) {
         );
       });
 
-  const flat = !isTimeConfigurable(schedule);
+  const flat = !structure.hours;
 
   useEffect(() => {
     if (!isWeekendMode || !weekdaysPriceRange) {
@@ -85,9 +91,10 @@ export default function Prices({ navigation, route }) {
     );
   }, [weekdaysPriceRange, currentPriceRange, isWeekendMode]);
 
-  const displayPeriods = !flat && (!isWeekendMode || !sameSchedule);
-  const displayCaptions = !flat;
-  const displaySinglePrice = flat;
+  const displayPeriods = structure.hours && (!isWeekendMode || !sameSchedule);
+  const displayCaptions = structure.months || structure.days;
+  const displaySinglePrice =
+    !structure.hours && (!isWeekendMode || !sameSchedule);
 
   const toggleSameSchedule = (checked) => {
     setSameSchedule(checked);
@@ -120,8 +127,10 @@ export default function Prices({ navigation, route }) {
   };
 
   const getDescription = () => {
-    if (flat) {
-      return "All-year";
+    if (!structure.months) {
+      return `Adjust cost per kWh for your ${
+        side === TARIFF_SIDE.IMPORT ? "import" : "export"
+      } tariff`;
     }
     return `Adjust cost per kWh for your ${
       side === TARIFF_SIDE.IMPORT ? "import" : "export"
@@ -251,6 +260,7 @@ export default function Prices({ navigation, route }) {
   };
 
   const months = schedule.data[seasonIndex].months;
+  const valid = currentPriceRange.hours.every((h) => Number(h.cost) > 0);
 
   return (
     <ThemeProvider theme={theme}>
@@ -259,18 +269,10 @@ export default function Prices({ navigation, route }) {
         <Wrapper>
           {displayCaptions && (
             <PeriodCaption
-              monthFrom={
-                months[0] === TARIFF_ALL_MONTHS
-                  ? TARIFF_MONTH_LABELS[0]
-                  : resolveMonthLabelByKey(months[0])
-              }
-              monthTo={
-                months[0] === TARIFF_ALL_MONTHS
-                  ? TARIFF_MONTH_LABELS[11]
-                  : resolveMonthLabelByKey(months[months.length - 1])
-              }
-              dayFrom={isWeekendMode ? "Sat" : "Mon"}
-              dayTo={isWeekendMode ? "Sun" : "Fri"}
+              monthFrom={resolveMonthLabelByKey(getStartMonthOfRange(months))}
+              monthTo={resolveMonthLabelByKey(getEndMonthOfRange(months))}
+              dayFrom={getStartDayOfRange(currentPriceRange.days)}
+              dayTo={getEndDayOfRange(currentPriceRange.days)}
             />
           )}
           {isWeekendMode && weekdaysPriceRange && (
@@ -391,6 +393,7 @@ export default function Prices({ navigation, route }) {
             <Button
               title={"Next"}
               variant="executive"
+              disabled={!valid}
               onPress={() => {
                 const { id, params } = getNextScreenParams();
                 navigation.push(id, params);

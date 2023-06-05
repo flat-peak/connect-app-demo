@@ -1,7 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+  resolveMonthLabelByKey,
   TARIFF_ALL_DAYS,
   TARIFF_ALL_MONTHS,
+  TARIFF_DAYS,
+  TARIFF_MONTH_LABELS,
   TARIFF_MONTHS,
   TARIFF_TYPE,
   TARIFF_WEEKDAYS,
@@ -9,7 +12,8 @@ import {
 } from "../../data/tariff-constants";
 import { startDeveloperFlow, startSimpleFlow } from "./contextReducer";
 import { withProgressMiddleware } from "./progressIndicatorReducer";
-import { service } from "../../service/flatpeak.service";
+import { service, throwOnApiError } from "../../service/flatpeak.service";
+import { isEqualObjects } from "../../global/common";
 
 /**
  * @param {string} validFrom
@@ -55,6 +59,17 @@ export const isTimeConfigurable = (schedule) => {
  * @param {TariffSchedule} schedule
  * @return {boolean}
  */
+export const isWeekdayConfigurable = (schedule) => {
+  if (!schedule) {
+    return false;
+  }
+  return schedule.data[0]?.days_and_hours[0]?.days[0] !== TARIFF_ALL_DAYS;
+};
+
+/**
+ * @param {TariffSchedule} schedule
+ * @return {boolean}
+ */
 export const isSeasonConfigurable = (schedule) => {
   if (!schedule) {
     return false;
@@ -62,11 +77,67 @@ export const isSeasonConfigurable = (schedule) => {
   return schedule?.data[0]?.months[0] !== TARIFF_ALL_MONTHS;
 };
 
+export const getStartDayOfRange = (days) => {
+  if (!days.length) {
+    return null;
+  }
+  switch (days[0]) {
+    case TARIFF_WEEKDAYS:
+    case TARIFF_ALL_DAYS:
+      return TARIFF_DAYS[0];
+    case TARIFF_WEEKEND:
+      return TARIFF_DAYS[5];
+    default:
+      return days[0];
+  }
+};
+
+export const getEndDayOfRange = (days) => {
+  if (!days.length) {
+    return null;
+  }
+  switch (days[0]) {
+    case TARIFF_WEEKEND:
+    case TARIFF_ALL_DAYS:
+      return TARIFF_DAYS[6];
+    case TARIFF_WEEKDAYS:
+      return TARIFF_DAYS[4];
+    default:
+      return days[days.length - 1];
+  }
+};
+
+export const getStartMonthOfRange = (months) => {
+  return months[0] === TARIFF_ALL_MONTHS ? TARIFF_MONTHS[0] : months[0];
+};
+export const getEndMonthOfRange = (months) => {
+  return months[0] === TARIFF_ALL_MONTHS
+    ? TARIFF_MONTHS[11]
+    : months[months.length - 1];
+};
+function isSameWeekDays(daysAndHours, index) {
+  if (!daysAndHours[index] || !daysAndHours[index + 1]) {
+    return false;
+  }
+
+  if (
+    daysAndHours[index].days[0] === TARIFF_WEEKDAYS &&
+    daysAndHours[index + 1].days[0] === TARIFF_WEEKEND
+  ) {
+    return isEqualObjects(
+      daysAndHours[index].hours,
+      daysAndHours[index + 1].hours
+    );
+  }
+
+  return false;
+}
 /**
  * @param {string[]} [days]
+ * @param {TariffDataStructure} structure
  * @return TariffScheduleDaysAndHours
  */
-export const blankTariffScheduleDaysAndHours = (days = []) => {
+export const blankTariffScheduleDaysAndHours = (days = [], structure) => {
   return {
     days: days,
     hours: [blankHoursTemplate()],
@@ -75,32 +146,41 @@ export const blankTariffScheduleDaysAndHours = (days = []) => {
 
 /**
  * @param {Array<TariffMonth>} months
+ * @param {TariffDataStructure} structure
  * @return TariffScheduleDatum
  */
-export const blankTariffScheduleDatum = (months = []) => {
+export const blankTariffScheduleDatum = (months = [], structure) => {
   return {
-    days_and_hours: [
-      blankTariffScheduleDaysAndHours([TARIFF_WEEKDAYS]),
-      blankTariffScheduleDaysAndHours([TARIFF_WEEKEND]),
-    ],
-    months: months.length ? months : [...TARIFF_MONTHS],
+    days_and_hours: structure.days
+      ? [
+          blankTariffScheduleDaysAndHours([TARIFF_WEEKDAYS], structure),
+          blankTariffScheduleDaysAndHours([TARIFF_WEEKEND], structure),
+        ]
+      : [blankTariffScheduleDaysAndHours([TARIFF_ALL_DAYS], structure)],
+    months: months.length
+      ? months
+      : structure.months
+      ? [...TARIFF_MONTHS]
+      : [TARIFF_ALL_MONTHS],
   };
 };
 
 /**
+ * @param {TariffDataStructure} structure
  * @return TariffSchedule
  */
-export const blankWeekdaySchedule = () => {
+export const blankWeekdaySchedule = (structure) => {
   return {
     type: TARIFF_TYPE.WEEKDAY,
-    data: [blankTariffScheduleDatum()],
+    data: [blankTariffScheduleDatum([], structure)],
   };
 };
 
 /**
+ * @param {TariffDataStructure} structure
  * @return Tariff
  */
-export const blankTariff = () => {
+export const blankTariff = (structure) => {
   return {
     id: undefined,
     object: "tariff",
@@ -109,19 +189,22 @@ export const blankTariff = () => {
     timezone: undefined,
     time_created: undefined,
     time_expiry: undefined,
-    import: [blankWeekdaySchedule()],
+    import: [blankWeekdaySchedule(structure)],
     export: undefined,
   };
 };
 
 const handleResetTariff = (state, action) => {
-  state.plan = blankTariff();
+  const structure = {
+    time: true,
+    hours: false,
+    months: false,
+  };
+
+  state.plan = blankTariff(structure);
   state.provider = undefined;
   state.saved = false;
-  state.preferences = {
-    time: true,
-    seasons: true,
-  };
+  state.structure = structure;
 };
 
 export const saveManualTariff = createAsyncThunk(
@@ -191,12 +274,17 @@ export const saveConnectedTariff = createAsyncThunk(
 export const tariffSlice = createSlice({
   name: "tariff",
   initialState: {
-    plan: blankTariff(),
+    plan: blankTariff({
+      time: true,
+      hours: false,
+      months: false,
+    }),
     provider: undefined,
     saved: false,
-    preferences: {
+    structure: {
       time: true,
-      seasons: true,
+      hours: false,
+      months: false,
     },
   },
   reducers: {
@@ -215,7 +303,7 @@ export const tariffSlice = createSlice({
       if (!enabled) {
         state.plan.export = undefined;
       } else {
-        state.plan.export = [blankWeekdaySchedule()];
+        state.plan.export = [blankWeekdaySchedule(state.structure)];
       }
     },
 
@@ -228,20 +316,31 @@ export const tariffSlice = createSlice({
         return;
       }
 
-      const dayPrices = schedule.data[seasonIndex]?.days_and_hours[daysIndex];
+      const daysCollection = schedule.data[seasonIndex]?.days_and_hours;
+      const dayPrices = daysCollection[daysIndex];
 
       if (!dayPrices) {
         return;
       }
 
+      const sameWeekdays = isSameWeekDays(daysCollection, daysIndex);
+
       if (dayPrices.hours.length) {
         /** @type {TariffScheduleHours} */
         const prev = dayPrices.hours[dayPrices.hours.length - 1];
-        dayPrices.hours.push(blankHoursTemplate(prev.valid_to));
+        const template = blankHoursTemplate(prev.valid_to);
+        dayPrices.hours.push(template);
+        if (sameWeekdays) {
+          daysCollection[daysIndex + 1].hours.push(template);
+        }
         return;
       }
 
-      dayPrices.hours.push(blankHoursTemplate());
+      const template = blankHoursTemplate();
+      dayPrices.hours.push(template);
+      if (sameWeekdays) {
+        daysCollection[daysIndex + 1].hours.push(template);
+      }
     },
 
     removePriceRange: (state, action) => {
@@ -253,10 +352,15 @@ export const tariffSlice = createSlice({
         return;
       }
 
-      const dayPrices = schedule.data[seasonIndex]?.days_and_hours[daysIndex];
+      const daysCollection = schedule.data[seasonIndex]?.days_and_hours;
+      const dayPrices = daysCollection[daysIndex];
 
       if (!dayPrices) {
         return;
+      }
+
+      if (isSameWeekDays(daysCollection, daysIndex)) {
+        daysCollection[daysIndex + 1].hours.splice(priceIndex, 1);
       }
 
       dayPrices.hours.splice(priceIndex, 1);
@@ -272,10 +376,15 @@ export const tariffSlice = createSlice({
         return;
       }
 
-      const dayPrices = schedule.data[seasonIndex]?.days_and_hours[daysIndex];
+      const daysCollection = schedule.data[seasonIndex]?.days_and_hours;
+      const dayPrices = daysCollection[daysIndex];
 
       if (!dayPrices) {
         return;
+      }
+
+      if (isSameWeekDays(daysCollection, daysIndex)) {
+        daysCollection[daysIndex + 1].hours[priceIndex] = price;
       }
 
       dayPrices.hours[priceIndex] = price;
@@ -369,21 +478,26 @@ export const tariffSlice = createSlice({
             if (index === TARIFF_MONTHS.length - 2) {
               const lastMonthOfYear = TARIFF_MONTHS[TARIFF_MONTHS.length - 1];
               schedule.data.push(
-                blankTariffScheduleDatum([lastMonthOfYear, lastMonthOfYear])
+                blankTariffScheduleDatum(
+                  [lastMonthOfYear, lastMonthOfYear],
+                  state.structure
+                )
               );
               return;
             }
             if (index > -1) {
               const months = TARIFF_MONTHS.slice(index + 1);
               if (months.length > 1) {
-                schedule.data.push(blankTariffScheduleDatum(months));
+                schedule.data.push(
+                  blankTariffScheduleDatum(months, state.structure)
+                );
                 return;
               }
             }
           }
         }
       }
-      schedule.data.push(blankTariffScheduleDatum());
+      schedule.data.push(blankTariffScheduleDatum([], state.structure));
     },
     removeSeasonRange: (state, action) => {
       const { index, side } = action.payload;
@@ -409,24 +523,26 @@ export const tariffSlice = createSlice({
     setStructure: (state, action) => {
       const { target, structure } = action.payload;
 
+      state.structure = structure;
       /**
        * @type {TariffSchedule|null}
        */
       let schedule = findWeekdaySchedule(state.plan[target]);
       if (!schedule) {
-        schedule = blankWeekdaySchedule();
+        schedule = blankWeekdaySchedule(structure);
         state.plan[target].push(schedule);
       }
 
-      if (!structure.seasons) {
+      if (!structure.months) {
         schedule.data = schedule.data.filter(
           (datum) => datum.months[0] === TARIFF_ALL_MONTHS
         );
         if (schedule.data.length > 1) {
           schedule.data.splice(1, schedule.data.length - 1);
-        }
-        if (!schedule.data.length) {
-          schedule.data = [blankTariffScheduleDatum()];
+        } else if (!schedule.data.length) {
+          schedule.data = [
+            blankTariffScheduleDatum([TARIFF_ALL_MONTHS], structure),
+          ];
         }
         schedule.data[0].months = [TARIFF_ALL_MONTHS];
       } else {
@@ -438,13 +554,15 @@ export const tariffSlice = createSlice({
         });
       }
 
-      if (!structure.time) {
+      if (!structure.days) {
         schedule.data.forEach((datum) => {
           if (datum.days_and_hours.length > 1) {
             datum.days_and_hours.splice(1, datum.days_and_hours.length - 1);
           }
           if (!datum.days_and_hours.length) {
-            datum.days_and_hours = [blankTariffScheduleDaysAndHours()];
+            datum.days_and_hours = [
+              blankTariffScheduleDaysAndHours([], structure),
+            ];
           }
           datum.days_and_hours[0].days = [TARIFF_ALL_DAYS];
           datum.days_and_hours[0].hours = [blankHoursTemplate()];
@@ -456,10 +574,18 @@ export const tariffSlice = createSlice({
             datum.days_and_hours[0]?.days[0] === TARIFF_ALL_DAYS
           ) {
             datum.days_and_hours = [
-              blankTariffScheduleDaysAndHours([TARIFF_WEEKDAYS]),
-              blankTariffScheduleDaysAndHours([TARIFF_WEEKEND]),
+              blankTariffScheduleDaysAndHours([TARIFF_WEEKDAYS], structure),
+              blankTariffScheduleDaysAndHours([TARIFF_WEEKEND], structure),
             ];
           }
+        });
+      }
+
+      if (!structure.hours) {
+        schedule.data.forEach((datum) => {
+          datum.days_and_hours.forEach((entry) => {
+            // reset ?
+          });
         });
       }
     },
@@ -499,6 +625,7 @@ export const selectDisplayName = (state) => state.tariff.plan.display_name;
 export const selectPlan = (state) => state.tariff.plan;
 export const selectProvider = (state) => state.tariff?.provider;
 export const selectSaved = (state) => state.tariff.saved;
+export const selectStructure = (state) => state.tariff.structure;
 export const selectExportEnabled = (state) => Boolean(state.tariff.plan.export);
 
 export default tariffSlice.reducer;

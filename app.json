@@ -19,6 +19,9 @@
     ],
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "ios": {
+      "bundleIdentifier": "energy.flatpeak.client"
     }
   }
 }
