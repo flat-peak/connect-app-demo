@@ -81,6 +81,7 @@ export default function KeySetup({ navigation }) {
               <InputValue
                 isFirst={true}
                 value={apiUrl}
+                placeholder={"https://api.flatpeak.energy"}
                 onChangeText={(text) => dispatch(setApiUrl(text))}
                 returnKeyType="next"
                 refs={refs}
@@ -94,6 +95,7 @@ export default function KeySetup({ navigation }) {
             >
               <InputValue
                 value={publishableKey}
+                placeholder={"pk_****_************************"}
                 onChangeText={(text) => dispatch(setPublishableKey(text))}
                 returnKeyType="next"
                 refs={refs}

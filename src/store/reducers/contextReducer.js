@@ -25,11 +25,11 @@ export const initContext = createAsyncThunk(
   withProgressMiddleware(async (args, thunkAPI) => {
     const fetchResult = await thunkAPI.dispatch(fetchAreaEnabled());
     if (fetchAreaEnabled.rejected.match(fetchResult)) {
-      throw fetchResult.payload;
+      throw fetchResult.error;
     }
     const locationResult = await thunkAPI.dispatch(defineUserLocation());
     if (defineUserLocation.rejected.match(locationResult)) {
-      throw locationResult.payload;
+      throw locationResult.error;
     }
   })
 );
