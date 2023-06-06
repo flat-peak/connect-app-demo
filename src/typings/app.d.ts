@@ -1,10 +1,12 @@
-import { FlatPeak } from "@flat-peak/javascript-sdk";
+/** @typedef { import("@flat-peak/javascript-sdk").FlatPeak } FlatPeak */
+/** @typedef { import("@flat-peak/javascript-sdk").Tariff } Tariff */
+/** @typedef { import("@flat-peak/javascript-sdk").TariffSchedule } TariffSchedule */
+/** @typedef { import("@flat-peak/javascript-sdk").TariffScheduleDatum } TariffScheduleDatum */
+/** @typedef { import("@flat-peak/javascript-sdk").TariffDaysAndHours } TariffDaysAndHours */
+/** @typedef { import("@flat-peak/javascript-sdk").TariffHour } TariffHour */
+import { PostalAddress, Provider, Tariff } from "@flat-peak/javascript-sdk";
 
 export namespace App {
-  import Tariff = FlatPeak.Tariff;
-  import Provider = FlatPeak.Provider;
-  import PostalAddress = FlatPeak.PostalAddress;
-
   export interface PeakDetail {
     type: PeakType;
     timeFrom: string;

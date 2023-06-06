@@ -1,10 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  resolveMonthLabelByKey,
   TARIFF_ALL_DAYS,
   TARIFF_ALL_MONTHS,
   TARIFF_DAYS,
-  TARIFF_MONTH_LABELS,
   TARIFF_MONTHS,
   TARIFF_TYPE,
   TARIFF_WEEKDAYS,
@@ -19,7 +17,7 @@ import { isEqualObjects } from "../../global/common";
  * @param {string} validFrom
  * @param {string} validTo
  * @param {string} cost
- * @return TariffScheduleHours
+ * @return TariffHour
  */
 const blankHoursTemplate = (
   validFrom = "00:00:00",
@@ -178,7 +176,7 @@ export const blankWeekdaySchedule = (structure) => {
 
 /**
  * @param {TariffDataStructure} structure
- * @return Tariff
+ * @return TariffPlan
  */
 export const blankTariff = (structure) => {
   return {
@@ -326,7 +324,6 @@ export const tariffSlice = createSlice({
       const sameWeekdays = isSameWeekDays(daysCollection, daysIndex);
 
       if (dayPrices.hours.length) {
-        /** @type {TariffScheduleHours} */
         const prev = dayPrices.hours[dayPrices.hours.length - 1];
         const template = blankHoursTemplate(prev.valid_to);
         dayPrices.hours.push(template);
