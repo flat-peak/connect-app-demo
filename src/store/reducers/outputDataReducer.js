@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { saveManualTariff } from "./tariffReducer";
+import { saveConnectedTariff, saveManualTariff } from "./tariffReducer";
 
 export const outputDataSlice = createSlice({
   name: "outputData",
@@ -19,6 +19,13 @@ export const outputDataSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(saveManualTariff.fulfilled, (state, action) => {
+      const { device_id, customer_id, product_id, tariff_id } = action.payload;
+      state.device_id = device_id;
+      state.customer_id = customer_id;
+      state.product_id = product_id;
+      state.tariff_id = tariff_id;
+    });
+    builder.addCase(saveConnectedTariff.fulfilled, (state, action) => {
       const { device_id, customer_id, product_id, tariff_id } = action.payload;
       state.device_id = device_id;
       state.customer_id = customer_id;
