@@ -7,14 +7,12 @@ const PeriodContainer = styled.View`
   flex-wrap: wrap;
   column-gap: 20px;
   row-gap: 20px;
-  margin: -10px;
 `;
 
 const PeriodBox = styled.View`
   background-color: #ffffff;
   border-radius: 5px;
   padding: 1px 6px;
-  margin: 10px;
 `;
 
 const PeriodLabel = styled.Text`

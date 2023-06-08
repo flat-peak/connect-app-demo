@@ -1,5 +1,5 @@
 import styled from "styled-components/native";
-import { TouchableOpacity } from "react-native";
+import { TextInput, TouchableOpacity } from "react-native";
 
 export const EditableTableRow = styled.View`
   flex-direction: row;
@@ -32,6 +32,12 @@ export const EditableTableControl = styled.View`
   justify-content: center;
 `;
 
+export const EditableTableGroup = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 export const EditableTableLabel = styled.Text`
   font-size: 17px;
   line-height: 20px;
@@ -44,4 +50,13 @@ export const EditableTableValue = styled.Text`
   line-height: 22px;
   font-family: ${({ theme }) => theme.fonts.heading};
   color: #333333;
+`;
+
+export const EditableTableInput = styled(TextInput)`
+  font-size: ${({ isLong }) => (isLong ? 14 : 16)}px;
+  line-height: 22px;
+  font-family: ${({ theme }) => theme.fonts.heading};
+  color: #333333;
+  padding: 0;
+  top: -2px;
 `;

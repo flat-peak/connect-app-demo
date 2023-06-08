@@ -25,7 +25,11 @@ import {
   selectTimezone,
   setInputParam,
 } from "../../store/reducers/inputDataReducer";
-import { dismissError, selectError, selectLoading } from "../../store/reducers/progressIndicatorReducer";
+import {
+  dismissError,
+  selectError,
+  selectLoading,
+} from "../../store/reducers/progressIndicatorReducer";
 import { useDispatch, useSelector } from "react-redux";
 
 const InputValue = styled(TextInput).attrs(({ refs, refIndex }) => {
@@ -85,6 +89,7 @@ export default function DataInput({ navigation }) {
                 onChangeText={(text) =>
                   dispatch(setInputParam({ key: "macAddress", value: text }))
                 }
+                placeholder={"00:00:00:00:00:00"}
                 refs={refs}
                 refIndex={0}
               />
@@ -101,6 +106,7 @@ export default function DataInput({ navigation }) {
                 onChangeText={(text) =>
                   dispatch(setInputParam({ key: "deviceId", value: text }))
                 }
+                placeholder={"dev_************************"}
                 returnKeyType="next"
                 refs={refs}
                 refIndex={1}
@@ -115,6 +121,7 @@ export default function DataInput({ navigation }) {
                 onChangeText={(text) =>
                   dispatch(setInputParam({ key: "productId", value: text }))
                 }
+                placeholder={"prd_************************"}
                 returnKeyType="next"
                 refs={refs}
                 refIndex={2}
@@ -130,13 +137,14 @@ export default function DataInput({ navigation }) {
                 onChangeText={(text) =>
                   dispatch(setInputParam({ key: "customerId", value: text }))
                 }
+                placeholder={"cus_************************"}
                 returnKeyType="next"
                 refs={refs}
                 refIndex={3}
               />
             </Field>
 
-            <Field label={"Timezone"} description={"In tz database format"}>
+            <Field label={"Timezone"}>
               <Dropdown
                 value={timezone}
                 options={TIMEZONES}
