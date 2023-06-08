@@ -27,7 +27,7 @@ export const getPeakColor = (key) => {
 export const addLeadingZero = (v) => (v < 10 ? "0" + String(v) : String(v));
 
 /**
- * @param {Array<TariffScheduleHours>} values
+ * @param {Array<TariffHour>} values
  * @return {Array<PeakDetail>}
  */
 export const extractPeaks = (values) => {

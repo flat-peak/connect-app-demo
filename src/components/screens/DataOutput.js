@@ -19,7 +19,11 @@ import {
   selectProductId,
   selectTariffId,
 } from "../../store/reducers/outputDataReducer";
-import { selectDeveloperMode, setOffPeakCharge, startDeveloperFlow } from "../../store/reducers/contextReducer";
+import {
+  selectDeveloperMode,
+  setOffPeakCharge,
+  startDeveloperFlow,
+} from "../../store/reducers/contextReducer";
 import { selectDashboardUrl } from "../../store/reducers/keySetupReducer";
 import { useDispatch, useSelector } from "react-redux";
 
