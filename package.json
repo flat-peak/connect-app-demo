@@ -43,7 +43,8 @@
     "react-native-webview": "11.26.0",
     "react-redux": "^8.0.2",
     "redux": "^4.2.0",
-    "styled-components": "^5.3.5"
+    "styled-components": "^5.3.5",
+    "use-dynamic-refs": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

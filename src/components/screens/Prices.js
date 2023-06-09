@@ -1,12 +1,13 @@
 import { FlatList, TouchableOpacity, View } from "react-native";
 import { useEffect, useRef, useState } from "react";
+import useDynamicRefs from "use-dynamic-refs";
+
 import Button from "../form-controls/Button";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "../form-controls/Checkbox";
 import PeriodCaption from "../common/PeriodCaption";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { addLeadingZero } from "../../global/peak-utils";
-import EditPriceDialog from "../dialogs/edit-price-dialog";
 import { theme } from "../../theme/secondary";
 import { ScreenSafeView } from "../layout/View";
 import { ThemeProvider } from "styled-components";
@@ -17,16 +18,14 @@ import {
   EditableTableBox,
   EditableTableBoxes,
   EditableTableControl,
+  EditableTableInput,
   EditableTableLabel,
   EditableTableRow,
   EditableTableValue,
 } from "../common/EditableTable";
 import {
   resolveMonthLabelByKey,
-  TARIFF_ALL_DAYS,
-  TARIFF_ALL_MONTHS,
   TARIFF_DAYS,
-  TARIFF_MONTH_LABELS,
   TARIFF_SIDE,
   TARIFF_WEEKDAYS,
   TARIFF_WEEKEND,
@@ -53,6 +52,7 @@ export default function Prices({ navigation, route }) {
   const structure = useSelector(selectStructure);
   const dispatch = useDispatch();
   const [sameSchedule, setSameSchedule] = useState(false);
+  const [getRef, setRef] = useDynamicRefs();
   const { side, seasonIndex, daysIndex } = route.params;
 
   const schedule = findWeekdaySchedule(plan[side]);
@@ -171,20 +171,7 @@ export default function Prices({ navigation, route }) {
   };
 
   const lastSelectedTime = useRef(null);
-  const lastSelectedPrice = useRef(null);
-
   const [isTimepickerOpen, setTimepickerOpen] = useState(false);
-  const [isPricePickerOpen, setPricePickerOpen] = useState(false);
-
-  const openPricePicker = (item, index) => {
-    const { valid_from: from, valid_to: to, cost } = item;
-    lastSelectedPrice.current = {
-      cost: cost.toString(),
-      description: `${from.substring(0, 5)} - ${to.substring(0, 5)}`,
-      index,
-    };
-    setPricePickerOpen(true);
-  };
 
   const openTimePicker = (item, pickMode, index) => {
     const { valid_from: from, valid_to: to } = item;
@@ -205,10 +192,6 @@ export default function Prices({ navigation, route }) {
   };
   const hideDatePicker = () => {
     setTimepickerOpen(false);
-  };
-
-  const hidePricePicker = () => {
-    setPricePickerOpen(false);
   };
 
   const handleConfirmTime = (date) => {
@@ -236,27 +219,48 @@ export default function Prices({ navigation, route }) {
     hideDatePicker();
   };
 
-  const handleConfirmPrice = (value) => {
-    const priceIndex = lastSelectedPrice.current.index;
+  const validatePrice = (priceIndex) => {
     const targetPriceEl = currentPriceRange.hours[priceIndex];
-
-    if (targetPriceEl) {
-      let normalizedPrice = (parseFloat(value) || 0).toFixed(2);
-      dispatch(
-        setPrice({
-          price: {
-            ...targetPriceEl,
-            cost: Number(normalizedPrice),
-          },
-          side,
-          seasonIndex,
-          daysIndex,
-          priceIndex,
-        })
-      );
+    if (!targetPriceEl) {
+      return;
     }
-
-    hidePricePicker();
+    const value = targetPriceEl.cost;
+    let normalizedPrice = (
+      Math.floor((parseFloat(value) || 0) * 100) / 100
+    ).toFixed(2);
+    if (String(value) === normalizedPrice) {
+      return;
+    }
+    dispatch(
+      setPrice({
+        price: {
+          ...targetPriceEl,
+          cost: normalizedPrice,
+        },
+        side,
+        seasonIndex,
+        daysIndex,
+        priceIndex,
+      })
+    );
+  };
+  const updatePrice = (value, priceIndex) => {
+    const targetPriceEl = currentPriceRange.hours[priceIndex];
+    if (!targetPriceEl) {
+      return;
+    }
+    dispatch(
+      setPrice({
+        price: {
+          ...targetPriceEl,
+          cost: value,
+        },
+        side,
+        seasonIndex,
+        daysIndex,
+        priceIndex,
+      })
+    );
   };
 
   const months = schedule.data[seasonIndex].months;
@@ -285,13 +289,6 @@ export default function Prices({ navigation, route }) {
           )}
 
           <Main>
-            <EditPriceDialog
-              isVisible={isPricePickerOpen}
-              value={lastSelectedPrice.current?.cost}
-              description={lastSelectedPrice.current?.description}
-              onConfirm={handleConfirmPrice}
-              onCancel={hidePricePicker}
-            />
             {displayPeriods && (
               <View style={{ paddingTop: 18 }}>
                 <DateTimePickerModal
@@ -339,14 +336,26 @@ export default function Prices({ navigation, route }) {
                             </EditableTableValue>
                           </EditableTableBox>
                           <EditableTableBox
-                            onPress={() => openPricePicker(item, index)}
+                            onPress={() =>
+                              getRef(`cost_${index}`)?.current?.focus()
+                            }
                           >
                             <EditableTableLabel>Price:</EditableTableLabel>
-                            <EditableTableValue
+                            <EditableTableInput
                               isLong={String(item.cost).length > 5}
-                            >
-                              £{Number(item.cost || 0).toFixed(2)}
-                            </EditableTableValue>
+                              inputMode={"decimal"}
+                              autoComplete={"off"}
+                              autoCorrect={false}
+                              blurOnSubmit={true}
+                              enterKeyHint={"done"}
+                              clearTextOnFocus={!String(item.cost)}
+                              ref={setRef(`cost_${index}`)}
+                              onChangeText={(value) =>
+                                updatePrice(value, index)
+                              }
+                              onBlur={() => validatePrice(index)}
+                              value={item.cost}
+                            />
                           </EditableTableBox>
                         </EditableTableBoxes>
 
@@ -375,14 +384,20 @@ export default function Prices({ navigation, route }) {
                   <EditableTableBoxes>
                     <EditableTableBox
                       isFirst={true}
-                      onPress={() =>
-                        openPricePicker(currentPriceRange.hours[0], 0)
-                      }
+                      onPress={() => getRef("cost_0")?.current?.focus()}
                     >
                       <EditableTableLabel>Price:</EditableTableLabel>
-                      <EditableTableValue>
-                        £{currentPriceRange.hours[0].cost}
-                      </EditableTableValue>
+                      <EditableTableInput
+                        inputMode={"decimal"}
+                        autoComplete={"off"}
+                        autoCorrect={false}
+                        blurOnSubmit={true}
+                        enterKeyHint={"done"}
+                        ref={setRef("cost_0")}
+                        onChangeText={(value) => updatePrice(value, 0)}
+                        onBlur={() => validatePrice(0)}
+                        value={currentPriceRange.hours[0].cost}
+                      />
                     </EditableTableBox>
                   </EditableTableBoxes>
                 </EditableTableRow>

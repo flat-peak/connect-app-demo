@@ -21,8 +21,14 @@ import {
   startSimpleFlow,
 } from "../../store/reducers/contextReducer";
 import { selectLoading } from "../../store/reducers/providerSelectionReducer";
-import { dismissError, selectError } from "../../store/reducers/progressIndicatorReducer";
-import { selectCountry, setCountry } from "../../store/reducers/inputDataReducer";
+import {
+  dismissError,
+  selectError,
+} from "../../store/reducers/progressIndicatorReducer";
+import {
+  selectCountry,
+  setCountry,
+} from "../../store/reducers/inputDataReducer";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components/native";
 import { Text } from "../common/Text";
@@ -72,7 +78,7 @@ export default function Home({ navigation }) {
             </Field>
             <Field
               label={"Connect my electricity provider"}
-              description={"Will open end-customer Connect experience"}
+              description={"Will launch Connect experience"}
               isRow={true}
             >
               <Switch
