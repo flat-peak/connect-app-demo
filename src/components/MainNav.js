@@ -89,7 +89,20 @@ export default function MainNav() {
         <Stack.Screen
           name={"ProviderIntegration"}
           component={ProviderIntegration}
-          options={{ ...altOptions, ...verticalAnimation }}
+          options={{
+            ...altOptions,
+            ...verticalAnimation,
+            displayProviderLogo: false,
+            header: ({ navigation, options }) => (
+              <ThemeProvider theme={secondaryTheme}>
+                <NavBar
+                  navigation={navigation}
+                  options={options}
+                  border={true}
+                />
+              </ThemeProvider>
+            ),
+          }}
         />
         <Stack.Screen
           name={"TariffSetup"}

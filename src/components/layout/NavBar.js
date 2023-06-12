@@ -20,6 +20,7 @@ const NavBarContainer = styled.View`
   background-color: ${({ theme }) => theme.colors.background};
   padding: ${({ statusBarHeight }) => statusBarHeight || 0}px
     ${({ theme }) => theme.screenHorizontalOffset}px 0;
+  border-bottom-width: ${({ border }) => (border ? 1 : 0)}px;
 `;
 
 const NavBarControl = styled(TouchableOpacity)`
@@ -37,7 +38,7 @@ const NavBarIcon = styled(AntDesign).attrs(({ glyph, theme }) => ({
   color: theme.colors.buttons.nav,
 }))``;
 
-export default function NavBar({ navigation, options }) {
+export default function NavBar({ navigation, options, border }) {
   const insets = useSafeAreaInsets();
   let statusBarHeight = Platform.select({
     android: StatusBarHeight,
@@ -45,7 +46,7 @@ export default function NavBar({ navigation, options }) {
   });
   const provider = useSelector(selectProvider);
   return (
-    <NavBarContainer statusBarHeight={statusBarHeight}>
+    <NavBarContainer statusBarHeight={statusBarHeight} border={border}>
       <View>
         {navigation.canGoBack() && (
           <NavBarControl onPress={() => navigation.goBack()}>

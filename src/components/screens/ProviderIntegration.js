@@ -1,13 +1,18 @@
 import { theme } from "../../theme/secondary";
 import { ThemeProvider } from "styled-components";
-import { ScreenSafeView } from "../layout/View";
 import { View } from "react-native";
 import WebView from "react-native-webview";
 import LoaderDialog from "../dialogs/loader-dialog";
 import ErrorDialog from "../dialogs/error-dialog";
 import { selectPublishableKey } from "../../store/reducers/keySetupReducer";
-import { connectTariff, selectProvider } from "../../store/reducers/tariffReducer";
-import { selectCustomerId, selectProductId } from "../../store/reducers/inputDataReducer";
+import {
+  connectTariff,
+  selectProvider,
+} from "../../store/reducers/tariffReducer";
+import {
+  selectCustomerId,
+  selectProductId,
+} from "../../store/reducers/inputDataReducer";
 import {
   dismissError,
   selectError,
@@ -74,7 +79,7 @@ export default function ProviderIntegration({ navigation }) {
 
   return (
     <ThemeProvider theme={theme}>
-      <ScreenSafeView edges={["right", "left", "bottom"]}>
+      <View style={{ flex: 1 }}>
         <LoaderDialog visible={loading} />
         <ErrorDialog
           isVisible={error.visible}
@@ -87,37 +92,35 @@ export default function ProviderIntegration({ navigation }) {
             dispatch(dismissError());
           }}
         />
-        <View style={{ flex: 1 }}>
-          <WebView
-            style={{ backgroundColor: theme.colors.background }}
-            source={{
-              uri,
-              headers: {
-                "publishable-key": publishableKey,
-                "product-id": productId,
-                "customer-id": customerId,
-              },
-            }}
-            cacheEnabled={false}
-            cacheMode={"LOAD_NO_CACHE"}
-            incognito={true}
-            onLoadStart={() => dispatch(setLoading(true))}
-            onLoadEnd={() => dispatch(setLoading(false))}
-            onMessage={(event) => {
-              if (event.nativeEvent.data) {
-                onResponse(event.nativeEvent.data);
-              }
-            }}
-            injectedJavaScript={`
-              document.body.style.setProperty("--fp-theme-background", "${theme.colors.background}");
+
+        <WebView
+          style={{ backgroundColor: theme.colors.background }}
+          source={{
+            uri,
+            headers: {
+              "publishable-key": publishableKey,
+              "product-id": productId,
+              "customer-id": customerId,
+            },
+          }}
+          cacheEnabled={false}
+          cacheMode={"LOAD_NO_CACHE"}
+          incognito={true}
+          onLoadStart={() => dispatch(setLoading(true))}
+          onLoadEnd={() => dispatch(setLoading(false))}
+          onMessage={(event) => {
+            if (event.nativeEvent.data) {
+              onResponse(event.nativeEvent.data);
+            }
+          }}
+          injectedJavaScript={`
               window.respondToApp = (r) => window.ReactNativeWebView.postMessage(
                 typeof r === 'string' ? r : JSON.stringify(r)
               );
               true;
             `}
-          />
-        </View>
-      </ScreenSafeView>
+        />
+      </View>
     </ThemeProvider>
   );
 }
