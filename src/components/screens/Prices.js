@@ -226,16 +226,13 @@ export default function Prices({ navigation, route }) {
     }
     const value = targetPriceEl.cost;
     let normalizedPrice = (
-      Math.floor((parseFloat(value) || 0) * 100) / 100
+      Math.floor((parseFloat(String(value)) || 0) * 100) / 100
     ).toFixed(2);
-    if (String(value) === normalizedPrice) {
-      return;
-    }
     dispatch(
       setPrice({
         price: {
           ...targetPriceEl,
-          cost: normalizedPrice,
+          cost: Number(normalizedPrice),
         },
         side,
         seasonIndex,
@@ -354,7 +351,7 @@ export default function Prices({ navigation, route }) {
                                 updatePrice(value, index)
                               }
                               onBlur={() => validatePrice(index)}
-                              value={item.cost}
+                              value={String(item.cost)}
                             />
                           </EditableTableBox>
                         </EditableTableBoxes>
@@ -396,7 +393,7 @@ export default function Prices({ navigation, route }) {
                         ref={setRef("cost_0")}
                         onChangeText={(value) => updatePrice(value, 0)}
                         onBlur={() => validatePrice(0)}
-                        value={currentPriceRange.hours[0].cost}
+                        value={String(currentPriceRange.hours[0].cost)}
                       />
                     </EditableTableBox>
                   </EditableTableBoxes>
