@@ -9,7 +9,7 @@ const rowLayout = (theme) => `
 const columnLayout = (theme) => "";
 
 const FieldRow = styled.View`
-  margin: ${({ isFirst }) => (isFirst ? 0 : 6)}px 0 6px;
+  margin: ${({ isFirst }) => (isFirst ? 0 : 6)}px 0 2px;
   min-height: 48px;
   ${({ isRow, theme }) => (isRow ? rowLayout(theme) : columnLayout(theme))}
 `;
