@@ -1,5 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { defineUserLocation, fetchAreaEnabled, startDeveloperFlow, startSimpleFlow } from "./contextReducer";
+import {
+  defineUserLocation,
+  fetchAreaEnabled,
+  startDeveloperFlow,
+  startSimpleFlow,
+} from "./contextReducer";
 import { DemoPostalAddress } from "../../data/input-scenarios";
 import { withProgressMiddleware } from "./progressIndicatorReducer";
 import { service, throwOnApiError } from "../../service/flatpeak.service";
@@ -118,18 +123,45 @@ export const inputDataSlice = createSlice({
       })
       .addCase(fetchAreaEnabled.fulfilled, (state, action) => {
         const areaEnabled = action.payload;
-        state.country = areaEnabled.some((area) => area.country_code === "GB")
+        const countryCode = areaEnabled.some(
+          (area) => area.country_code === "GB"
+        )
           ? "GB"
           : areaEnabled[0].country_code;
+
+        state.country = countryCode;
+        state.postalAddress.country_code = countryCode;
       })
       .addCase(startSimpleFlow.pending, (state, action) => {
-        state.postalAddress = { ...DemoPostalAddress };
+        if (state.country === "GB") {
+          state.postalAddress = { ...DemoPostalAddress };
+        } else {
+          state.postalAddress = {
+            address_line1: "",
+            address_line2: "",
+            city: "",
+            state: "",
+            post_code: "",
+            country_code: state.country,
+          };
+        }
       })
       .addCase(startSimpleFlow.fulfilled, (state, action) => {
         state.macAddress = action.payload.macAddress;
       })
       .addCase(startDeveloperFlow.pending, (state, action) => {
-        state.postalAddress = { ...DemoPostalAddress };
+        if (state.country === "GB") {
+          state.postalAddress = { ...DemoPostalAddress };
+        } else {
+          state.postalAddress = {
+            address_line1: "",
+            address_line2: "",
+            city: "",
+            state: "",
+            post_code: "",
+            country_code: state.country,
+          };
+        }
       })
       .addCase(startDeveloperFlow.fulfilled, (state, action) => {
         state.macAddress = action.payload.macAddress;

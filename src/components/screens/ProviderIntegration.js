@@ -30,7 +30,12 @@ export default function ProviderIntegration({ navigation }) {
   const error = useSelector(selectError);
   const loading = useSelector(selectLoading);
   const dispatch = useDispatch();
-  const uri = provider.integration_settings.onboard_url;
+
+  if (!provider) {
+    return null;
+  }
+
+  const uri = provider?.integration_settings?.onboard_url;
 
   const onResponse = (message) => {
     try {

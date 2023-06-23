@@ -27,6 +27,7 @@ import {
 } from "../../store/reducers/progressIndicatorReducer";
 import {
   selectCountry,
+  setAddressField,
   setCountry,
 } from "../../store/reducers/inputDataReducer";
 import { useDispatch, useSelector } from "react-redux";
@@ -73,6 +74,9 @@ export default function Home({ navigation }) {
                 labelExtractor={(key) => COUNTRY_CODES[key]}
                 onChangeText={(text) => {
                   dispatch(setCountry(text));
+                  dispatch(
+                    setAddressField({ key: "country_code", value: text })
+                  );
                 }}
               />
             </Field>

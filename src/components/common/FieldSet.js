@@ -18,7 +18,7 @@ export const FieldSet = (props) => (
       resetScrollToCoords={{ x: 0, y: 0 }}
       extraScrollHeight={-130}
       scrollEnabled={true}
-      contentContainerStyle={{ flex: 1, paddingVertical: 16 }}
+      contentContainerStyle={{ flex: 1, paddingVertical: 8 }}
       {...props}
     />
   </ScrollView>

@@ -13,7 +13,11 @@ import Divider from "../layout/Divider";
 import { FieldSet } from "../common/FieldSet";
 import { COUNTRY_CODES } from "../../data/tariff-constants";
 import Dropdown from "../form-controls/Dropdown";
-import { selectAddress, setAddressField } from "../../store/reducers/inputDataReducer";
+import {
+  selectAddress,
+  setAddressField,
+  setCountry,
+} from "../../store/reducers/inputDataReducer";
 import { selectAreaEnabled } from "../../store/reducers/contextReducer";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -112,6 +116,7 @@ export default function AddressEdit({ navigation }) {
                 options={area.map((entry) => entry.country_code)}
                 labelExtractor={(key) => COUNTRY_CODES[key]}
                 onChangeText={(text) => {
+                  dispatch(setCountry(text));
                   dispatch(
                     setAddressField({ key: "country_code", value: text })
                   );
