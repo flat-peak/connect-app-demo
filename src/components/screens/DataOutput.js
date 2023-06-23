@@ -63,7 +63,6 @@ export default function DataOutput({ navigation }) {
         <Divider />
         <Wrapper>
           <Main>
-            {!developerMode && <IntroBlock />}
             <Field
               label={"Connected to electricity provider"}
               description={"Your {device} is receiving your electricity tariff"}
@@ -81,29 +80,25 @@ export default function DataOutput({ navigation }) {
               />
             </Field>
 
-            {developerMode && (
-              <>
-                <InputRow>
-                  <Text variant="ui-control">Customer Id</Text>
-                  <InputValue value={customerId} />
-                </InputRow>
+            <InputRow>
+              <Text variant="ui-control">Customer Id</Text>
+              <InputValue value={customerId} />
+            </InputRow>
 
-                <InputRow>
-                  <Text variant="ui-control">Product Id</Text>
-                  <InputValue value={productId} />
-                </InputRow>
+            <InputRow>
+              <Text variant="ui-control">Product Id</Text>
+              <InputValue value={productId} />
+            </InputRow>
 
-                <InputRow>
-                  <Text variant="ui-control">Tariff Id</Text>
-                  <InputValue value={tariffId} />
-                </InputRow>
+            <InputRow>
+              <Text variant="ui-control">Tariff Id</Text>
+              <InputValue value={tariffId} />
+            </InputRow>
 
-                <InputRow>
-                  <Text variant="ui-control">Device Id</Text>
-                  <InputValue value={deviceId} />
-                </InputRow>
-              </>
-            )}
+            <InputRow>
+              <Text variant="ui-control">Device Id</Text>
+              <InputValue value={deviceId} />
+            </InputRow>
           </Main>
           <Footer>
             <Button
