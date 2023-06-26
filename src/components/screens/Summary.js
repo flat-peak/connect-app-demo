@@ -185,7 +185,10 @@ export default function Summary({ navigation }) {
                               style={{ marginTop: 23 }}
                               peaks={peaks}
                             />
-                            <ScheduleSummary peaks={peaks} />
+                            <ScheduleSummary
+                              peaks={peaks}
+                              currencyCode={provider.currency_code}
+                            />
                           </>
                         ) : (
                           <Text>No data</Text>

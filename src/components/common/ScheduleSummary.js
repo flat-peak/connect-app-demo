@@ -3,6 +3,7 @@ import { getPeakColor, getPeakLabel } from "../../global/peak-utils";
 import { View } from "react-native";
 import styled from "styled-components/native";
 import { Text } from "./Text";
+import { formatCurrency } from "../../global/common";
 
 const GraphTableRow = styled.View`
   flex-direction: row;
@@ -23,7 +24,7 @@ const PrimaryText = styled.Text`
   color: ${({ theme }) => theme.colors.text.body};
 `;
 
-export default function ScheduleSummary({ peaks }) {
+export default function ScheduleSummary({ peaks, currencyCode }) {
   if (!peaks || !peaks.length) {
     return null;
   }
@@ -38,7 +39,7 @@ export default function ScheduleSummary({ peaks }) {
           <View>
             <PrimaryText>{getPeakLabel(item.type)}</PrimaryText>
             <PrimaryText>
-              £{item.price ? Number(item.price).toFixed(2) : "0.00"} / kWh
+              {formatCurrency(item.price || 0, currencyCode)} / kWh
             </PrimaryText>
           </View>
         </GraphTableCol>

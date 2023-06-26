@@ -87,3 +87,31 @@ export const formatDateRanges = (dates) => {
     .map(({ from, to }) => formatRangeValues(from, to))
     .join(", ");
 };
+
+export const formatCurrency = (value, currencyCode) => {
+  switch (currencyCode) {
+    case "USD":
+      // return `$${value}`;
+      return new Intl.NumberFormat("en-US", {
+        maximumSignificantDigits: 3,
+        style: "currency",
+        currency: "USD",
+      }).format(Number(value));
+    case "GPB":
+      // return `£${value}`;
+      return new Intl.NumberFormat("en-GB", {
+        maximumSignificantDigits: 3,
+        style: "currency",
+        currency: "GBP",
+      }).format(Number(value));
+    case "EUR":
+      // return `${value} €`;
+      return new Intl.NumberFormat("de-DE", {
+        maximumSignificantDigits: 3,
+        style: "currency",
+        currency: "EUR",
+      }).format(Number(value));
+    default:
+      return value;
+  }
+};
