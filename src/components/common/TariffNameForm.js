@@ -46,7 +46,11 @@ export default function TariffNameForm({
       </ProviderWrapper>
 
       <FormWrapper>
-        <WebTextInput value={value} onChangeText={onChangeText} />
+        <WebTextInput
+          value={value}
+          onChangeText={onChangeText}
+          clearTextOnFocus={true}
+        />
       </FormWrapper>
 
       <Button

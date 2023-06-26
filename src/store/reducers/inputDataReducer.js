@@ -148,6 +148,9 @@ export const inputDataSlice = createSlice({
       })
       .addCase(startSimpleFlow.fulfilled, (state, action) => {
         state.macAddress = action.payload.macAddress;
+        state.customerId = "";
+        state.productId = "";
+        state.deviceId = "";
       })
       .addCase(startDeveloperFlow.pending, (state, action) => {
         if (state.country === "GB") {
@@ -165,6 +168,9 @@ export const inputDataSlice = createSlice({
       })
       .addCase(startDeveloperFlow.fulfilled, (state, action) => {
         state.macAddress = action.payload.macAddress;
+        state.customerId = "";
+        state.productId = "";
+        state.deviceId = "";
       })
       .addCase(connectTariff.fulfilled, (state, action) => {
         state.productId = action.payload.product.id;
