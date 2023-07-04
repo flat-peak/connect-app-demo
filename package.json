@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
-    "@flat-peak/javascript-sdk": "1.1.2",
+    "@flat-peak/javascript-sdk": "^1.1.3",
     "@powerdesigninc/react-native-prompt": "^0.1.2",
     "@react-native-community/datetimepicker": "6.7.3",
     "@react-native-community/hooks": "^2.8.1",
