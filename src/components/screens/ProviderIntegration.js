@@ -47,7 +47,23 @@ export default function ProviderIntegration({ navigation }) {
           }
         });
       } else {
-        if (response.object === "error") {
+        if (response.object === "action") {
+          switch (response.type) {
+            case "SWITCH_TO_MANUAL_FLOW":
+              navigation.push("TariffSetup");
+              break;
+            default:
+              dispatch(
+                setError({
+                  visible: true,
+                  title: "Integration error",
+                  message: "Unknown action type:" + response.type,
+                  critical: true,
+                })
+              );
+              break;
+          }
+        } else if (response.object === "error") {
           dispatch(
             setError({
               visible: true,
@@ -106,6 +122,7 @@ export default function ProviderIntegration({ navigation }) {
               "publishable-key": publishableKey,
               "product-id": productId,
               "customer-id": customerId,
+              "provider-id": provider.id,
             },
           }}
           cacheEnabled={false}
