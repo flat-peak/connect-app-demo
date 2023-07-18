@@ -21,6 +21,7 @@ import {
   setLoading,
 } from "../../store/reducers/progressIndicatorReducer";
 import { useDispatch, useSelector } from "react-redux";
+import { TARIFF_SIDE } from "../../data/tariff-constants";
 
 export default function ProviderIntegration({ navigation }) {
   const publishableKey = useSelector(selectPublishableKey);
@@ -50,7 +51,9 @@ export default function ProviderIntegration({ navigation }) {
         if (response.object === "action") {
           switch (response.type) {
             case "SWITCH_TO_MANUAL_FLOW":
-              navigation.push("TariffSetup");
+              navigation.push("TariffStructure", {
+                side: TARIFF_SIDE.IMPORT,
+              });
               break;
             default:
               dispatch(

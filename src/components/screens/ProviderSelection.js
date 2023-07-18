@@ -9,11 +9,16 @@ import Main from "../layout/Main";
 import styled from "styled-components/native";
 import { TextInput } from "../form-controls/TextInput";
 import { isConnectableProvider } from "../../global/common";
-import { fetchProviderList, selectLoading, selectProviders } from "../../store/reducers/providerSelectionReducer";
+import {
+  fetchProviderList,
+  selectLoading,
+  selectProviders,
+} from "../../store/reducers/providerSelectionReducer";
 import { selectCountry } from "../../store/reducers/inputDataReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { setProvider } from "../../store/reducers/tariffReducer";
 import ScreenTitle from "../layout/ScreenTitle";
+import { TARIFF_SIDE } from "../../data/tariff-constants";
 
 const ProvidersContainer = styled.View`
   flex: 1;
@@ -57,7 +62,9 @@ export default function ProviderSelection({ navigation }) {
                       if (isConnectableProvider(item)) {
                         navigation.push("ProviderIntegration");
                       } else {
-                        navigation.push("TariffSetup");
+                        navigation.push("TariffStructure", {
+                          side: TARIFF_SIDE.IMPORT,
+                        });
                       }
                     }}
                   >
