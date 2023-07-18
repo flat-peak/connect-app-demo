@@ -107,7 +107,11 @@ export default function Summary({ navigation }) {
               {isManualTariff && (
                 <SectionButton
                   label={"Edit"}
-                  onPress={() => navigation.push("TariffSetup")}
+                  onPress={() =>
+                    navigation.push("TariffStructure", {
+                      side: TARIFF_SIDE.IMPORT,
+                    })
+                  }
                 />
               )}
             </SectionHeader>
