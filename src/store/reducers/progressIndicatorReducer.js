@@ -38,7 +38,7 @@ export default progressSlice.reducer;
 export const displayError = (error) =>
   setError({
     visible: true,
-    title: error.type === "api_error" ? "API error" : error.type,
+    title: error.type === "api_error" ? "Error.API" : error.type,
     message: error.message,
   });
 

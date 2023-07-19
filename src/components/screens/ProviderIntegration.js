@@ -71,7 +71,7 @@ export default function ProviderIntegration({ navigation }) {
             setError({
               visible: true,
               title:
-                response.type === "api_error" ? "API error" : response.type,
+                response.type === "api_error" ? "Error.API" : response.type,
               message: response.message,
               critical: response.critical,
             })
