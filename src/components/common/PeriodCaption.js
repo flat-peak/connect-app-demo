@@ -41,9 +41,11 @@ export default function PeriodCaption({
         </PeriodBox>
       )}
 
-      <PeriodBox>
-        <PeriodLabel>{formatRangeValues(dayFrom, dayTo)}</PeriodLabel>
-      </PeriodBox>
+      {Boolean(dayFrom && dayTo) && (
+        <PeriodBox>
+          <PeriodLabel>{formatRangeValues(dayFrom, dayTo)}</PeriodLabel>
+        </PeriodBox>
+      )}
     </PeriodContainer>
   );
 }
