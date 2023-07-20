@@ -87,7 +87,7 @@ export default function Summary({ navigation }) {
       }))
     : [];
 
-  const isManualTariff = !isConnectableProvider(provider);
+  const isManualTariff = !plan.id;
 
   return (
     <ThemeProvider theme={theme}>
@@ -103,7 +103,7 @@ export default function Summary({ navigation }) {
           />
           <Section>
             <SectionHeader isFirst={true}>
-              <ProductSummary provider={provider} title={title} />
+              {title && <ProductSummary provider={provider} title={title} />}
               {isManualTariff && (
                 <SectionButton
                   label={"Edit"}
@@ -143,10 +143,10 @@ export default function Summary({ navigation }) {
                   let dayFrom = daysData.days[0];
                   let dayTo = daysData.days[daysData.days.length - 1];
 
-                  if (
-                    !daysData.days.length ||
-                    daysData.days[0] === TARIFF_ALL_DAYS
-                  ) {
+                  if (!daysData.days.length) {
+                    dayFrom = undefined;
+                    dayTo = undefined;
+                  } else if (daysData.days[0] === TARIFF_ALL_DAYS) {
                     dayFrom = TARIFF_DAYS[0];
                     dayTo = TARIFF_DAYS[TARIFF_DAYS.length - 1];
                   } else if (daysData.days[0] === TARIFF_WEEKDAYS) {

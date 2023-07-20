@@ -44,16 +44,23 @@ export default function ProviderIntegration({ navigation }) {
       if (response.hasOwnProperty("tariff_id")) {
         dispatch(connectTariff(response)).then((actionResult) => {
           if (connectTariff.fulfilled.match(actionResult)) {
-            navigation.push("Summary");
+            navigation.replace("Summary");
           }
         });
       } else {
         if (response.object === "action") {
           switch (response.type) {
             case "SWITCH_TO_MANUAL_FLOW":
-              navigation.push("TariffStructure", {
-                side: TARIFF_SIDE.IMPORT,
-              });
+              const isAuto = response.params?.mode === "auto";
+              if (isAuto) {
+                navigation.replace("TariffStructure", {
+                  side: TARIFF_SIDE.IMPORT,
+                });
+              } else {
+                navigation.push("TariffStructure", {
+                  side: TARIFF_SIDE.IMPORT,
+                });
+              }
               break;
             default:
               dispatch(
