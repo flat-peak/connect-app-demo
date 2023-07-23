@@ -10,6 +10,7 @@ import {
   selectProvider,
 } from "../../store/reducers/tariffReducer";
 import {
+  selectAddress,
   selectCustomerId,
   selectProductId,
 } from "../../store/reducers/inputDataReducer";
@@ -22,12 +23,14 @@ import {
 } from "../../store/reducers/progressIndicatorReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { TARIFF_SIDE } from "../../data/tariff-constants";
+const Buffer = global.Buffer || require("buffer").Buffer;
 
 export default function ProviderIntegration({ navigation }) {
   const publishableKey = useSelector(selectPublishableKey);
   const provider = useSelector(selectProvider);
   const customerId = useSelector(selectCustomerId);
   const productId = useSelector(selectProductId);
+  const postalAddress = useSelector(selectAddress);
   const error = useSelector(selectError);
   const loading = useSelector(selectLoading);
   const dispatch = useDispatch();
@@ -35,6 +38,14 @@ export default function ProviderIntegration({ navigation }) {
   if (!provider) {
     return null;
   }
+
+  const sessionData = {
+    publishable_key: publishableKey,
+    product_id: productId,
+    customer_id: customerId,
+    provider_id: provider.id,
+    postal_address: postalAddress,
+  };
 
   const uri = provider?.integration_settings?.onboard_url;
 
@@ -129,10 +140,9 @@ export default function ProviderIntegration({ navigation }) {
           source={{
             uri,
             headers: {
-              "publishable-key": publishableKey,
-              "product-id": productId,
-              "customer-id": customerId,
-              "provider-id": provider.id,
+              State: Buffer.from(JSON.stringify(sessionData)).toString(
+                "base64"
+              ),
             },
           }}
           cacheEnabled={false}
