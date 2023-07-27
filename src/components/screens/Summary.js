@@ -211,7 +211,7 @@ export default function Summary({ navigation }) {
               variant="executive"
               disabled={loading}
               onPress={() => {
-                if (isConnectableProvider(provider)) {
+                if (plan.integrated) {
                   dispatch(saveConnectedTariff());
                 } else {
                   dispatch(saveManualTariff());
