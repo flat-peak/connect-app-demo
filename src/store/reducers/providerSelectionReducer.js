@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { withProgressMiddleware } from "./progressIndicatorReducer";
-import { service, throwOnApiError } from "../../service/flatpeak.service";
+import { flatpeak, throwOnApiError } from "../../service/flatpeak.service";
 
 export const fetchProviderList = createAsyncThunk(
   "providerSelection/fetch",
   withProgressMiddleware(async ({ keyword, countryCode }) => {
     return throwOnApiError(
-      await service.getProviders({
+      await flatpeak.providers.list({
         ...(keyword && { keywords: keyword }),
         ...(countryCode && { country_code: countryCode }),
         sort_order: "code_name",
@@ -32,7 +32,7 @@ export const providerSelectionSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchProviderList.fulfilled, (state, action) => {
-      state.providers = action.payload;
+      state.providers = action.payload.data;
     });
   },
 });

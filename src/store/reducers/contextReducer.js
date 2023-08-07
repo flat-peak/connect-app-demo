@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { COUNTRY_CODES } from "../../data/tariff-constants";
-import { service, throwOnApiError } from "../../service/flatpeak.service";
+import { flatpeak, throwOnApiError } from "../../service/flatpeak.service";
 import { withProgressMiddleware } from "./progressIndicatorReducer";
 import { generateMacAddress } from "../../global/common";
 import { getLocation } from "../../service/ip.service";
@@ -13,7 +13,7 @@ export const defineUserLocation = createAsyncThunk(
 export const fetchAreaEnabled = createAsyncThunk(
   "context/fetchAreaEnabled",
   async () => {
-    let account = throwOnApiError(await service.getAccount());
+    let account = throwOnApiError(await flatpeak.accounts.current());
     return Array.isArray(account?.area_enabled) && account.area_enabled.length
       ? account.area_enabled
       : Object.keys(COUNTRY_CODES).map((country_code) => ({ country_code }));
@@ -39,7 +39,7 @@ export const startSimpleFlow = createAsyncThunk(
   withProgressMiddleware(async () => {
     const macAddress = generateMacAddress();
     throwOnApiError(
-      await service.checkMacAddress({
+      await flatpeak.devices.checkDeviceMac({
         mac: macAddress,
       })
     );

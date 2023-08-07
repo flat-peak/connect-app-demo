@@ -7,7 +7,7 @@ import {
 } from "./contextReducer";
 import { DemoPostalAddress } from "../../data/input-scenarios";
 import { withProgressMiddleware } from "./progressIndicatorReducer";
-import { service, throwOnApiError } from "../../service/flatpeak.service";
+import { flatpeak, throwOnApiError } from "../../service/flatpeak.service";
 import { connectTariff, setTariff } from "./tariffReducer";
 
 export const initInputParams = createAsyncThunk(
@@ -20,7 +20,9 @@ export const initInputParams = createAsyncThunk(
     // create session for existing product_id
     if (productId) {
       /** @type {Product} */
-      const product = throwOnApiError(await service.getProduct(productId));
+      const product = throwOnApiError(
+        await flatpeak.products.retrieve(productId)
+      );
       if (product.postal_address) {
         thunkAPI.dispatch(setAddress(product.postal_address));
       }
@@ -32,11 +34,11 @@ export const initInputParams = createAsyncThunk(
         );
       }
 
-      throwOnApiError(await service.getCustomer(customerId));
+      throwOnApiError(await flatpeak.customers.retrieve(customerId));
 
       // can this mac be used?
       throwOnApiError(
-        await service.checkMacAddress({
+        await flatpeak.devices.checkDeviceMac({
           mac: macAddress,
           customer_id: customerId,
         })
@@ -44,7 +46,7 @@ export const initInputParams = createAsyncThunk(
 
       /** @type {Tariff} */
       const tariff = throwOnApiError(
-        await service.getTariff(product.tariff_settings.tariff_id)
+        await flatpeak.tariffs.retrieve(product.tariff_settings.tariff_id)
       );
       thunkAPI.dispatch(setTariff(tariff));
 
@@ -53,10 +55,10 @@ export const initInputParams = createAsyncThunk(
 
     // create session for new product && existing customer_id
     if (customerId) {
-      throwOnApiError(await service.getCustomer(customerId));
+      throwOnApiError(await flatpeak.customers.retrieve(customerId));
       // can this mac be used?
       throwOnApiError(
-        await service.checkMacAddress({
+        await flatpeak.devices.checkDeviceMac({
           mac: macAddress,
           ...(customerId && { customer_id: customerId }),
         })
@@ -65,7 +67,7 @@ export const initInputParams = createAsyncThunk(
     }
 
     // From scratch
-    throwOnApiError(await service.checkMacAddress({ mac: macAddress }));
+    throwOnApiError(await flatpeak.devices.checkDeviceMac({ mac: macAddress }));
     return { completed: false };
   })
 );
