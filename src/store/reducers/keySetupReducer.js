@@ -1,20 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { service } from "../../service/flatpeak.service";
+import { flatpeak } from "../../service/flatpeak.service";
 
 export const keySetupSlice = createSlice({
   name: "keySetup",
   initialState: {
-    apiUrl: service._host,
-    publishableKey: service._publishableKey,
+    apiUrl: flatpeak.getHost(),
+    publishableKey: flatpeak.getPublishableKey(),
   },
   reducers: {
     setApiUrl: (state, action) => {
       state.apiUrl = action.payload;
-      service._host = action.payload;
+      flatpeak.setHost(action.payload);
     },
     setPublishableKey: (state, action) => {
       state.publishableKey = action.payload;
-      service._publishableKey = action.payload;
+      flatpeak.setPublishableKey(action.payload);
     },
   },
 });

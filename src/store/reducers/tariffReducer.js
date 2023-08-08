@@ -10,7 +10,7 @@ import {
 } from "../../data/tariff-constants";
 import { startDeveloperFlow, startSimpleFlow } from "./contextReducer";
 import { withProgressMiddleware } from "./progressIndicatorReducer";
-import { service, throwOnApiError } from "../../service/flatpeak.service";
+import { flatpeak, throwOnApiError } from "../../service/flatpeak.service";
 import { isEqualObjects } from "../../global/common";
 
 /**
@@ -216,7 +216,7 @@ export const saveManualTariff = createAsyncThunk(
       inputData: { macAddress, timezone, postalAddress, productId, customerId },
     } = thunkAPI.getState();
 
-    return await service.saveManualTariff({
+    return await flatpeak.saveManualTariff({
       macAddress,
       timezone,
       postalAddress,
@@ -232,11 +232,13 @@ export const connectTariff = createAsyncThunk(
   "tariff/connect",
   withProgressMiddleware(
     async ({ customer_id, product_id, tariff_id }, thunkAPI) => {
-      const [customer, product, tariff] = await Promise.all([
-        service.getCustomer(customer_id).then((obj) => throwOnApiError(obj)),
-        service.getProduct(product_id).then((obj) => throwOnApiError(obj)),
-        service.getTariff(tariff_id).then((obj) => throwOnApiError(obj)),
-      ]);
+      const [customer, product, tariff] = await Promise.all(
+        [
+          flatpeak.customers.retrieve(customer_id),
+          flatpeak.products.retrieve(product_id),
+          flatpeak.tariffs.retrieve(tariff_id),
+        ].map((request) => request.then((obj) => throwOnApiError(obj)))
+      );
       return {
         customer,
         product,
@@ -257,7 +259,7 @@ export const saveConnectedTariff = createAsyncThunk(
       inputData: { macAddress, timezone, postalAddress, productId, customerId },
     } = thunkAPI.getState();
 
-    return await service.saveConnectedTariff({
+    return await flatpeak.saveConnectedTariff({
       macAddress,
       timezone,
       postalAddress,

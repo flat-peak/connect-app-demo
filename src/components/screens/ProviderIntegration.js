@@ -23,6 +23,7 @@ import {
 } from "../../store/reducers/progressIndicatorReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { TARIFF_SIDE } from "../../data/tariff-constants";
+import { useCallback, useMemo, useRef } from "react";
 const Buffer = global.Buffer || require("buffer").Buffer;
 
 export default function ProviderIntegration({ navigation }) {
@@ -34,90 +35,155 @@ export default function ProviderIntegration({ navigation }) {
   const error = useSelector(selectError);
   const loading = useSelector(selectLoading);
   const dispatch = useDispatch();
+  const sharedState = useRef(
+    Buffer.from(
+      JSON.stringify({
+        product_id: productId,
+        customer_id: customerId,
+        provider_id: provider.id,
+        postal_address: postalAddress,
+        // TODO: connect
+        // geo_location: [-0.12657891596975313, 51.50786600382782],
+      })
+    ).toString("base64")
+  );
+
+  const onMessage = useCallback(
+    (event) => {
+      if (!event.nativeEvent.data) {
+        return;
+      }
+      const message = event.nativeEvent.data;
+
+      try {
+        const response = JSON.parse(message);
+        switch (response.object) {
+          case "success": {
+            const state = JSON.parse(
+              Buffer.from(response.state, "base64").toString("utf8")
+            );
+            dispatch(connectTariff(state)).then((actionResult) => {
+              if (connectTariff.fulfilled.match(actionResult)) {
+                navigation.replace("Summary");
+              }
+            });
+            break;
+          }
+          case "action": {
+            switch (response.type) {
+              case "SWITCH_TO_MANUAL_FLOW":
+                const isAuto = response.params?.mode === "auto";
+                if (isAuto) {
+                  navigation.replace("TariffStructure", {
+                    side: TARIFF_SIDE.IMPORT,
+                  });
+                } else {
+                  navigation.push("TariffStructure", {
+                    side: TARIFF_SIDE.IMPORT,
+                  });
+                }
+                break;
+              default:
+                dispatch(
+                  setError({
+                    visible: true,
+                    title: "Integration error",
+                    message: "Unknown action type:" + response.type,
+                    critical: true,
+                  })
+                );
+                break;
+            }
+            break;
+          }
+          case "error": {
+            dispatch(
+              setError({
+                visible: true,
+                title:
+                  response.type === "api_error" ? "Error.API" : response.type,
+                message: response.message,
+                critical: response.critical,
+              })
+            );
+            break;
+          }
+          default: {
+            dispatch(
+              setError({
+                visible: true,
+                title: "Integration failed",
+                message: response.message || "Unknown error",
+                critical: true,
+              })
+            );
+          }
+        }
+      } catch (e) {
+        dispatch(
+          setError({
+            visible: true,
+            title: "Integration failed",
+            message: e.message || "Unknown error",
+            critical: true,
+          })
+        );
+      }
+    },
+    [dispatch, navigation]
+  );
+
+  const onLoadStart = useCallback(() => {
+    dispatch(setLoading(true));
+  }, [dispatch]);
+
+  const onLoadEnd = useCallback(() => {
+    dispatch(setLoading(false));
+  }, [dispatch]);
+
+  const ConnectWebView = useMemo(() => {
+    const uri = provider?.integration_settings?.onboard_url;
+    const auth = `${Buffer.from(publishableKey + ":").toString("base64")}`;
+
+    return (
+      <WebView
+        style={{ backgroundColor: theme.colors.background }}
+        source={{
+          uri,
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            auth,
+            state: sharedState.current,
+          }),
+        }}
+        cacheEnabled={false}
+        cacheMode={"LOAD_NO_CACHE"}
+        incognito={true}
+        onLoadStart={onLoadStart}
+        onLoadEnd={onLoadEnd}
+        onMessage={onMessage}
+        injectedJavaScript={`
+              window.respondToApp = (r) => window.ReactNativeWebView.postMessage(
+                typeof r === 'string' ? r : JSON.stringify(r)
+              );
+              true;
+            `}
+      />
+    );
+  }, [
+    onLoadEnd,
+    onLoadStart,
+    onMessage,
+    provider?.integration_settings?.onboard_url,
+    publishableKey,
+  ]);
 
   if (!provider) {
     return null;
   }
-
-  const sessionData = {
-    publishable_key: publishableKey,
-    product_id: productId,
-    customer_id: customerId,
-    provider_id: provider.id,
-    postal_address: postalAddress,
-  };
-
-  const uri = provider?.integration_settings?.onboard_url;
-
-  const onResponse = (message) => {
-    try {
-      const response = JSON.parse(message);
-      if (response.hasOwnProperty("tariff_id")) {
-        dispatch(connectTariff(response)).then((actionResult) => {
-          if (connectTariff.fulfilled.match(actionResult)) {
-            navigation.replace("Summary");
-          }
-        });
-      } else {
-        if (response.object === "action") {
-          switch (response.type) {
-            case "SWITCH_TO_MANUAL_FLOW":
-              const isAuto = response.params?.mode === "auto";
-              if (isAuto) {
-                navigation.replace("TariffStructure", {
-                  side: TARIFF_SIDE.IMPORT,
-                });
-              } else {
-                navigation.push("TariffStructure", {
-                  side: TARIFF_SIDE.IMPORT,
-                });
-              }
-              break;
-            default:
-              dispatch(
-                setError({
-                  visible: true,
-                  title: "Integration error",
-                  message: "Unknown action type:" + response.type,
-                  critical: true,
-                })
-              );
-              break;
-          }
-        } else if (response.object === "error") {
-          dispatch(
-            setError({
-              visible: true,
-              title:
-                response.type === "api_error" ? "Error.API" : response.type,
-              message: response.message,
-              critical: response.critical,
-            })
-          );
-        } else if (response.object === "loading") {
-          dispatch(setLoading(response.type === "loading_start"));
-        } else {
-          dispatch(
-            setError({
-              visible: true,
-              title: "Integration failed",
-              message: response.message || "Unknown error",
-              critical: true,
-            })
-          );
-        }
-      }
-    } catch (e) {
-      dispatch(
-        setError({
-          visible: true,
-          title: "Integration failed",
-          message: e.message || "Unknown error",
-          critical: true,
-        })
-      );
-    }
-  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -134,34 +200,7 @@ export default function ProviderIntegration({ navigation }) {
             dispatch(dismissError());
           }}
         />
-
-        <WebView
-          style={{ backgroundColor: theme.colors.background }}
-          source={{
-            uri,
-            headers: {
-              State: Buffer.from(JSON.stringify(sessionData)).toString(
-                "base64"
-              ),
-            },
-          }}
-          cacheEnabled={false}
-          cacheMode={"LOAD_NO_CACHE"}
-          incognito={true}
-          onLoadStart={() => dispatch(setLoading(true))}
-          onLoadEnd={() => dispatch(setLoading(false))}
-          onMessage={(event) => {
-            if (event.nativeEvent.data) {
-              onResponse(event.nativeEvent.data);
-            }
-          }}
-          injectedJavaScript={`
-              window.respondToApp = (r) => window.ReactNativeWebView.postMessage(
-                typeof r === 'string' ? r : JSON.stringify(r)
-              );
-              true;
-            `}
-        />
+        {ConnectWebView}
       </View>
     </ThemeProvider>
   );
