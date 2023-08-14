@@ -16,7 +16,10 @@ import {
   EditableTableRow,
   EditableTableValue,
 } from "../common/EditableTable";
-import { resolveMonthLabelByKey, TARIFF_SIDE } from "../../data/tariff-constants";
+import {
+  resolveMonthLabelByKey,
+  TARIFF_SIDE,
+} from "../../data/tariff-constants";
 import {
   addSeasonRange,
   findWeekdaySchedule,
