@@ -28,5 +28,10 @@ export const selectDashboardUrl = (state) =>
     "api.flatpeak.energy",
     "dashboard.flatpeak.energy"
   );
+export const selectIntegrationUrl = (state) =>
+  state.keySetup.apiUrl.replace(
+    "api.flatpeak.energy",
+    "connect-web.flatpeak.energy"
+  );
 
 export default keySetupSlice.reducer;

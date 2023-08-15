@@ -93,7 +93,7 @@ export default function Home({ navigation }) {
                     dispatch(setOffPeakCharge(true));
                     dispatch(startSimpleFlow()).then((resultAction) => {
                       if (startSimpleFlow.fulfilled.match(resultAction)) {
-                        navigation.push("ProviderSelection");
+                        navigation.push("ProviderIntegration");
                       }
                       setTimeout(() => dispatch(setOffPeakCharge(false)), 400);
                     });
