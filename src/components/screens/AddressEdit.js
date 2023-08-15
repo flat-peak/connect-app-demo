@@ -129,7 +129,7 @@ export default function AddressEdit({ navigation }) {
             <Button
               title={"Next"}
               variant="executive"
-              onPress={() => navigation.push("ProviderSelection")}
+              onPress={() => navigation.push("ProviderIntegration")}
             />
           </Footer>
         </Wrapper>

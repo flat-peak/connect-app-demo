@@ -231,15 +231,17 @@ export const saveManualTariff = createAsyncThunk(
 export const connectTariff = createAsyncThunk(
   "tariff/connect",
   withProgressMiddleware(
-    async ({ customer_id, product_id, tariff_id }, thunkAPI) => {
-      const [customer, product, tariff] = await Promise.all(
+    async ({ customer_id, product_id, tariff_id, provider_id }, thunkAPI) => {
+      const [provider, customer, product, tariff] = await Promise.all(
         [
+          flatpeak.providers.retrieve(provider_id),
           flatpeak.customers.retrieve(customer_id),
           flatpeak.products.retrieve(product_id),
           flatpeak.tariffs.retrieve(tariff_id),
         ].map((request) => request.then((obj) => throwOnApiError(obj)))
       );
       return {
+        provider,
         customer,
         product,
         tariff,
@@ -595,6 +597,7 @@ export const tariffSlice = createSlice({
       .addCase(startDeveloperFlow.fulfilled, handleResetTariff)
       .addCase(connectTariff.fulfilled, (state, action) => {
         state.plan = action.payload.tariff;
+        state.provider = action.payload.provider;
       })
       .addCase(saveManualTariff.fulfilled, (state, action) => {
         state.saved = true;

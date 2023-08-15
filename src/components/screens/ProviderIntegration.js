@@ -4,7 +4,10 @@ import { View } from "react-native";
 import WebView from "react-native-webview";
 import LoaderDialog from "../dialogs/loader-dialog";
 import ErrorDialog from "../dialogs/error-dialog";
-import { selectPublishableKey } from "../../store/reducers/keySetupReducer";
+import {
+  selectIntegrationUrl,
+  selectPublishableKey,
+} from "../../store/reducers/keySetupReducer";
 import {
   connectTariff,
   selectProvider,
@@ -28,19 +31,18 @@ const Buffer = global.Buffer || require("buffer").Buffer;
 
 export default function ProviderIntegration({ navigation }) {
   const publishableKey = useSelector(selectPublishableKey);
-  const provider = useSelector(selectProvider);
   const customerId = useSelector(selectCustomerId);
   const productId = useSelector(selectProductId);
   const postalAddress = useSelector(selectAddress);
   const error = useSelector(selectError);
   const loading = useSelector(selectLoading);
+  const integrationUrl = useSelector(selectIntegrationUrl);
   const dispatch = useDispatch();
   const sharedState = useRef(
     Buffer.from(
       JSON.stringify({
         product_id: productId,
         customer_id: customerId,
-        provider_id: provider.id,
         postal_address: postalAddress,
         // TODO: connect
         // geo_location: [-0.12657891596975313, 51.50786600382782],
@@ -142,14 +144,13 @@ export default function ProviderIntegration({ navigation }) {
   }, [dispatch]);
 
   const ConnectWebView = useMemo(() => {
-    const uri = provider?.integration_settings?.onboard_url;
     const auth = `${Buffer.from(publishableKey + ":").toString("base64")}`;
 
     return (
       <WebView
         style={{ backgroundColor: theme.colors.background }}
         source={{
-          uri,
+          uri: integrationUrl,
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -173,17 +174,7 @@ export default function ProviderIntegration({ navigation }) {
             `}
       />
     );
-  }, [
-    onLoadEnd,
-    onLoadStart,
-    onMessage,
-    provider?.integration_settings?.onboard_url,
-    publishableKey,
-  ]);
-
-  if (!provider) {
-    return null;
-  }
+  }, [integrationUrl, onLoadEnd, onLoadStart, onMessage, publishableKey]);
 
   return (
     <ThemeProvider theme={theme}>

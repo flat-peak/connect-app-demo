@@ -223,7 +223,7 @@ export default function Summary({ navigation }) {
               variant="destructive"
               disabled={loading}
               onPress={() => {
-                navigation.navigate("ProviderSelection");
+                navigation.navigate("ProviderIntegration");
               }}
             />
           </ScreenSafeView>
