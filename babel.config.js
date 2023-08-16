@@ -3,6 +3,7 @@ module.exports = function (api) {
   return {
     presets: ["module:metro-react-native-babel-preset", "babel-preset-expo"],
     plugins: [
+      "expo-router/babel",
       [
         "module:react-native-dotenv",
         {

@@ -10,6 +10,7 @@ export default {
   name: IS_DEV ? "FlatPeak Client (Dev)" : "FlatPeak Client",
   icon: IS_DEV ? "./assets/icon-dev.png" : "./assets/icon.png",
   slug: "flatpeak-client",
+  scheme: "flatpeak-client",
   splash: {
     image: IS_DEV ? "./assets/splash-dev.png" : "./assets/splash.png",
     resizeMode: "contain",
