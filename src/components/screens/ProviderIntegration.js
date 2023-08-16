@@ -8,14 +8,13 @@ import {
   selectIntegrationUrl,
   selectPublishableKey,
 } from "../../store/reducers/keySetupReducer";
-import {
-  connectTariff,
-  selectProvider,
-} from "../../store/reducers/tariffReducer";
+
 import {
   selectAddress,
   selectCustomerId,
+  selectMacAddress,
   selectProductId,
+  selectTimezone,
 } from "../../store/reducers/inputDataReducer";
 import {
   dismissError,
@@ -27,6 +26,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { TARIFF_SIDE } from "../../data/tariff-constants";
 import { useCallback, useMemo, useRef } from "react";
+import { setOutputData } from "../../store/reducers/outputDataReducer";
 const Buffer = global.Buffer || require("buffer").Buffer;
 
 export default function ProviderIntegration({ navigation }) {
@@ -36,6 +36,8 @@ export default function ProviderIntegration({ navigation }) {
   const postalAddress = useSelector(selectAddress);
   const error = useSelector(selectError);
   const loading = useSelector(selectLoading);
+  const timezone = useSelector(selectTimezone);
+  const macAddress = useSelector(selectMacAddress);
   const integrationUrl = useSelector(selectIntegrationUrl);
   const dispatch = useDispatch();
   const sharedState = useRef(
@@ -44,6 +46,8 @@ export default function ProviderIntegration({ navigation }) {
         product_id: productId,
         customer_id: customerId,
         postal_address: postalAddress,
+        timezone: timezone,
+        devices: [{ mac: macAddress, reference_id: "" }],
         // TODO: connect
         // geo_location: [-0.12657891596975313, 51.50786600382782],
       })
@@ -64,11 +68,11 @@ export default function ProviderIntegration({ navigation }) {
             const state = JSON.parse(
               Buffer.from(response.state, "base64").toString("utf8")
             );
-            dispatch(connectTariff(state)).then((actionResult) => {
-              if (connectTariff.fulfilled.match(actionResult)) {
-                navigation.replace("Summary");
-              }
-            });
+            const { device_id, customer_id, product_id, tariff_id } = state;
+            dispatch(
+              setOutputData({ device_id, customer_id, product_id, tariff_id })
+            );
+            navigation.replace("DataOutput");
             break;
           }
           case "action": {
