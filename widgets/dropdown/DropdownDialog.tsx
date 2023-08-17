@@ -1,22 +1,24 @@
-import Dialog from "react-native-dialog";
-import { useColorScheme, View } from "react-native";
-import { useEffect, useState } from "react";
 import { Picker } from "@react-native-picker/picker";
+import { useEffect, useState } from "react";
+import { StyleSheet, useColorScheme, View } from "react-native";
+import Dialog from "react-native-dialog";
 
-export default function DropdownDialog({
-  isVisible,
-  onCancel,
-  onConfirm,
-  value,
-  options,
-  labelExtractor,
-}) {
+export default function DropdownDialog(props) {
+  const {
+    isVisible,
+    onCancel,
+    onConfirm,
+    value: currentValue,
+    options,
+    labelExtractor,
+  } = props;
+
   const [input, setInputValue] = useState();
   const theme = useColorScheme();
 
   useEffect(() => {
-    setInputValue(value);
-  }, [value]);
+    setInputValue(currentValue);
+  }, [currentValue]);
 
   const forcedStyles = theme === "dark" ? { backgroundColor: "#fff" } : {};
 
@@ -24,10 +26,9 @@ export default function DropdownDialog({
     <View>
       <Dialog.Container visible={isVisible} footerStyle={forcedStyles}>
         <Picker
-          themeVariant={"dark"}
-          style={{ marginTop: -36, ...forcedStyles }}
+          style={[styles.picker, forcedStyles]}
           selectedValue={input}
-          onValueChange={(itemValue, itemIndex) => setInputValue(itemValue)}
+          onValueChange={(itemValue) => setInputValue(itemValue)}
         >
           {options.map((value) => (
             <Picker.Item
@@ -44,3 +45,9 @@ export default function DropdownDialog({
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  picker: {
+    marginTop: -36,
+  },
+});

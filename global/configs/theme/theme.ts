@@ -42,16 +42,5 @@ export const theme = {
       option: "transparent",
       nav: "#FFFFFF",
     },
-    tabs: {
-      active: "#585858",
-      inactive: "#2d2e32",
-    },
   },
-  sizes: {
-    footerMinHeight: 100,
-  },
-  roundness: 10,
-  buttonRoundness: 10,
-  screenHorizontalOffset: 24,
-  headingAlign: "center",
 };

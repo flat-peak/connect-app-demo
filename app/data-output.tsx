@@ -1,26 +1,29 @@
-import { Linking, Switch } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components/native";
+import {
+  setOffPeakCharge,
+  startDeveloperFlow,
+} from "@app/global/store/reducers/contextReducer";
+import { selectDashboardUrl } from "@app/global/store/reducers/keySetupReducer";
 import {
   selectCustomerId,
   selectDeviceId,
   selectProductId,
   selectTariffId,
-} from "../global/store/reducers/outputDataReducer";
+} from "@app/global/store/reducers/outputDataReducer";
 import {
-  setOffPeakCharge,
-  startDeveloperFlow,
-} from "../global/store/reducers/contextReducer";
-import { selectDashboardUrl } from "../global/store/reducers/keySetupReducer";
-import SafeScreen from "../shared/ui/layout/Screen";
-import { Text } from "../shared/ui/Text";
-import Wrapper from "../shared/ui/layout/Wrapper";
-import Main from "../shared/ui/layout/Main";
-import Field from "../shared/ui/Field";
-import Footer from "../shared/ui/layout/Footer";
-import Button from "../shared/ui/Button";
-import { TextInput } from "../shared/ui/TextInput";
-import { useNavigation, useRouter } from "expo-router";
+  Button,
+  Field,
+  Footer,
+  Main,
+  SafeScreen,
+  Text,
+  TextInput,
+  Wrapper,
+} from "@app/shared/ui";
+import { AnyAction } from "@reduxjs/toolkit";
+import { useNavigation } from "expo-router";
+import { Linking, Switch } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components/native";
 
 const InputRow = styled.View`
   margin: 11px 0;
@@ -63,7 +66,7 @@ export default function DataOutput() {
                   return;
                 }
                 dispatch(setOffPeakCharge(false));
-                navigation.popToTop();
+                (navigation as unknown as { popToTop: () => void }).popToTop();
               }}
             />
           </Field>
@@ -104,11 +107,13 @@ export default function DataOutput() {
           <Button
             title={"Restart Developer Tools"}
             onPress={() => {
-              dispatch(startDeveloperFlow()).then((resultAction) => {
-                if (startDeveloperFlow.fulfilled.match(resultAction)) {
-                  navigation.dispatch({ type: "POP_TO_TOP" });
+              dispatch(startDeveloperFlow({}) as unknown as AnyAction).then(
+                (resultAction) => {
+                  if (startDeveloperFlow.fulfilled.match(resultAction)) {
+                    navigation.dispatch({ type: "POP_TO_TOP" });
+                  }
                 }
-              });
+              );
             }}
           />
         </Footer>

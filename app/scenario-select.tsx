@@ -1,32 +1,32 @@
-import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "expo-router";
-import {
-  selectCountry,
-  setAddressField,
-  setCountry,
-} from "../global/store/reducers/inputDataReducer";
-import {
-  selectError,
-  selectLoading,
-} from "../global/store/reducers/progressIndicatorReducer";
-import Wrapper from "../shared/ui/layout/Wrapper";
-import Field from "../shared/ui/Field";
-import Dropdown from "../widgets/dropdown/Dropdown";
-import { COUNTRY_CODES } from "../global/configs/timezones";
-import Footer from "../shared/ui/layout/Footer";
-import Button from "../shared/ui/Button";
-import styled from "styled-components/native";
-import Main from "../shared/ui/layout/Main";
-import { Switch } from "react-native";
+import { COUNTRY_CODES } from "@app/global/configs";
 import {
   selectAreaEnabled,
   selectOffPeakCharge,
   setOffPeakCharge,
   startDeveloperFlow,
   startSimpleFlow,
-} from "../global/store/reducers/contextReducer";
-import { Text } from "../shared/ui/Text";
-import SafeScreen from "../shared/ui/layout/Screen";
+} from "@app/global/store/reducers/contextReducer";
+import {
+  selectCountry,
+  setAddressField,
+  setCountry,
+} from "@app/global/store/reducers/inputDataReducer";
+import { selectLoading } from "@app/global/store/reducers/progressIndicatorReducer";
+import {
+  Button,
+  Field,
+  Footer,
+  Main,
+  SafeScreen,
+  Text,
+  Wrapper,
+} from "@app/shared/ui";
+import { Dropdown } from "@app/widgets";
+import type { AnyAction } from "@reduxjs/toolkit";
+import { useRouter } from "expo-router";
+import { Switch } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components/native";
 
 const CentredPlaceholder = styled.View`
   flex: 1;
@@ -68,12 +68,14 @@ export default function ScenarioSelect() {
                 dispatch(setOffPeakCharge(enabled));
                 if (enabled) {
                   dispatch(setOffPeakCharge(true));
-                  dispatch(startSimpleFlow()).then((resultAction) => {
-                    if (startSimpleFlow.fulfilled.match(resultAction)) {
-                      router.push("/provider-integration");
+                  dispatch(startSimpleFlow({}) as unknown as AnyAction).then(
+                    (resultAction) => {
+                      if (startSimpleFlow.fulfilled.match(resultAction)) {
+                        router.push("/provider-integration");
+                      }
+                      setTimeout(() => dispatch(setOffPeakCharge(false)), 400);
                     }
-                    setTimeout(() => dispatch(setOffPeakCharge(false)), 400);
-                  });
+                  );
                 }
               }}
             />
@@ -88,11 +90,13 @@ export default function ScenarioSelect() {
             variant={"link"}
             disabled={loading}
             onPress={() => {
-              dispatch(startDeveloperFlow()).then((resultAction) => {
-                if (startDeveloperFlow.fulfilled.match(resultAction)) {
-                  router.push("session-params");
+              dispatch(startDeveloperFlow({}) as unknown as AnyAction).then(
+                (resultAction) => {
+                  if (startDeveloperFlow.fulfilled.match(resultAction)) {
+                    router.push("session-params");
+                  }
                 }
-              });
+              );
             }}
           />
         </Footer>

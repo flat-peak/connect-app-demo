@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const outputDataSlice = createSlice({
   name: "outputData",
-  initialState: /** @type {App.OutputState} */ {
+  initialState: {
     device_id: "",
     customer_id: "",
     product_id: "",

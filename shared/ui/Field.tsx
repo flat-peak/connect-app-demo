@@ -1,17 +1,18 @@
+import { PropsWithChildren } from "react";
 import styled from "styled-components/native";
 
-const rowLayout = (theme) => `
+const rowLayout = () => `
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
 `;
 
-const columnLayout = (theme) => "";
+const columnLayout = () => "";
 
 const FieldRow = styled.View`
   margin: ${({ isFirst }) => (isFirst ? 0 : 6)}px 0 2px;
   min-height: 48px;
-  ${({ isRow, theme }) => (isRow ? rowLayout(theme) : columnLayout(theme))}
+  ${({ isRow }) => (isRow ? rowLayout() : columnLayout())}
 `;
 
 const FieldLabel = styled.View`
@@ -35,13 +36,14 @@ const FieldDescription = styled.Text`
   font-family: ${({ theme }) => theme.fonts.uiControl};
 `;
 
-export default function Field({
-  label,
-  description,
-  children,
-  isFirst,
-  isRow,
-}) {
+export type FieldProps = {
+  label: string;
+  description?: string;
+  isFirst?: boolean;
+  isRow?: boolean;
+};
+export default function Field(props: PropsWithChildren<FieldProps>) {
+  const { label, description, children, isFirst, isRow } = props;
   return (
     <FieldRow isFirst={isFirst} isRow={isRow}>
       <FieldLabel>

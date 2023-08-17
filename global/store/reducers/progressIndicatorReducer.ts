@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { AsyncThunkPayloadCreator } from "@reduxjs/toolkit/src/createAsyncThunk";
 
 export const progressSlice = createSlice({
   name: "progress",
@@ -6,6 +7,7 @@ export const progressSlice = createSlice({
     loading: false,
     error: {
       visible: false,
+      critical: false,
       title: undefined,
       message: undefined,
     },
@@ -42,7 +44,9 @@ export const displayError = (error) =>
     message: error.message,
   });
 
-export const withProgressMiddleware = (handler) => {
+export const withProgressMiddleware = <Returned, ThunkArg, ThunkApiConfig>(
+  handler: AsyncThunkPayloadCreator<Returned, ThunkArg, ThunkApiConfig>
+) => {
   return async (args, thunkAPI) => {
     try {
       await thunkAPI.dispatch(setLoading(true));

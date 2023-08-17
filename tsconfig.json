@@ -1,5 +1,16 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "strict": false,
+    "module": "esnext",
+    "baseUrl": ".",
+    "paths": {
+      "@app/global/*": ["./global/*"],
+      "@app/screens/*": ["./app/*"],
+      "@app/widgets/*": ["./widgets/*"],
+      "@app/widgets": ["./widgets/index.ts"],
+      "@app/shared/*": ["./shared/*"],
+      "@app/assets/*": ["./assets/*"],
+    }
   }
 }

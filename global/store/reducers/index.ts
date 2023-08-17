@@ -1,9 +1,9 @@
 import contextReducer from "./contextReducer";
-import tariffReducer from "./tariffReducer";
-import keySetupReducer from "./keySetupReducer";
 import inputDataReducer from "./inputDataReducer";
+import keySetupReducer from "./keySetupReducer";
 import outputDataReducer from "./outputDataReducer";
 import progressIndicatorReducer from "./progressIndicatorReducer";
+import tariffReducer from "./tariffReducer";
 
 const reducers = {
   progress: progressIndicatorReducer,

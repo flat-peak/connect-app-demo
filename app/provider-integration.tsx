@@ -1,25 +1,23 @@
-import { useDispatch, useSelector } from "react-redux";
-import {
-  selectIntegrationUrl,
-  selectPublishableKey,
-} from "../global/store/reducers/keySetupReducer";
 import {
   selectAddress,
   selectCustomerId,
   selectMacAddress,
   selectProductId,
   selectTimezone,
-} from "../global/store/reducers/inputDataReducer";
+} from "@app/global/store/reducers/inputDataReducer";
+import {
+  selectIntegrationUrl,
+  selectPublishableKey,
+} from "@app/global/store/reducers/keySetupReducer";
+import { setOutputData } from "@app/global/store/reducers/outputDataReducer";
+import { Main } from "@app/shared/ui";
+import { ErrorDialog, Header, LoaderDialog } from "@app/widgets";
+import { useRouter } from "expo-router";
 
 import { useCallback, useMemo, useRef, useState } from "react";
-import { setOutputData } from "../global/store/reducers/outputDataReducer";
 import WebView from "react-native-webview";
-import { useRouter } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "styled-components";
-import Header from "../widgets/header/Header";
-import LoaderDialog from "../widgets/loader/loader-dialog";
-import ErrorDialog from "../widgets/error-notifier/error-dialog";
-import Main from "../shared/ui/layout/Main";
 
 const Buffer = global.Buffer || require("buffer").Buffer;
 
@@ -154,7 +152,14 @@ export default function ProviderIntegration() {
             `}
       />
     );
-  }, [integrationUrl, onLoadEnd, onLoadStart, onMessage, publishableKey]);
+  }, [
+    integrationUrl,
+    onLoadEnd,
+    onLoadStart,
+    onMessage,
+    publishableKey,
+    theme.colors.background,
+  ]);
 
   return (
     <Main>

@@ -1,51 +1,34 @@
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigation, useRouter } from "expo-router";
-import {
-  selectError,
-  selectLoading,
-} from "../global/store/reducers/progressIndicatorReducer";
-import { useRef } from "react";
-import Wrapper from "../shared/ui/layout/Wrapper";
-import Field from "../shared/ui/Field";
-import { Linking } from "react-native";
-import Footer from "../shared/ui/layout/Footer";
-import Button from "../shared/ui/Button";
-import styled from "styled-components/native";
-import Main from "../shared/ui/layout/Main";
-import { TextInput } from "../shared/ui/TextInput";
+import { initContext } from "@app/global/store/reducers/contextReducer";
 import {
   selectApiUrl,
   selectDashboardUrl,
   selectPublishableKey,
   setApiUrl,
   setPublishableKey,
-} from "../global/store/reducers/keySetupReducer";
-import IntroBlock from "../shared/ui/IntroBlock";
-import { initContext } from "../global/store/reducers/contextReducer";
-import SafeScreen from "../shared/ui/layout/Screen";
-
-const InputValue = styled(TextInput).attrs(({ refs, refIndex }) => {
-  return {
-    autoCapitalize: "none",
-    autoCorrect: false,
-    ref: refs[refIndex],
-    ...(refIndex < refs.length - 1
-      ? {
-          returnKeyType: "next",
-          onSubmitEditing: () => refs[refIndex + 1].current.focus(),
-        }
-      : {}),
-  };
-})``;
+} from "@app/global/store/reducers/keySetupReducer";
+import { selectLoading } from "@app/global/store/reducers/progressIndicatorReducer";
+import {
+  Button,
+  Field,
+  Footer,
+  InputValue,
+  IntroBlock,
+  Main,
+  SafeScreen,
+  Wrapper,
+} from "@app/shared/ui";
+import { AnyAction } from "@reduxjs/toolkit";
+import { useRouter } from "expo-router";
+import { useRef } from "react";
+import { Linking } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function DataInput() {
   const apiUrl = useSelector(selectApiUrl);
   const publishableKey = useSelector(selectPublishableKey);
   const loading = useSelector(selectLoading);
-  const error = useSelector(selectError);
   const dashboardUrl = useSelector(selectDashboardUrl);
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const router = useRouter();
 
   const refs = [useRef(), useRef()];
@@ -102,11 +85,13 @@ export default function DataInput() {
             variant="executive"
             disabled={!publishableKey.trim() || !apiUrl.trim() || loading}
             onPress={() => {
-              dispatch(initContext()).then((resultAction) => {
-                if (initContext.fulfilled.match(resultAction)) {
-                  router.push("scenario-select");
+              dispatch(initContext({}) as unknown as AnyAction).then(
+                (resultAction) => {
+                  if (initContext.fulfilled.match(resultAction)) {
+                    router.push("scenario-select");
+                  }
                 }
-              });
+              );
             }}
           />
         </Footer>

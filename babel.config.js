@@ -15,6 +15,19 @@ module.exports = function (api) {
           allowUndefined: false,
         },
       ],
+      [
+        "module-resolver",
+        {
+          alias: {
+            "@app/global": "./global",
+            "@app/screens": "./app",
+            "@app/widgets": "./widgets",
+            "@app/shared": "./shared",
+            "@app/assets": "./assets",
+          },
+          extensions: [".js", ".jsx", ".ts", ".tsx"],
+        },
+      ],
     ],
   };
 };
