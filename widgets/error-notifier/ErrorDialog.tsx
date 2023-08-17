@@ -1,5 +1,5 @@
-import Dialog from "react-native-dialog";
 import { View } from "react-native";
+import Dialog from "react-native-dialog";
 
 export default function ErrorDialog({ isVisible, title, message, onDismiss }) {
   return (

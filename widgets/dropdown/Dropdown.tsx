@@ -1,8 +1,8 @@
-import styled from "styled-components/native";
 import { Text } from "@app/shared/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { TouchableOpacity } from "react-native";
+import styled from "styled-components/native";
 import DropdownDialog from "./DropdownDialog";
 
 export const DropdownContainer = styled.View`

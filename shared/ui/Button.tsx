@@ -1,8 +1,8 @@
+import { PropsWithChildren } from "react";
 import { TouchableOpacity } from "react-native";
-import { Text } from "./Text";
 
 import styled from "styled-components/native";
-import { PropsWithChildren } from "react";
+import { Text } from "./Text";
 
 const guidingButton = (theme) => `
     background-color: ${theme.colors.buttons.guiding};

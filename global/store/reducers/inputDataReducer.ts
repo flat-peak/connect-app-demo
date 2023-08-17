@@ -1,4 +1,5 @@
 import { DemoPostalAddress } from "@app/global/configs";
+import { AppState } from "@app/global/store";
 import { flatpeak } from "@app/shared/lib";
 import {
   PostalAddress,
@@ -7,7 +8,6 @@ import {
   throwOnApiError,
 } from "@flat-peak/javascript-sdk";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { AppState } from "@app/global/store";
 import {
   defineUserLocation,
   fetchAreaEnabled,

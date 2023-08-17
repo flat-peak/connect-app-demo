@@ -1,5 +1,5 @@
-import styled from "styled-components/native";
 import { TextInput as NativeTextInput } from "react-native";
+import styled from "styled-components/native";
 
 export const TextInput = styled(NativeTextInput)`
   background-color: #ffffff;

@@ -1,5 +1,5 @@
-import styled from "styled-components/native";
 import { PropsWithChildren } from "react";
+import styled from "styled-components/native";
 
 const rowLayout = () => `
   flex-direction: row;

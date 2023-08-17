@@ -1,10 +1,10 @@
 import { COUNTRY_CODES } from "@app/global/configs";
 import { flatpeak } from "@app/shared/lib";
+import { getLocation } from "@app/shared/lib/ip.service";
+import { generateMacAddress } from "@app/shared/lib/mac-generator";
 import { Account, throwOnApiError } from "@flat-peak/javascript-sdk";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { withProgressMiddleware } from "./progressIndicatorReducer";
-import { generateMacAddress } from "@app/shared/lib/mac-generator";
-import { getLocation } from "@app/shared/lib/ip.service";
 
 export const defineUserLocation = createAsyncThunk(
   "context/defineUserLocation",

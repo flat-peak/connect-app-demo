@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
+import { Autolink } from "react-native-autolink";
 import styled from "styled-components/native";
 import { Text } from "./Text";
-import { Autolink } from "react-native-autolink";
 
 const IntroMessage = styled.View`
   margin: 24px 0 51px;

@@ -1,6 +1,6 @@
-import styled from "styled-components/native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Platform, StatusBar } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import styled from "styled-components/native";
 
 const ScreenContainerRoot = styled.View`
   flex: 1;

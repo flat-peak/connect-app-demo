@@ -1,6 +1,6 @@
-import reducer from "./reducers";
-import { Platform } from "react-native";
 import { configureStore } from "@reduxjs/toolkit";
+import { Platform } from "react-native";
+import reducer from "./reducers";
 import { InputState } from "./reducers/inputDataReducer";
 
 const store = configureStore({

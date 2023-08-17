@@ -1,8 +1,8 @@
+import { ScrollView, StyleSheet } from "react-native";
 import {
   KeyboardAwareScrollView,
   KeyboardAwareScrollViewProps,
 } from "react-native-keyboard-aware-scroll-view";
-import { ScrollView, StyleSheet } from "react-native";
 
 export const FieldSet = (props: KeyboardAwareScrollViewProps) => (
   <ScrollView>

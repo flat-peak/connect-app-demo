@@ -1,10 +1,10 @@
-import { Text, Divider } from "@app/shared/ui";
-import styled from "styled-components/native";
-import { Platform, StatusBar, TouchableOpacity } from "react-native";
+import { Divider, Text } from "@app/shared/ui";
 
 import { AntDesign } from "@expo/vector-icons";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "expo-router";
+import { Platform, StatusBar, TouchableOpacity } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import styled from "styled-components/native";
 import Logo from "./Logo";
 
 const HeaderContainer = styled.View`
