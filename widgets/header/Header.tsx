@@ -57,6 +57,7 @@ export type HeaderProps = {
   useNav?: boolean;
   inModal?: boolean;
   goBackHandler?: () => void;
+  refreshHandler?: () => void;
 };
 
 export default function Header(props: HeaderProps) {
@@ -67,6 +68,7 @@ export default function Header(props: HeaderProps) {
     useNav = true,
     inModal = false,
     goBackHandler,
+    refreshHandler,
   } = props;
 
   const navigation = useNavigation();
@@ -96,7 +98,9 @@ export default function Header(props: HeaderProps) {
           )}
         </NavBarControlPh>
         <TitleContainer>
-          <Text variant="heading">{title}</Text>
+          <TouchableOpacity onPress={refreshHandler} disabled={!refreshHandler}>
+            <Text variant="heading">{title}</Text>
+          </TouchableOpacity>
         </TitleContainer>
         <NavBarControlPh>
           {canGoBack && useNav && (
