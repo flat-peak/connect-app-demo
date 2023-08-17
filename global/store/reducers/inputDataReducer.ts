@@ -1,31 +1,43 @@
+import { DemoPostalAddress } from "@app/global/configs";
+import { flatpeak } from "@app/shared/lib";
+import {
+  PostalAddress,
+  Product,
+  Tariff,
+  throwOnApiError,
+} from "@flat-peak/javascript-sdk";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { AppState } from "@app/global/store";
 import {
   defineUserLocation,
   fetchAreaEnabled,
   startDeveloperFlow,
   startSimpleFlow,
 } from "./contextReducer";
-import { DemoPostalAddress } from "../../configs/input-scenarios";
 import { withProgressMiddleware } from "./progressIndicatorReducer";
-import {
-  flatpeak,
-  throwOnApiError,
-} from "../../../shared/lib/flatpeak.service";
 import { setTariff } from "./tariffReducer";
+
+export interface InputState {
+  macAddress: string;
+  customerId: string;
+  productId: string;
+  deviceId: string;
+  timezone: string;
+  postalAddress: PostalAddress;
+}
 
 export const initInputParams = createAsyncThunk(
   "inputData/initInputParams",
   withProgressMiddleware(async (args, thunkAPI) => {
     let {
       inputData: { macAddress, customerId, productId },
-    } = thunkAPI.getState();
+    } = thunkAPI.getState() as AppState;
 
     // create session for existing product_id
     if (productId) {
-      /** @type {Product} */
       const product = throwOnApiError(
         await flatpeak.products.retrieve(productId)
-      );
+      ) as Product;
       if (product.postal_address) {
         thunkAPI.dispatch(setAddress(product.postal_address));
       }
@@ -39,7 +51,6 @@ export const initInputParams = createAsyncThunk(
 
       throwOnApiError(await flatpeak.customers.retrieve(customerId));
 
-      // can this mac be used?
       throwOnApiError(
         await flatpeak.devices.checkDeviceMac({
           mac: macAddress,
@@ -47,10 +58,9 @@ export const initInputParams = createAsyncThunk(
         })
       );
 
-      /** @type {Tariff} */
       const tariff = throwOnApiError(
         await flatpeak.tariffs.retrieve(product.tariff_settings.tariff_id)
-      );
+      ) as Tariff;
       thunkAPI.dispatch(setTariff(tariff));
 
       return { completed: true };
@@ -77,7 +87,7 @@ export const initInputParams = createAsyncThunk(
 
 export const inputDataSlice = createSlice({
   name: "inputData",
-  initialState: /** @type {App.InputState} */ {
+  initialState: {
     macAddress: "",
     customerId: "",
     productId: "",
@@ -91,7 +101,7 @@ export const inputDataSlice = createSlice({
       state: "",
       post_code: "",
       country_code: "",
-    },
+    } as PostalAddress,
   },
   reducers: {
     setInputData: (state, action) => {
@@ -137,7 +147,7 @@ export const inputDataSlice = createSlice({
         state.country = countryCode;
         state.postalAddress.country_code = countryCode;
       })
-      .addCase(startSimpleFlow.pending, (state, action) => {
+      .addCase(startSimpleFlow.pending, (state) => {
         if (state.country === "GB") {
           state.postalAddress = { ...DemoPostalAddress };
         } else {
@@ -152,12 +162,14 @@ export const inputDataSlice = createSlice({
         }
       })
       .addCase(startSimpleFlow.fulfilled, (state, action) => {
-        state.macAddress = action.payload.macAddress;
+        state.macAddress = (
+          action.payload as { macAddress: string }
+        ).macAddress;
         state.customerId = "";
         state.productId = "";
         state.deviceId = "";
       })
-      .addCase(startDeveloperFlow.pending, (state, action) => {
+      .addCase(startDeveloperFlow.pending, (state) => {
         if (state.country === "GB") {
           state.postalAddress = { ...DemoPostalAddress };
         } else {
@@ -172,7 +184,9 @@ export const inputDataSlice = createSlice({
         }
       })
       .addCase(startDeveloperFlow.fulfilled, (state, action) => {
-        state.macAddress = action.payload.macAddress;
+        state.macAddress = (
+          action.payload as { macAddress: string }
+        ).macAddress;
         state.customerId = "";
         state.productId = "";
         state.deviceId = "";

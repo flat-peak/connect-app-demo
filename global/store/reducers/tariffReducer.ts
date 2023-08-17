@@ -1,10 +1,8 @@
+import { flatpeak } from "@app/shared/lib";
+import { throwOnApiError } from "@flat-peak/javascript-sdk";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { startDeveloperFlow, startSimpleFlow } from "./contextReducer";
 import { withProgressMiddleware } from "./progressIndicatorReducer";
-import {
-  flatpeak,
-  throwOnApiError,
-} from "../../../shared/lib/flatpeak.service";
 
 /**
  * @return TariffPlan
@@ -23,7 +21,7 @@ export const blankTariff = () => {
   };
 };
 
-const handleResetTariff = (state, action) => {
+const handleResetTariff = (state) => {
   state.plan = blankTariff();
   state.provider = undefined;
   state.saved = false;
@@ -32,7 +30,7 @@ const handleResetTariff = (state, action) => {
 export const connectTariff = createAsyncThunk(
   "tariff/connect",
   withProgressMiddleware(
-    async ({ customer_id, product_id, tariff_id, provider_id }, thunkAPI) => {
+    async ({ customer_id, product_id, tariff_id, provider_id }) => {
       const [provider, customer, product, tariff] = await Promise.all(
         [
           flatpeak.providers.retrieve(provider_id),
@@ -54,11 +52,7 @@ export const connectTariff = createAsyncThunk(
 export const tariffSlice = createSlice({
   name: "tariff",
   initialState: {
-    plan: blankTariff({
-      time: true,
-      hours: false,
-      months: false,
-    }),
+    plan: blankTariff(),
     provider: undefined,
     saved: false,
     structure: {

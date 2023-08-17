@@ -1,12 +1,10 @@
+import { COUNTRY_CODES } from "@app/global/configs";
+import { flatpeak } from "@app/shared/lib";
+import { Account, throwOnApiError } from "@flat-peak/javascript-sdk";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { COUNTRY_CODES } from "../../configs/timezones";
-import {
-  flatpeak,
-  throwOnApiError,
-} from "../../../shared/lib/flatpeak.service";
 import { withProgressMiddleware } from "./progressIndicatorReducer";
-import { generateMacAddress } from "../../../shared/lib/mac-generator";
-import { getLocation } from "../../../shared/lib/ip.service";
+import { generateMacAddress } from "@app/shared/lib/mac-generator";
+import { getLocation } from "@app/shared/lib/ip.service";
 
 export const defineUserLocation = createAsyncThunk(
   "context/defineUserLocation",
@@ -16,7 +14,7 @@ export const defineUserLocation = createAsyncThunk(
 export const fetchAreaEnabled = createAsyncThunk(
   "context/fetchAreaEnabled",
   async () => {
-    let account = throwOnApiError(await flatpeak.accounts.current());
+    let account = throwOnApiError(await flatpeak.accounts.current()) as Account;
     return Array.isArray(account?.area_enabled) && account.area_enabled.length
       ? account.area_enabled
       : Object.keys(COUNTRY_CODES).map((country_code) => ({ country_code }));
@@ -90,10 +88,10 @@ export const contextSlice = createSlice({
           return countryA.localeCompare(countryB);
         });
       })
-      .addCase(startSimpleFlow.pending, (state, action) => {
+      .addCase(startSimpleFlow.pending, (state) => {
         state.developerMode = false;
       })
-      .addCase(startDeveloperFlow.pending, (state, action) => {
+      .addCase(startDeveloperFlow.pending, (state) => {
         state.developerMode = true;
       });
   },

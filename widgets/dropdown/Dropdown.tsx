@@ -1,14 +1,14 @@
 import styled from "styled-components/native";
-import { Text } from "../../shared/ui/Text";
+import { Text } from "@app/shared/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { TouchableOpacity } from "react-native";
-import DropdownDialog from "./dropdown-dialog";
+import DropdownDialog from "./DropdownDialog";
 
 export const DropdownContainer = styled.View`
   background-color: #cccccc;
   height: 44px;
-  border-radius: ${({ theme }) => theme.roundness}px;
+  border-radius: 10px;
   padding: 0 18px;
   font-family: ${({ theme }) => theme.fonts.body};
   justify-content: space-between;
@@ -34,12 +34,12 @@ export default function Dropdown({
 }) {
   const [open, setOpen] = useState(false);
 
-  const handleSelect = (value) => {
+  const handleSelect = (nextValue) => {
     setOpen(false);
-    onChangeText(value);
+    onChangeText(nextValue);
   };
 
-  const handleCancel = (value) => {
+  const handleCancel = () => {
     setOpen(false);
   };
 

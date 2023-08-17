@@ -1,25 +1,22 @@
-import { Stack } from "expo-router";
-import { useEffect } from "react";
+import { theme as primaryTheme, themeFonts } from "@app/global/configs";
+import { store } from "@app/global/store";
+import {
+  dismissError,
+  selectError,
+  selectLoading,
+} from "@app/global/store/reducers/progressIndicatorReducer";
+import { ErrorDialog, HeaderFactory, LoaderDialog } from "@app/widgets";
 import { useFonts } from "expo-font";
-import { themeFonts } from "../global/configs/theme/fonts";
+import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { store } from "../global/store";
+import { useEffect } from "react";
+import { StatusBar } from "react-native";
 import {
   Provider as StoreProvider,
   useDispatch,
   useSelector,
 } from "react-redux";
-import { theme } from "../global/configs/theme/theme";
-import { StatusBar } from "react-native";
-import {
-  dismissError,
-  selectError,
-  selectLoading,
-} from "../global/store/reducers/progressIndicatorReducer";
 import { ThemeProvider, useTheme } from "styled-components";
-import { HeaderFactory } from "../widgets/header/Header";
-import LoaderDialog from "../widgets/loader/loader-dialog";
-import ErrorDialog from "../widgets/error-notifier/error-dialog";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -50,7 +47,7 @@ export default function RootLayout() {
 
   return (
     <StoreProvider store={store}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={primaryTheme}>
         <StatusBar barStyle="dark-content" />
         <RootLayoutNav />
       </ThemeProvider>

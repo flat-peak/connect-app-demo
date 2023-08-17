@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, ActivityIndicator } from "react-native";
+import { ActivityIndicator, Modal } from "react-native";
 import styled from "styled-components/native";
 
 const ModalBackground = styled.View`
@@ -14,7 +14,7 @@ const ModalWrapper = styled.View`
   background-color: #ffffff;
   height: 100px;
   width: 100px;
-  border-radius: ${({ theme }) => theme.roundness}px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: space-around;

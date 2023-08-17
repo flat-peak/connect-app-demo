@@ -6,7 +6,8 @@
     "start": "expo start",
     "ios": "expo start --ios -c",
     "eject": "expo eject",
-    "fix": "expo-cli doctor"
+    "fix": "expo-cli doctor",
+    "lint": "eslint . --fix"
   },
   "dependencies": {
     "@expo/config-plugins": "~6.0.0",

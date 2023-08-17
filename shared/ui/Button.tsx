@@ -2,6 +2,7 @@ import { TouchableOpacity } from "react-native";
 import { Text } from "./Text";
 
 import styled from "styled-components/native";
+import { PropsWithChildren } from "react";
 
 const guidingButton = (theme) => `
     background-color: ${theme.colors.buttons.guiding};
@@ -19,7 +20,7 @@ const destructiveButton = (theme) => `
     height: 38px;
 `;
 
-const link = (theme) => `
+const link = () => `
     background: transparent;
     margin-top: 14px;
     color: #ffffff;
@@ -35,7 +36,7 @@ const variants = {
 
 export const ButtonContainer = styled.View`
   margin-top: 24px;
-  border-radius: ${({ theme }) => theme.buttonRoundness}px;
+  border-radius: 10px;
   height: ${({ size }) => (size === "small" ? 44 : 64)}px;
   align-items: center;
   justify-content: center;
@@ -43,18 +44,23 @@ export const ButtonContainer = styled.View`
   ${({ variant, theme }) => variants[variant](theme)}
 `;
 
-ButtonContainer.defaultProps = {
-  type: "guiding",
+type ButtonProps = {
+  title: string;
+  subTitle?: string;
+  variant?: string;
+  onPress?: () => void;
+  disabled?: boolean;
+  size?: "small" | "default";
 };
-
-export default function Button({
-  title,
-  subTitle,
-  variant = "guiding",
-  onPress,
-  disabled,
-  size,
-}) {
+export default function Button(props: PropsWithChildren<ButtonProps>) {
+  const {
+    title,
+    subTitle,
+    variant = "guiding",
+    onPress,
+    disabled,
+    size,
+  } = props;
   return (
     <TouchableOpacity disabled={disabled} onPress={onPress}>
       <ButtonContainer variant={variant} disabled={disabled} size={size}>

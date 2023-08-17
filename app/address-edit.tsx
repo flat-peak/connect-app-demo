@@ -1,38 +1,24 @@
-import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "expo-router";
+import { COUNTRY_CODES } from "@app/global/configs";
+import { selectAreaEnabled } from "@app/global/store/reducers/contextReducer";
 import {
   selectAddress,
   setAddressField,
   setCountry,
-} from "../global/store/reducers/inputDataReducer";
+} from "@app/global/store/reducers/inputDataReducer";
+import {
+  Button,
+  Field,
+  FieldSet,
+  Footer,
+  InputValue,
+  Main,
+  SafeScreen,
+  Wrapper,
+} from "@app/shared/ui";
+import { Dropdown } from "@app/widgets";
+import { useRouter } from "expo-router";
 import { useRef } from "react";
-import Wrapper from "../shared/ui/layout/Wrapper";
-import Field from "../shared/ui/Field";
-import Dropdown from "../widgets/dropdown/Dropdown";
-import { COUNTRY_CODES } from "../global/configs/timezones";
-import Footer from "../shared/ui/layout/Footer";
-import Button from "../shared/ui/Button";
-import styled from "styled-components/native";
-import { FieldSet } from "../shared/ui/FieldSet";
-
-import { TextInput } from "../shared/ui/TextInput";
-import Main from "../shared/ui/layout/Main";
-import { selectAreaEnabled } from "../global/store/reducers/contextReducer";
-import SafeScreen from "../shared/ui/layout/Screen";
-
-const InputValue = styled(TextInput).attrs(({ refs, refIndex }) => {
-  return {
-    autoCapitalize: "none",
-    autoCorrect: false,
-    ref: refs[refIndex],
-    ...(refIndex < refs.length - 1
-      ? {
-          returnKeyType: "next",
-          onSubmitEditing: () => refs[refIndex + 1].current.focus(),
-        }
-      : {}),
-  };
-})``;
+import { useDispatch, useSelector } from "react-redux";
 
 export default function AddressEdit() {
   const { address_line1, address_line2, city, state, post_code, country_code } =

@@ -9,11 +9,4 @@ const flatpeak = new FlatpeakService(
     console.log("[SERVICE]: " + message);
   }
 );
-const throwOnApiError = (input) => {
-  if (input?.object === "error") {
-    throw new Error(input.message);
-  }
-  return input;
-};
-
-export { flatpeak, throwOnApiError };
+export default flatpeak;

@@ -1,3 +1,4 @@
+import { StyleSheet } from "react-native";
 import styled from "styled-components/native";
 import { Text } from "./Text";
 import { Autolink } from "react-native-autolink";
@@ -14,15 +15,16 @@ export default function IntroBlock({}) {
   return (
     <IntroMessage>
       <Text variant={"intro"}>
-        <Autolink
-          text={text}
-          linkStyle={{
-            textDecorationLine: "underline",
-            textDecorationStyle: "solid",
-            textDecorationColor: "#fff",
-          }}
-        />
+        <Autolink text={text} linkStyle={styles.link} />
       </Text>
     </IntroMessage>
   );
 }
+
+const styles = StyleSheet.create({
+  link: {
+    textDecorationLine: "underline",
+    textDecorationStyle: "solid",
+    textDecorationColor: "#fff",
+  },
+});

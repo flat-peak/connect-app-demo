@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { flatpeak } from "../../../shared/lib/flatpeak.service";
+import { flatpeak } from "@app/shared/lib";
 
 export const keySetupSlice = createSlice({
   name: "keySetup",

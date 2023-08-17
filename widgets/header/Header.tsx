@@ -1,11 +1,11 @@
-import { Text } from "../../shared/ui/Text";
+import { Text, Divider } from "@app/shared/ui";
 import styled from "styled-components/native";
-import { Image, Platform, StatusBar, TouchableOpacity } from "react-native";
-import LogoImage from "../../assets/fp-logo-demo-alt.png";
+import { Platform, StatusBar, TouchableOpacity } from "react-native";
+
 import { AntDesign } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "expo-router";
-import Divider from "../../shared/ui/layout/Divider";
+import Logo from "./Logo";
 
 const HeaderContainer = styled.View`
   padding: ${({ statusBarHeight }) => statusBarHeight + 12}px 0
@@ -17,8 +17,7 @@ const HeaderContainer = styled.View`
 const NavBarContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  padding: ${({ statusBarHeight }) => statusBarHeight || 0}px
-    ${({ theme }) => theme.screenHorizontalOffset}px 0;
+  padding: ${({ statusBarHeight }) => statusBarHeight || 0}px 24px 0;
 `;
 
 const NavBarControlPh = styled.View`
@@ -45,15 +44,31 @@ const TitleContainer = styled.View`
   justify-content: center;
   align-items: center;
 `;
+const LogoImage = styled.Image`
+  width: 152px;
+  height: 31px;
+  align-self: center;
+`;
 
-export default function Header({
-  title,
-  subTitle = "",
-  useLogo = true,
-  useNav = true,
-  inModal = false,
-  goBackHandler,
-}) {
+export type HeaderProps = {
+  title: string;
+  subTitle?: string;
+  useLogo?: boolean;
+  useNav?: boolean;
+  inModal?: boolean;
+  goBackHandler?: () => void;
+};
+
+export default function Header(props: HeaderProps) {
+  const {
+    title,
+    subTitle = "",
+    useLogo = true,
+    useNav = true,
+    inModal = false,
+    goBackHandler,
+  } = props;
+
   const navigation = useNavigation();
   const canGoBack = navigation.canGoBack();
 
@@ -67,17 +82,7 @@ export default function Header({
 
   return (
     <HeaderContainer statusBarHeight={statusBarHeight} inModal={inModal}>
-      {useLogo && (
-        <Image
-          style={{
-            width: 152,
-            height: 31,
-            resizeMode: "cover",
-            alignSelf: "center",
-          }}
-          source={LogoImage}
-        />
-      )}
+      {useLogo && <LogoImage source={Logo} />}
       <NavBarContainer>
         <NavBarControlPh>
           {(canGoBack || goBackHandler) && useNav && (
@@ -95,7 +100,11 @@ export default function Header({
         </TitleContainer>
         <NavBarControlPh>
           {canGoBack && useNav && (
-            <NavBarControl onPress={() => navigation.popToTop()}>
+            <NavBarControl
+              onPress={() =>
+                (navigation as unknown as { popToTop: () => void }).popToTop()
+              }
+            >
               <NavBarIcon glyph="close" />
             </NavBarControl>
           )}

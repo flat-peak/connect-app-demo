@@ -12,7 +12,7 @@ const body = (theme) => `
     font-size: ${theme.fontSizes.body}px;
 `;
 
-const label = (theme) => `
+const label = () => `
     margin-bottom: 10px;
     font-size: 17px;
     color: #000000;
@@ -23,7 +23,7 @@ const heading = (theme) => `
     font-family: ${theme.fonts.heading};
     font-size: ${theme.fontSizes.heading}px;
     line-height: ${theme.fontSizes.heading * 1.5}px;
-    text-align: ${theme.headingAlign};
+    text-align: "center";
 `;
 
 const intro = (theme) => `
@@ -36,7 +36,7 @@ const subHeading = (theme) => `
     color: ${theme.colors.text.subHeading};
     font-family: ${theme.fonts.subHeading};
     font-size: ${theme.fontSizes.subHeading}px;
-    text-align: ${theme.headingAlign};
+    text-align: "center";
 `;
 
 const guidingButton = (theme) => `

@@ -1,8 +1,5 @@
+import { Main, SafeScreen, Text, Wrapper } from "@app/shared/ui";
 import { Link, Stack } from "expo-router";
-import Main from "../shared/ui/layout/Main";
-import Wrapper from "../shared/ui/layout/Wrapper";
-import SafeScreen from "../shared/ui/layout/Screen";
-import { Text } from "../shared/ui/Text";
 
 export default function NotFoundScreen() {
   return (
