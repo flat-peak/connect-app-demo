@@ -27,7 +27,7 @@ export default function ProviderIntegration() {
   const productId = useSelector(selectProductId);
   const postalAddress = useSelector(selectAddress);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState({
     visible: false,
     title: "",
@@ -43,7 +43,6 @@ export default function ProviderIntegration() {
   const webViewRef = useRef<WebView>();
   const [webViewcanGoBack, setWebViewcanGoBack] = useState(false);
 
-  // webViewRef.current.goBack();
   const theme = useTheme();
   const sharedState = useRef(
     Buffer.from(
@@ -111,12 +110,16 @@ export default function ProviderIntegration() {
     [dispatch, router]
   );
 
+  const timeout = useRef<NodeJS.Timeout>();
+
   const onLoadStart = useCallback(() => {
-    setLoading(true);
+    clearTimeout(timeout.current);
+    timeout.current = setTimeout(() => setLoading(true), 200);
   }, []);
 
   const onLoadEnd = useCallback(() => {
-    setLoading(false);
+    clearTimeout(timeout.current);
+    timeout.current = setTimeout(() => setLoading(false), 50);
   }, []);
 
   const ConnectWebView = useMemo(() => {
@@ -153,12 +156,12 @@ export default function ProviderIntegration() {
       />
     );
   }, [
-    integrationUrl,
-    onLoadEnd,
-    onLoadStart,
-    onMessage,
     publishableKey,
     theme.colors.background,
+    integrationUrl,
+    onLoadStart,
+    onLoadEnd,
+    onMessage,
   ]);
 
   return (
@@ -170,6 +173,7 @@ export default function ProviderIntegration() {
         goBackHandler={
           webViewcanGoBack ? () => webViewRef.current.goBack() : undefined
         }
+        refreshHandler={() => webViewRef.current.reload()}
       />
 
       {ConnectWebView}
